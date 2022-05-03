@@ -8,6 +8,8 @@
  */
 
 import {
+    I_ALTERNATION,
+    I_ALTERNATIVE,
     I_CAPTURING_GROUP,
     I_NAMED_CAPTURING_GROUP,
     I_NODE,
@@ -19,6 +21,14 @@ import { Flags } from '../declarations/types';
 
 type Context = { flags: Flags };
 type Interpret = (node: N_NODE) => I_NODE;
+export type N_ALTERNATION = N_COMPONENT & {
+    name: 'N_ALTERNATION';
+    alternatives: N_ALTERNATIVE[];
+};
+export type N_ALTERNATIVE = N_COMPONENT & {
+    name: 'N_ALTERNATIVE';
+    components: N_COMPONENT[];
+};
 export type N_CAPTURING_GROUP = N_COMPONENT & {
     name: 'N_CAPTURING_GROUP';
     components: N_COMPONENT[];
@@ -61,6 +71,28 @@ export type N_WHITESPACE = N_COMPONENT & {
 
 export default {
     nodes: {
+        'N_ALTERNATION': (
+            node: N_ALTERNATION,
+            interpret: Interpret
+        ): I_ALTERNATION => {
+            return {
+                'name': 'I_ALTERNATION',
+                'alternatives': node.alternatives.map(
+                    (node: N_ALTERNATIVE) => interpret(node) as I_ALTERNATIVE
+                ),
+            };
+        },
+        'N_ALTERNATIVE': (
+            node: N_ALTERNATIVE,
+            interpret: Interpret
+        ): I_ALTERNATIVE => {
+            return {
+                'name': 'I_ALTERNATIVE',
+                'components': node.components.map((node: N_COMPONENT) =>
+                    interpret(node)
+                ),
+            };
+        },
         'N_CAPTURING_GROUP': (
             node: N_CAPTURING_GROUP,
             interpret: Interpret
