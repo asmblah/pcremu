@@ -15,6 +15,11 @@ export type I_CAPTURING_GROUP = I_COMPONENT & {
     components: I_COMPONENT[];
 };
 export type I_COMPONENT = I_NODE;
+export type I_NAMED_CAPTURING_GROUP = I_COMPONENT & {
+    name: 'I_NAMED_CAPTURING_GROUP';
+    components: I_COMPONENT[];
+    groupName: string;
+};
 export type I_NODE = { name: string };
 export type I_NOOP = I_COMPONENT & { name: 'I_NOOP' };
 export type I_PATTERN = I_NODE & {
@@ -31,6 +36,20 @@ export default {
         ): string => {
             return (
                 '(' +
+                node.components
+                    .map((node: I_COMPONENT) => interpret(node))
+                    .join('') +
+                ')'
+            );
+        },
+        'I_NAMED_CAPTURING_GROUP': (
+            node: I_NAMED_CAPTURING_GROUP,
+            interpret: Interpret
+        ): string => {
+            return (
+                '(?<' +
+                node.groupName +
+                '>' +
                 node.components
                     .map((node: I_COMPONENT) => interpret(node))
                     .join('') +

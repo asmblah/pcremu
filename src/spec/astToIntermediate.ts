@@ -9,6 +9,7 @@
 
 import {
     I_CAPTURING_GROUP,
+    I_NAMED_CAPTURING_GROUP,
     I_NODE,
     I_NOOP,
     I_PATTERN,
@@ -24,6 +25,11 @@ export type N_CAPTURING_GROUP = N_COMPONENT & {
 };
 export type N_COMPONENT = N_NODE;
 export type N_LITERAL = N_COMPONENT & { name: 'N_LITERAL'; text: string };
+export type N_NAMED_CAPTURING_GROUP = N_COMPONENT & {
+    name: 'N_NAMED_CAPTURING_GROUP';
+    components: N_COMPONENT[];
+    groupName: string;
+};
 export type N_NODE = { name: string };
 export type N_PATTERN = N_NODE & {
     name: 'N_PATTERN';
@@ -55,6 +61,18 @@ export default {
             return {
                 'name': 'I_RAW_REGEX',
                 'chars': node.text,
+            };
+        },
+        'N_NAMED_CAPTURING_GROUP': (
+            node: N_NAMED_CAPTURING_GROUP,
+            interpret: Interpret
+        ): I_NAMED_CAPTURING_GROUP => {
+            return {
+                'name': 'I_NAMED_CAPTURING_GROUP',
+                'groupName': node.groupName,
+                'components': node.components.map((node: N_NODE) =>
+                    interpret(node)
+                ),
             };
         },
         'N_PATTERN': (node: N_PATTERN, interpret: Interpret): I_PATTERN => {

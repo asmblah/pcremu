@@ -25,6 +25,7 @@ export default {
             components: {
                 oneOf: [
                     'N_SIMPLE_ASSERTION',
+                    'N_NAMED_CAPTURING_GROUP',
                     'N_CAPTURING_GROUP',
                     'N_LITERAL',
                     'N_WHITESPACE',
@@ -33,6 +34,15 @@ export default {
         },
         'N_LITERAL': {
             components: { name: 'text', what: /\w+/ },
+        },
+        'N_NAMED_CAPTURING_GROUP': {
+            components: [
+                /\(\?</,
+                { name: 'groupName', what: /[^>]+/ },
+                />/,
+                { name: 'components', zeroOrMoreOf: 'N_COMPONENT' },
+                /\)/,
+            ],
         },
         'N_PATTERN': {
             components: {

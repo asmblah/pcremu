@@ -38,6 +38,15 @@ export default class Match {
     }
 
     /**
+     * Fetches the specified named capture of this match.
+     *
+     * @param {string} name
+     */
+    getNamedCapture(name: string): string {
+        return this.namedCaptures[name];
+    }
+
+    /**
      * Fetches the specified numbered capture of this match.
      *
      * @param {number} number
