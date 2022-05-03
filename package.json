@@ -1,0 +1,60 @@
+{
+  "version": "0.0.1",
+  "name": "pcremu",
+  "description": "PCRE emulation for JavaScript",
+  "keywords": [
+    "regex",
+    "regexp",
+    "pcre"
+  ],
+  "homepage": "https://github.com/asmblah/pcremu",
+  "author": "Dan Phillimore <dan@ovms.co> (https://github.com/asmblah)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asmblah/pcremu"
+  },
+  "bugs": {
+    "email": "dan@ovms.co",
+    "url": "https://github.com/asmblah/pcremu/issues"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**",
+    "src/**",
+    "MIT-LICENSE.txt",
+    "README.md"
+  ],
+  "scripts": {
+    "build:prod": "tsc -p src",
+    "mocha": "ts-mocha -r mocha-bootstrap --recursive test/integration/**/*Test.ts test/unit/**/*Test.ts",
+    "lint:check": "eslint '{src,test}/**/*.ts'",
+    "lint:fix": "eslint '{src,test}/**/*.ts' --fix",
+    "prepublishOnly": "npm test && npm run build:prod",
+    "test": "npm run lint:check && npm run mocha"
+  },
+  "dependencies": {
+    "parsing": "^2.2.0",
+    "transpiler": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.1",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "^17.0.29",
+    "@typescript-eslint/eslint-plugin": "^5.21.0",
+    "@typescript-eslint/parser": "^5.21.0",
+    "chai": "^4.3.6",
+    "eslint": "^8.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "mocha-bootstrap": "^1.0.2",
+    "prettier": "^2.6.2",
+    "ts-mocha": "^9.0.2",
+    "ts-sinon": "^2.0.2",
+    "typescript": "^4.6.3"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "license": "MIT"
+}

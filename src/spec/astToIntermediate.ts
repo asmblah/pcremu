@@ -1,0 +1,67 @@
+/*
+ * PCREmu - PCRE emulation for JavaScript.
+ * Copyright (c) Dan Phillimore (asmblah)
+ * https://github.com/asmblah/pcremu/
+ *
+ * Released under the MIT license
+ * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
+ */
+
+import {
+    I_NODE,
+    I_NOOP,
+    I_PATTERN,
+    I_RAW_REGEX,
+} from './intermediateToPattern';
+import { Flags } from '../declarations/types';
+
+type Context = { flags: Flags };
+type Interpret = (node: N_NODE) => I_NODE;
+export type N_LITERAL = N_NODE & { name: 'N_LITERAL'; text: string };
+export type N_NODE = { name: string };
+export type N_PATTERN = N_NODE & { name: 'N_PATTERN'; components: N_NODE[] };
+export type N_SIMPLE_ASSERTION = N_NODE & {
+    name: 'N_SIMPLE_ASSERTION';
+    assertion: string;
+};
+export type N_WHITESPACE = N_NODE & { name: 'N_WHITESPACE'; chars: string };
+
+export default {
+    nodes: {
+        'N_LITERAL': (node: N_LITERAL): I_RAW_REGEX => {
+            return {
+                'name': 'I_RAW_REGEX',
+                'chars': node.text,
+            };
+        },
+        'N_PATTERN': (node: N_PATTERN, interpret: Interpret): I_PATTERN => {
+            return {
+                'name': 'I_PATTERN',
+                'components': node.components.map((node: N_NODE) =>
+                    interpret(node)
+                ),
+            };
+        },
+        'N_SIMPLE_ASSERTION': (node: N_SIMPLE_ASSERTION): I_RAW_REGEX => {
+            return {
+                'name': 'I_RAW_REGEX',
+                'chars': node.assertion,
+            };
+        },
+        'N_WHITESPACE': (
+            node: N_WHITESPACE,
+            interpret: Interpret,
+            context: Context
+        ): I_NOOP | I_RAW_REGEX => {
+            if (context.flags.extended) {
+                // In extended mode, whitespace is ignored (except in character classes).
+                return { 'name': 'I_NOOP' };
+            }
+
+            return {
+                'name': 'I_RAW_REGEX',
+                'chars': node.chars,
+            };
+        },
+    },
+};
