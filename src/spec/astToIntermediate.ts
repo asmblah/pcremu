@@ -23,6 +23,21 @@ export type N_CAPTURING_GROUP = N_COMPONENT & {
     name: 'N_CAPTURING_GROUP';
     components: N_COMPONENT[];
 };
+export type N_CHARACTER = N_CHARACTER_CLASS_COMPONENT & {
+    name: 'N_CHARACTER';
+    char: string;
+};
+export type N_CHARACTER_CLASS = N_COMPONENT & {
+    name: 'N_CHARACTER_CLASS';
+    components: N_CHARACTER_CLASS_COMPONENT[];
+    negated: boolean;
+};
+export type N_CHARACTER_CLASS_COMPONENT = N_COMPONENT;
+export type N_CHARACTER_RANGE = N_CHARACTER_CLASS_COMPONENT & {
+    name: 'N_CHARACTER_RANGE';
+    from: string;
+    to: string;
+};
 export type N_COMPONENT = N_NODE;
 export type N_LITERAL = N_COMPONENT & { name: 'N_LITERAL'; text: string };
 export type N_NAMED_CAPTURING_GROUP = N_COMPONENT & {
@@ -56,6 +71,27 @@ export default {
                     interpret(node)
                 ),
             };
+        },
+        'N_CHARACTER': (node: N_CHARACTER): string => {
+            return node.char;
+        },
+        'N_CHARACTER_CLASS': (
+            node: N_CHARACTER_CLASS,
+            interpret: Interpret
+        ): I_RAW_REGEX => {
+            return {
+                'name': 'I_RAW_REGEX',
+                'chars':
+                    '[' +
+                    (node.negated ? '^' : '') +
+                    node.components
+                        .map((node: N_NODE) => interpret(node))
+                        .join('') +
+                    ']',
+            };
+        },
+        'N_CHARACTER_RANGE': (node: N_CHARACTER_RANGE): string => {
+            return node.from + '-' + node.to;
         },
         'N_LITERAL': (node: N_LITERAL): I_RAW_REGEX => {
             return {
