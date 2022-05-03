@@ -14,15 +14,30 @@ export default {
 
     offsets: 'offset',
     rules: {
+        'N_CAPTURING_GROUP': {
+            components: [
+                /\(/,
+                { name: 'components', zeroOrMoreOf: 'N_COMPONENT' },
+                /\)/,
+            ],
+        },
+        'N_COMPONENT': {
+            components: {
+                oneOf: [
+                    'N_SIMPLE_ASSERTION',
+                    'N_CAPTURING_GROUP',
+                    'N_LITERAL',
+                    'N_WHITESPACE',
+                ],
+            },
+        },
         'N_LITERAL': {
             components: { name: 'text', what: /\w+/ },
         },
         'N_PATTERN': {
             components: {
                 name: 'components',
-                zeroOrMoreOf: {
-                    oneOf: ['N_SIMPLE_ASSERTION', 'N_LITERAL', 'N_WHITESPACE'],
-                },
+                zeroOrMoreOf: 'N_COMPONENT',
             },
         },
         'N_SIMPLE_ASSERTION': {

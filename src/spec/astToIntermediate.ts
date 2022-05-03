@@ -8,6 +8,7 @@
  */
 
 import {
+    I_CAPTURING_GROUP,
     I_NODE,
     I_NOOP,
     I_PATTERN,
@@ -17,17 +18,39 @@ import { Flags } from '../declarations/types';
 
 type Context = { flags: Flags };
 type Interpret = (node: N_NODE) => I_NODE;
-export type N_LITERAL = N_NODE & { name: 'N_LITERAL'; text: string };
+export type N_CAPTURING_GROUP = N_COMPONENT & {
+    name: 'N_CAPTURING_GROUP';
+    components: N_COMPONENT[];
+};
+export type N_COMPONENT = N_NODE;
+export type N_LITERAL = N_COMPONENT & { name: 'N_LITERAL'; text: string };
 export type N_NODE = { name: string };
-export type N_PATTERN = N_NODE & { name: 'N_PATTERN'; components: N_NODE[] };
-export type N_SIMPLE_ASSERTION = N_NODE & {
+export type N_PATTERN = N_NODE & {
+    name: 'N_PATTERN';
+    components: N_COMPONENT[];
+};
+export type N_SIMPLE_ASSERTION = N_COMPONENT & {
     name: 'N_SIMPLE_ASSERTION';
     assertion: string;
 };
-export type N_WHITESPACE = N_NODE & { name: 'N_WHITESPACE'; chars: string };
+export type N_WHITESPACE = N_COMPONENT & {
+    name: 'N_WHITESPACE';
+    chars: string;
+};
 
 export default {
     nodes: {
+        'N_CAPTURING_GROUP': (
+            node: N_CAPTURING_GROUP,
+            interpret: Interpret
+        ): I_CAPTURING_GROUP => {
+            return {
+                'name': 'I_CAPTURING_GROUP',
+                'components': node.components.map((node: N_NODE) =>
+                    interpret(node)
+                ),
+            };
+        },
         'N_LITERAL': (node: N_LITERAL): I_RAW_REGEX => {
             return {
                 'name': 'I_RAW_REGEX',

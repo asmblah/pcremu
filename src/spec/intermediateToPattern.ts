@@ -10,19 +10,39 @@
 import { N_NODE } from './astToIntermediate';
 
 type Interpret = (node: N_NODE) => I_NODE;
+export type I_CAPTURING_GROUP = I_COMPONENT & {
+    name: 'I_CAPTURING_GROUP';
+    components: I_COMPONENT[];
+};
+export type I_COMPONENT = I_NODE;
 export type I_NODE = { name: string };
-export type I_NOOP = I_NODE & { name: 'I_NOOP' };
-export type I_PATTERN = I_NODE & { name: 'I_PATTERN'; components: I_NODE[] };
-export type I_RAW_REGEX = I_NODE & { name: 'I_RAW_REGEX'; chars: string };
+export type I_NOOP = I_COMPONENT & { name: 'I_NOOP' };
+export type I_PATTERN = I_NODE & {
+    name: 'I_PATTERN';
+    components: I_COMPONENT[];
+};
+export type I_RAW_REGEX = I_COMPONENT & { name: 'I_RAW_REGEX'; chars: string };
 
 export default {
     nodes: {
+        'I_CAPTURING_GROUP': (
+            node: I_CAPTURING_GROUP,
+            interpret: Interpret
+        ): string => {
+            return (
+                '(' +
+                node.components
+                    .map((node: I_COMPONENT) => interpret(node))
+                    .join('') +
+                ')'
+            );
+        },
         'I_NOOP': (): string => {
             return '';
         },
         'I_PATTERN': (node: I_PATTERN, interpret: Interpret): string => {
             return node.components
-                .map((node: I_NODE) => interpret(node))
+                .map((node: I_COMPONENT) => interpret(node))
                 .join('');
         },
         'I_RAW_REGEX': (node: I_RAW_REGEX): string => {
