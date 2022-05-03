@@ -14,9 +14,6 @@ export default {
 
     offsets: 'offset',
     rules: {
-        'N_SIMPLE_ASSERTION': {
-            components: { name: 'assertion', what: /[\^]/ },
-        },
         'N_LITERAL': {
             components: { name: 'text', what: /\w+/ },
         },
@@ -27,6 +24,9 @@ export default {
                     oneOf: ['N_SIMPLE_ASSERTION', 'N_LITERAL', 'N_WHITESPACE'],
                 },
             },
+        },
+        'N_SIMPLE_ASSERTION': {
+            components: { name: 'assertion', what: /[\^$]/ },
         },
         'N_WHITESPACE': {
             components: { name: 'chars', what: /\s+/ },
