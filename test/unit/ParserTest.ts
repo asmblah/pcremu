@@ -8,8 +8,8 @@
  */
 
 import { expect } from 'chai';
-import sinon = require('sinon');
 import Parser from '../../src/Parser';
+import sinon = require('sinon');
 
 describe('Parser', () => {
     let parser: Parser;
@@ -23,6 +23,7 @@ describe('Parser', () => {
             const ast = parser.parse('my.*?regex');
 
             expect(ast.getFlags()).to.deep.equal({
+                anchored: false,
                 extended: false,
                 multiline: false,
             });
@@ -33,6 +34,7 @@ describe('Parser', () => {
             const ast = parser.parse('my.*?regex', { extended: true });
 
             expect(ast.getFlags()).to.deep.equal({
+                anchored: false,
                 extended: true,
                 multiline: false,
             });

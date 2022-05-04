@@ -51,6 +51,10 @@ export default class IntermediateToPatternCompiler {
         // Always include the "d" flag for capture indices/offsets and "g" to allow offset to be specified.
         let nativeFlags = 'dg';
 
+        if (flags.anchored) {
+            nativeFlags += 'y'; // Use ES6 "sticky" modifier "y".
+        }
+
         if (flags.multiline) {
             nativeFlags += 'm';
         }

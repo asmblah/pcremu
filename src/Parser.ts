@@ -10,7 +10,11 @@
 import Ast from './Ast';
 import { Flags } from './declarations/types';
 
-export const DEFAULT_FLAGS: Flags = { extended: false, multiline: false };
+export const DEFAULT_FLAGS: Flags = {
+    anchored: false,
+    extended: false,
+    multiline: false,
+};
 
 /**
  * Parses a PCRE regex to an AST.

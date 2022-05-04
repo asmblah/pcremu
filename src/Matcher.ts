@@ -45,7 +45,7 @@ export default class Matcher {
             }
 
             // Start the next match just after this one.
-            position = match.getEnd() + 1;
+            position = match.getEnd();
         }
 
         return matches;
