@@ -22,4 +22,5 @@ const emulator = new Emulator(
     intermediateToPatternTranspilerSpec
 );
 
+// Library entrypoint.
 export default emulator;

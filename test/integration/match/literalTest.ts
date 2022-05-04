@@ -32,7 +32,7 @@ describe('Literal match integration', () => {
             expect(match?.getNumberedCapture(0)).to.equal('my literal');
         });
 
-        it('should treat whitespace as literal, failing if missing in input', () => {
+        it('should treat whitespace as literal, failing if missing in subject', () => {
             const matcher = emulator.compile('my literal');
 
             const match = matcher.matchOne('myliteral');

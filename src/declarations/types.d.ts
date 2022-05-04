@@ -7,7 +7,7 @@
  * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
  */
 
-export type Flags = { extended: boolean };
+export type Flags = { extended?: boolean; multiline?: boolean };
 
 export type RegExpMatchArrayIndices = [[number, number]] & {
     groups: { [key: string]: [number, number] };

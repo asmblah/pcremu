@@ -33,6 +33,104 @@ describe('Parser literal integration', () => {
         });
     });
 
+    it('should be able to parse a regex pattern containing a literal with all metacharacters that do not require escaping', () => {
+        const ast = parser.parse('my ]}- literal');
+
+        expect(ast.getPattern()).to.equal('my ]}- literal');
+        expect(ast.getParsingAst()).to.deep.equal({
+            'name': 'N_PATTERN',
+            'components': [
+                {
+                    'name': 'N_LITERAL',
+                    'text': 'my',
+                },
+                {
+                    'name': 'N_WHITESPACE',
+                    'chars': ' ',
+                },
+                {
+                    'name': 'N_LITERAL',
+                    'text': ']}-',
+                },
+                {
+                    'name': 'N_WHITESPACE',
+                    'chars': ' ',
+                },
+                {
+                    'name': 'N_LITERAL',
+                    'text': 'literal',
+                },
+            ],
+        });
+    });
+
+    it('should be able to parse a regex pattern containing a literal with all metacharacters escaped', () => {
+        const ast = parser.parse(
+            'my \\\\ \\^\\$\\.\\[\\|\\(\\)\\*\\+\\?\\{ literal'
+        );
+
+        expect(ast.getPattern()).to.equal(
+            'my \\\\ \\^\\$\\.\\[\\|\\(\\)\\*\\+\\?\\{ literal'
+        );
+        expect(ast.getParsingAst()).to.deep.equal({
+            'name': 'N_PATTERN',
+            'components': [
+                {
+                    'name': 'N_LITERAL',
+                    'text': 'my',
+                },
+                {
+                    'name': 'N_WHITESPACE',
+                    'chars': ' ',
+                },
+                {
+                    'name': 'N_LITERAL',
+                    'text': '\\\\',
+                },
+                {
+                    'name': 'N_WHITESPACE',
+                    'chars': ' ',
+                },
+                {
+                    'name': 'N_LITERAL',
+                    'text': '\\^\\$\\.\\[\\|\\(\\)\\*\\+\\?\\{',
+                },
+                {
+                    'name': 'N_WHITESPACE',
+                    'chars': ' ',
+                },
+                {
+                    'name': 'N_LITERAL',
+                    'text': 'literal',
+                },
+            ],
+        });
+    });
+
+    it('should be able to parse a regex pattern containing a char that is unnecessarily escaped', () => {
+        const ast = parser.parse('my \\literal');
+
+        expect(ast.getPattern()).to.equal('my \\literal');
+        expect(ast.getParsingAst()).to.deep.equal({
+            'name': 'N_PATTERN',
+            'components': [
+                {
+                    'name': 'N_LITERAL',
+                    'text': 'my',
+                },
+                {
+                    'name': 'N_WHITESPACE',
+                    'chars': ' ',
+                },
+                {
+                    'name': 'N_LITERAL',
+                    // TODO: Strip unnecessary escapes?
+                    'text': '\\literal',
+                },
+            ],
+        });
+    });
+
     it('should be able to parse a regex pattern containing a literal and whitespace', () => {
         const ast = parser.parse('my literal');
 

@@ -10,9 +10,17 @@
 import Ast from './Ast';
 import IntermediateRepresentation from './IntermediateRepresentation';
 
+/**
+ * Compiler for PCRE ASTs to an Intermediate Representation (IR) structure.
+ */
 export default class AstToIntermediateCompiler {
     constructor(private astToIntermediateTranspiler: any) {}
 
+    /**
+     * Compiles the given AST to its IR.
+     *
+     * @param {Ast} ast
+     */
     compile(ast: Ast): IntermediateRepresentation {
         const transpilerRepresentation =
             this.astToIntermediateTranspiler.transpile(ast.getParsingAst(), {
@@ -21,7 +29,8 @@ export default class AstToIntermediateCompiler {
 
         return new IntermediateRepresentation(
             transpilerRepresentation,
-            ast.getPattern()
+            ast.getPattern(),
+            ast.getFlags()
         );
     }
 }

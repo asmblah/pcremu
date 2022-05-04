@@ -9,6 +9,9 @@
 
 import { RegExpMatchArrayIndices } from './declarations/types';
 
+/**
+ * Represents a match against a subject string.
+ */
 export default class Match {
     constructor(
         private numberedCaptures: string[],
@@ -24,7 +27,7 @@ export default class Match {
     }
 
     /**
-     * Fetches the zero-based offset of the end of this match into the input string.
+     * Fetches the zero-based offset of the end of this match into the subject string.
      */
     getEnd(): number {
         return this.indices[0][1];
@@ -42,8 +45,33 @@ export default class Match {
      *
      * @param {string} name
      */
-    getNamedCapture(name: string): string {
-        return this.namedCaptures[name];
+    getNamedCapture(name: string): string | null {
+        return this.namedCaptures[name] ?? null;
+    }
+
+    /**
+     * Fetches the end offset of the specified named capture.
+     *
+     * @param {string} name
+     */
+    getNamedCaptureEnd(name: string): number | null {
+        return this.indices.groups[name][1];
+    }
+
+    /**
+     * Fetches the start offset of the specified named capture.
+     *
+     * @param {string} name
+     */
+    getNamedCaptureStart(name: string): number | null {
+        return this.indices.groups[name][0];
+    }
+
+    /**
+     * Fetches all named captures, without their indices.
+     */
+    getNamedCaptures(): { [key: string]: string } {
+        return this.namedCaptures;
     }
 
     /**
@@ -51,12 +79,37 @@ export default class Match {
      *
      * @param {number} number
      */
-    getNumberedCapture(number: number): string {
-        return this.numberedCaptures[number];
+    getNumberedCapture(number: number): string | null {
+        return this.numberedCaptures[number] ?? null;
     }
 
     /**
-     * Fetches the zero-based offset of the start of this match into the input string.
+     * Fetches the end offset of the specified numbered capture.
+     *
+     * @param {number} number
+     */
+    getNumberedCaptureEnd(number: number): number | null {
+        return this.indices[number][1];
+    }
+
+    /**
+     * Fetches the start offset of the specified numbered capture.
+     *
+     * @param {number} number
+     */
+    getNumberedCaptureStart(number: number): number | null {
+        return this.indices[number][0];
+    }
+
+    /**
+     * Fetches all numbered captures, without their indices.
+     */
+    getNumberedCaptures(): string[] {
+        return this.numberedCaptures;
+    }
+
+    /**
+     * Fetches the zero-based offset of the start of this match into the subject string.
      */
     getStart(): number {
         return this.indices[0][0];

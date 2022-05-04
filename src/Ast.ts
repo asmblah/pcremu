@@ -9,6 +9,9 @@
 
 import { Flags } from './declarations/types';
 
+/**
+ * Abstract Syntax Tree (AST) for a PCRE regular expression.
+ */
 export default class Ast {
     constructor(
         private parsingAst: any,
@@ -16,14 +19,26 @@ export default class Ast {
         private flags: Flags
     ) {}
 
+    /**
+     * Fetches the flags (modifiers) for the expression.
+     *
+     * For example, "extended" mode (to allow regex pattern whitespace to be ignored)
+     * is enabled via the "extended" flag.
+     */
     getFlags(): Flags {
         return this.flags;
     }
 
+    /**
+     * Fetches the inner Parsing library AST.
+     */
     getParsingAst(): any {
         return this.parsingAst;
     }
 
+    /**
+     * Fetches the original PCRE pattern.
+     */
     getPattern(): string {
         return this.pattern;
     }

@@ -11,7 +11,7 @@ import emulator from '../../../src';
 import { expect } from 'chai';
 
 describe('Multiple match integration', () => {
-    it('should be able to match multiple occurrences of the pattern in the input string', () => {
+    it('should be able to match multiple occurrences of the pattern in the subject string', () => {
         const matcher = emulator.compile('my literal');
 
         const matches = matcher.matchAll(

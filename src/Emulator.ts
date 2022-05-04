@@ -14,6 +14,9 @@ import IntermediateToPatternCompiler from './IntermediateToPatternCompiler';
 import Matcher from './Matcher';
 import Parser, { DEFAULT_FLAGS } from './Parser';
 
+/**
+ * Outermost library abstraction for PCREmu.
+ */
 export default class Emulator {
     constructor(
         private parsing: any,
@@ -36,6 +39,9 @@ export default class Emulator {
         return compiler.compile(parser.parse(pattern, flags));
     }
 
+    /**
+     * Creates an AstToIntermediateCompiler.
+     */
     createAstToIntermediateCompiler(): AstToIntermediateCompiler {
         const transpiler = this.transpiler.create(
             this.astToIntermediateTranspilerSpec
@@ -44,6 +50,9 @@ export default class Emulator {
         return new AstToIntermediateCompiler(transpiler);
     }
 
+    /**
+     * Creates a Compiler.
+     */
     createCompiler(): Compiler {
         return new Compiler(
             this.createAstToIntermediateCompiler(),
@@ -51,6 +60,9 @@ export default class Emulator {
         );
     }
 
+    /**
+     * Creates an IntermediateToPatternCompiler.
+     */
     createIntermediateToPatternCompiler(): IntermediateToPatternCompiler {
         const transpiler = this.transpiler.create(
             this.intermediateToPatternTranspilerSpec
@@ -59,6 +71,9 @@ export default class Emulator {
         return new IntermediateToPatternCompiler(transpiler);
     }
 
+    /**
+     * Creates a Parser.
+     */
     createParser(): Parser {
         const parsingParser = this.parsing.create(
             this.parserGrammarSpec,

@@ -22,14 +22,20 @@ describe('Parser', () => {
         it('should return a correctly constructed Ast when no flags provided', () => {
             const ast = parser.parse('my.*?regex');
 
-            expect(ast.getFlags()).to.deep.equal({ extended: false });
+            expect(ast.getFlags()).to.deep.equal({
+                extended: false,
+                multiline: false,
+            });
             expect(ast.getPattern()).to.equal('my.*?regex');
         });
 
         it('should return a correctly constructed Ast when a flag is provided', () => {
             const ast = parser.parse('my.*?regex', { extended: true });
 
-            expect(ast.getFlags()).to.deep.equal({ extended: true });
+            expect(ast.getFlags()).to.deep.equal({
+                extended: true,
+                multiline: false,
+            });
             expect(ast.getPattern()).to.equal('my.*?regex');
         });
     });

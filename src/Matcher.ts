@@ -10,20 +10,34 @@
 import Match from './Match';
 import Pattern from './Pattern';
 
+/**
+ * Performs matching against a subject string as specified by a PCRE regex.
+ */
 export default class Matcher {
     constructor(private pattern: Pattern) {}
 
     /**
-     * Attempts to match against the given input string as many times as possible.
+     * Fetches all numbered and named capturing group names for the pattern,
+     * in the order they are defined.
      *
-     * @param {string} input
+     * Note that named capturing groups also appear by their index.
      */
-    matchAll(input: string): Match[] {
+    getCapturingGroupNames(): Array<number | string> {
+        return this.pattern.getCapturingGroupNames();
+    }
+
+    /**
+     * Attempts to match against the given subject string as many times as possible.
+     *
+     * @param {string} subject
+     * @param {number} start
+     */
+    matchAll(subject: string, start = 0): Match[] {
         let match: Match | null;
         const matches: Match[] = [];
-        let position = 0;
+        let position = start;
 
-        while ((match = this.pattern.match(input, position))) {
+        while ((match = this.pattern.match(subject, position))) {
             matches.push(match);
 
             if (match.getLength() === 0) {
@@ -38,11 +52,12 @@ export default class Matcher {
     }
 
     /**
-     * Attempts to match against the given input string once.
+     * Attempts to match against the given subject string once.
      *
-     * @param {string} input
+     * @param {string} subject
+     * @param {number} start
      */
-    matchOne(input: string): Match | null {
-        return this.pattern.match(input);
+    matchOne(subject: string, start = 0): Match | null {
+        return this.pattern.match(subject, start);
     }
 }

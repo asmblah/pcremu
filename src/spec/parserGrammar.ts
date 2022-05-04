@@ -14,6 +14,9 @@ import {
     N_COMPONENT,
 } from './astToIntermediate';
 
+/**
+ * Parsing library grammar for parsing PCRE regular expressions to an AST.
+ */
 export default {
     // TODO: Improve error handling by implementing this.
     // ErrorHandler: ...,
@@ -29,7 +32,7 @@ export default {
                  * to support an empty final alternative in an alternation,
                  * eg. "my (pattern|)".
                  */
-                { name: 'components', zeroOrMoreOf: 'N_COMPONENT_LEVEL_0' },
+                { name: 'components', zeroOrMoreOf: 'N_COMPONENT_LEVEL_1' },
             ],
         },
         'N_CAPTURING_GROUP': {
@@ -94,7 +97,7 @@ export default {
                 { name: 'to', what: /\w/ },
             ],
         },
-        'N_COMPONENT': 'N_COMPONENT_LEVEL_1',
+        'N_COMPONENT': 'N_COMPONENT_LEVEL_2',
         'N_COMPONENT_LEVEL_0': {
             components: {
                 oneOf: [
@@ -102,17 +105,26 @@ export default {
                     'N_NAMED_CAPTURING_GROUP',
                     'N_CAPTURING_GROUP',
                     'N_CHARACTER_CLASS',
+                    'N_GENERIC_CHAR',
                     'N_LITERAL',
                     'N_WHITESPACE',
                 ],
             },
         },
         'N_COMPONENT_LEVEL_1': {
+            captureAs: 'N_QUANTIFIER',
+            components: [
+                { name: 'component', rule: 'N_COMPONENT_LEVEL_0' },
+                { name: 'quantifier', optionally: /[*+]/ },
+            ],
+            ifNoMatch: { component: 'quantifier', capture: 'component' },
+        },
+        'N_COMPONENT_LEVEL_2': {
             components: [
                 { name: 'leadingEmptyAlternative', optionally: /\|/ },
                 // Due to left-recursion, we must always try to match all other
                 // higher precedence components first.
-                { name: 'left', rule: 'N_COMPONENT_LEVEL_0' },
+                { name: 'left', rule: 'N_COMPONENT_LEVEL_1' },
                 {
                     optionally: [
                         {
@@ -122,7 +134,7 @@ export default {
                              * if no alternatives are found below.
                              */
                             name: 'remaining',
-                            zeroOrMoreOf: 'N_COMPONENT_LEVEL_0',
+                            zeroOrMoreOf: 'N_COMPONENT_LEVEL_1',
                         },
                         { name: 'alternatives', oneOrMoreOf: 'N_ALTERNATIVE' },
                     ],
@@ -163,8 +175,29 @@ export default {
                 };
             },
         },
+        'N_GENERIC_CHAR': {
+            components: {
+                name: 'type',
+                what: /\\([dDhHNsSvVwW])/,
+                captureIndex: 1,
+            },
+        },
         'N_LITERAL': {
-            components: { name: 'text', what: /\w+/ },
+            /*
+             * No need to worry about excluding closing brace as that quantifier syntax
+             * does not match N_LITERAL inside. It is restricted to {X,Y}.
+             *
+             * No need to worry about excluding closing square bracket
+             * as character classes do not match N_LITERAL inside.
+             *
+             * We do not allow a closing parenthesis even though it could technically be allowed
+             * if there was no matching opening one.
+             */
+            components: {
+                name: 'text',
+                // Note we exclude the escape sequences in N_GENERIC_CHAR.
+                what: /(?:[^^$.[|()*+?{\s\\]|\\[^dDhHNsSvVwW])+/,
+            },
         },
         'N_NAMED_CAPTURING_GROUP': {
             components: [

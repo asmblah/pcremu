@@ -15,11 +15,14 @@ import {
     I_NODE,
     I_NOOP,
     I_PATTERN,
+    I_QUANTIFIER,
     I_RAW_REGEX,
 } from './intermediateToPattern';
 import { Flags } from '../declarations/types';
 
-type Context = { flags: Flags };
+interface Context {
+    flags: Flags;
+}
 type Interpret = (node: N_NODE) => I_NODE;
 export type N_ALTERNATION = N_COMPONENT & {
     name: 'N_ALTERNATION';
@@ -49,6 +52,10 @@ export type N_CHARACTER_RANGE = N_CHARACTER_CLASS_COMPONENT & {
     to: string;
 };
 export type N_COMPONENT = N_NODE;
+export type N_GENERIC_CHAR = N_COMPONENT & {
+    name: 'N_GENERIC_CHAR';
+    type: string;
+};
 export type N_LITERAL = N_COMPONENT & { name: 'N_LITERAL'; text: string };
 export type N_NAMED_CAPTURING_GROUP = N_COMPONENT & {
     name: 'N_NAMED_CAPTURING_GROUP';
@@ -60,6 +67,11 @@ export type N_PATTERN = N_NODE & {
     name: 'N_PATTERN';
     components: N_COMPONENT[];
 };
+export type N_QUANTIFIER = N_COMPONENT & {
+    name: 'N_QUANTIFIER';
+    quantifier: string;
+    component: N_COMPONENT;
+};
 export type N_SIMPLE_ASSERTION = N_COMPONENT & {
     name: 'N_SIMPLE_ASSERTION';
     assertion: string;
@@ -69,6 +81,9 @@ export type N_WHITESPACE = N_COMPONENT & {
     chars: string;
 };
 
+/**
+ * Transpiler library spec to translate a regular expression AST to an Intermediate Representation (IR).
+ */
 export default {
     nodes: {
         'N_ALTERNATION': (
@@ -125,6 +140,12 @@ export default {
         'N_CHARACTER_RANGE': (node: N_CHARACTER_RANGE): string => {
             return node.from + '-' + node.to;
         },
+        'N_GENERIC_CHAR': (node: N_GENERIC_CHAR): I_RAW_REGEX => {
+            return {
+                'name': 'I_RAW_REGEX',
+                'chars': '\\' + node.type,
+            };
+        },
         'N_LITERAL': (node: N_LITERAL): I_RAW_REGEX => {
             return {
                 'name': 'I_RAW_REGEX',
@@ -149,6 +170,16 @@ export default {
                 'components': node.components.map((node: N_NODE) =>
                     interpret(node)
                 ),
+            };
+        },
+        'N_QUANTIFIER': (
+            node: N_QUANTIFIER,
+            interpret: Interpret
+        ): I_QUANTIFIER => {
+            return {
+                'name': 'I_QUANTIFIER',
+                'quantifier': node.quantifier,
+                'component': interpret(node.component),
             };
         },
         'N_SIMPLE_ASSERTION': (node: N_SIMPLE_ASSERTION): I_RAW_REGEX => {
