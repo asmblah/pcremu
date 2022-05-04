@@ -40,12 +40,12 @@ export default class Matcher {
         while ((match = this.pattern.match(subject, position))) {
             matches.push(match);
 
-            if (match.getLength() === 0) {
-                break; // Prevent infinite loop if match is zero-width.
-            }
-
             // Start the next match just after this one.
-            position = match.getEnd();
+            position =
+                match.getEnd() +
+                // Prevent infinite loop if match is zero-width -
+                // ensure we always advance by at least 1 character.
+                (match.getLength() === 0 ? 1 : 0);
         }
 
         return matches;

@@ -20,6 +20,13 @@ export default class Match {
     ) {}
 
     /**
+     * Fetches the entire match.
+     */
+    getCapture(): string {
+        return this.numberedCaptures[0];
+    }
+
+    /**
      * Fetches the number of captures (both numbered and named) made by this match.
      */
     getCaptureCount(): number {
