@@ -8,9 +8,9 @@
  */
 
 import { expect } from 'chai';
-import emulator from '../../../../src';
-import AstToIntermediateCompiler from '../../../../src/AstToIntermediateCompiler';
-import Ast from '../../../../src/Ast';
+import emulator from '../../../../../src';
+import AstToIntermediateCompiler from '../../../../../src/AstToIntermediateCompiler';
+import Ast from '../../../../../src/Ast';
 import { SinonStubbedInstance } from 'sinon';
 import sinon = require('sinon');
 

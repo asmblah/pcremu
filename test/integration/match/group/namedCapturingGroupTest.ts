@@ -7,7 +7,7 @@
  * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
  */
 
-import emulator from '../../../src';
+import emulator from '../../../../src';
 import { expect } from 'chai';
 
 describe('Named capturing group match integration', () => {

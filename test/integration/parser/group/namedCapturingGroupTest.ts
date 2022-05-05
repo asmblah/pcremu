@@ -8,8 +8,8 @@
  */
 
 import { expect } from 'chai';
-import emulator from '../../../src';
-import Parser from '../../../src/Parser';
+import emulator from '../../../../src';
+import Parser from '../../../../src/Parser';
 
 describe('Parser named capturing group integration', () => {
     let parser: Parser;
