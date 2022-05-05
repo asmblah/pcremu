@@ -9,6 +9,7 @@
 
 export type Flags = {
     anchored?: boolean;
+    caseless?: boolean;
     extended?: boolean;
     multiline?: boolean;
 };

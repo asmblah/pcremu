@@ -24,6 +24,7 @@ describe('Parser', () => {
 
             expect(ast.getFlags()).to.deep.equal({
                 anchored: false,
+                caseless: false,
                 extended: false,
                 multiline: false,
             });
@@ -35,6 +36,7 @@ describe('Parser', () => {
 
             expect(ast.getFlags()).to.deep.equal({
                 anchored: false,
+                caseless: false,
                 extended: true,
                 multiline: false,
             });

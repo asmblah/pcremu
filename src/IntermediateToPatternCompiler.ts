@@ -77,6 +77,10 @@ export default class IntermediateToPatternCompiler {
             nativeFlags += 'y'; // Use ES6 "sticky" modifier "y".
         }
 
+        if (flags.caseless) {
+            nativeFlags += 'i';
+        }
+
         if (flags.multiline) {
             nativeFlags += 'm';
         }
