@@ -22,6 +22,7 @@ export default {
     // ErrorHandler: ...,
     // State: ...,
 
+    ignore: 'N_IGNORE',
     offsets: 'offset',
     rules: {
         'N_ALTERNATIVE': {
@@ -43,21 +44,28 @@ export default {
             ],
         },
         'N_CHARACTER': {
-            components: { name: 'char', what: /[\d\w]/ },
+            components: { name: 'char', what: /[^\]]/ },
         },
         'N_CHARACTER_CLASS': {
             components: [
+                // Make sure we don't ignore whitespace that could exist just _before_
+                // the opening of the character class.
                 /\[/,
-                { name: 'negated', optionally: /\^/ },
-                // Literal closing bracket may appear right at beginning of class.
-                { name: 'literalClosingBracket', optionally: /]/ },
                 {
-                    name: 'components',
-                    oneOrMoreOf: 'N_CHARACTER_CLASS_COMPONENT',
+                    ignoreWhitespace: false,
+                    what: [
+                        { name: 'negated', optionally: /\^/ },
+                        // Literal closing bracket may appear right at beginning of class.
+                        { name: 'literalClosingBracket', optionally: /]/ },
+                        {
+                            name: 'components',
+                            oneOrMoreOf: 'N_CHARACTER_CLASS_COMPONENT',
+                        },
+                        // Literal hyphen may appear right at end of class.
+                        { name: 'literalHyphen', optionally: /-/ },
+                        /]/,
+                    ],
                 },
-                // Literal hyphen may appear right at end of class.
-                { name: 'literalHyphen', optionally: /-/ },
-                /]/,
             ],
             processor(
                 node: N_CHARACTER_CLASS & {
@@ -97,6 +105,7 @@ export default {
                 { name: 'to', what: /\w/ },
             ],
         },
+        'N_COMMENT': /#.*?(?:[\r\n]+|$)/,
         'N_COMPONENT': 'N_COMPONENT_LEVEL_2',
         'N_COMPONENT_LEVEL_0': {
             components: {
@@ -212,6 +221,11 @@ export default {
                 captureIndex: 1,
             },
         },
+        'N_IGNORE': {
+            components: {
+                oneOrMoreOf: { oneOf: ['N_WHITESPACE', 'N_COMMENT'] },
+            },
+        },
         'N_LITERAL': {
             /*
              * No need to worry about excluding closing brace as that quantifier syntax
@@ -234,8 +248,17 @@ export default {
             },
         },
         'N_LITERAL_CHAR': {
-            // Note we exclude the escape sequences in N_GENERIC_CHAR.
-            components: { what: /[^^$.[|()*+?{\s\\]|\\[^dDhHNsSvVwW]/ },
+            components: [
+                {
+                    oneOf: [
+                        { what: /[^^$.[|()*+?{\s\\]/ },
+                        // Allow escaped whitespace, but discard the backslash.
+                        { what: /\\(\s)/, captureIndex: 1 },
+                        // Note we exclude the escape sequences in N_GENERIC_CHAR.
+                        { what: /\\[^dDhHNsSvVwW]/ },
+                    ],
+                },
+            ],
         },
         'N_NAMED_CAPTURING_GROUP': {
             components: [

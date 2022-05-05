@@ -29,7 +29,11 @@ export default class Parser {
      * @param {Flags} flags
      */
     parse(pattern: string, flags: Flags = DEFAULT_FLAGS): Ast {
-        const parsingAst = this.parsingParser.parse(pattern);
+        const parsingAst = this.parsingParser.parse(pattern, {
+            // In extended mode, we'll ignore whitespace in the pattern
+            // except for inside character classes.
+            ignoreWhitespace: Boolean(flags.extended),
+        });
 
         flags = Object.assign({}, DEFAULT_FLAGS, flags); // Apply default flags.
 
