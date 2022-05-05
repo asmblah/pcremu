@@ -17,6 +17,7 @@ import {
     I_PATTERN,
     I_MAXIMISING_QUANTIFIER,
     I_MINIMISING_QUANTIFIER,
+    I_NON_CAPTURING_GROUP,
     I_POSSESSIVE_QUANTIFIER,
     I_RAW_REGEX,
 } from './intermediateToPattern';
@@ -78,6 +79,10 @@ export type N_NAMED_CAPTURING_GROUP = N_COMPONENT & {
     groupName: string;
 };
 export type N_NODE = { name: string };
+export type N_NON_CAPTURING_GROUP = N_COMPONENT & {
+    name: 'N_NON_CAPTURING_GROUP';
+    components: N_COMPONENT[];
+};
 export type N_PATTERN = N_NODE & {
     name: 'N_PATTERN';
     components: N_COMPONENT[];
@@ -197,6 +202,17 @@ export default {
             return {
                 'name': 'I_NAMED_CAPTURING_GROUP',
                 'groupName': node.groupName,
+                'components': node.components.map((node: N_NODE) =>
+                    interpret(node)
+                ),
+            };
+        },
+        'N_NON_CAPTURING_GROUP': (
+            node: N_NON_CAPTURING_GROUP,
+            interpret: Interpret
+        ): I_NON_CAPTURING_GROUP => {
+            return {
+                'name': 'I_NON_CAPTURING_GROUP',
                 'components': node.components.map((node: N_NODE) =>
                     interpret(node)
                 ),

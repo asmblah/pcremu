@@ -112,6 +112,7 @@ export default {
                 oneOf: [
                     'N_SIMPLE_ASSERTION',
                     'N_NAMED_CAPTURING_GROUP',
+                    'N_NON_CAPTURING_GROUP',
                     'N_CAPTURING_GROUP',
                     'N_CHARACTER_CLASS',
                     'N_GENERIC_CHAR',
@@ -265,6 +266,13 @@ export default {
                 /\(\?</,
                 { name: 'groupName', what: /[^>]+/ },
                 />/,
+                { name: 'components', zeroOrMoreOf: 'N_COMPONENT' },
+                /\)/,
+            ],
+        },
+        'N_NON_CAPTURING_GROUP': {
+            components: [
+                /\(\?:/,
                 { name: 'components', zeroOrMoreOf: 'N_COMPONENT' },
                 /\)/,
             ],
