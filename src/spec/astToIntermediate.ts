@@ -15,7 +15,9 @@ import {
     I_NODE,
     I_NOOP,
     I_PATTERN,
-    I_QUANTIFIER,
+    I_MAXIMISING_QUANTIFIER,
+    I_MINIMISING_QUANTIFIER,
+    I_POSSESSIVE_QUANTIFIER,
     I_RAW_REGEX,
 } from './intermediateToPattern';
 import { Flags } from '../declarations/types';
@@ -52,11 +54,24 @@ export type N_CHARACTER_RANGE = N_CHARACTER_CLASS_COMPONENT & {
     to: string;
 };
 export type N_COMPONENT = N_NODE;
+export type N_DOT = N_COMPONENT & {
+    name: 'N_DOT';
+};
 export type N_GENERIC_CHAR = N_COMPONENT & {
     name: 'N_GENERIC_CHAR';
     type: string;
 };
 export type N_LITERAL = N_COMPONENT & { name: 'N_LITERAL'; text: string };
+export type N_MAXIMISING_QUANTIFIER = N_COMPONENT & {
+    name: 'N_MAXIMISING_QUANTIFIER';
+    quantifier: string;
+    component: N_COMPONENT;
+};
+export type N_MINIMISING_QUANTIFIER = N_COMPONENT & {
+    name: 'N_MINIMISING_QUANTIFIER';
+    quantifier: string;
+    component: N_COMPONENT;
+};
 export type N_NAMED_CAPTURING_GROUP = N_COMPONENT & {
     name: 'N_NAMED_CAPTURING_GROUP';
     components: N_COMPONENT[];
@@ -67,8 +82,8 @@ export type N_PATTERN = N_NODE & {
     name: 'N_PATTERN';
     components: N_COMPONENT[];
 };
-export type N_QUANTIFIER = N_COMPONENT & {
-    name: 'N_QUANTIFIER';
+export type N_POSSESSIVE_QUANTIFIER = N_COMPONENT & {
+    name: 'N_POSSESSIVE_QUANTIFIER';
     quantifier: string;
     component: N_COMPONENT;
 };
@@ -140,6 +155,9 @@ export default {
         'N_CHARACTER_RANGE': (node: N_CHARACTER_RANGE): string => {
             return node.from + '-' + node.to;
         },
+        'N_DOT': (): I_RAW_REGEX => {
+            return { 'name': 'I_RAW_REGEX', chars: '.' };
+        },
         'N_GENERIC_CHAR': (node: N_GENERIC_CHAR): I_RAW_REGEX => {
             return {
                 'name': 'I_RAW_REGEX',
@@ -150,6 +168,26 @@ export default {
             return {
                 'name': 'I_RAW_REGEX',
                 'chars': node.text,
+            };
+        },
+        'N_MAXIMISING_QUANTIFIER': (
+            node: N_MAXIMISING_QUANTIFIER,
+            interpret: Interpret
+        ): I_MAXIMISING_QUANTIFIER => {
+            return {
+                'name': 'I_MAXIMISING_QUANTIFIER',
+                'quantifier': node.quantifier,
+                'component': interpret(node.component),
+            };
+        },
+        'N_MINIMISING_QUANTIFIER': (
+            node: N_MINIMISING_QUANTIFIER,
+            interpret: Interpret
+        ): I_MINIMISING_QUANTIFIER => {
+            return {
+                'name': 'I_MINIMISING_QUANTIFIER',
+                'quantifier': node.quantifier,
+                'component': interpret(node.component),
             };
         },
         'N_NAMED_CAPTURING_GROUP': (
@@ -172,12 +210,12 @@ export default {
                 ),
             };
         },
-        'N_QUANTIFIER': (
-            node: N_QUANTIFIER,
+        'N_POSSESSIVE_QUANTIFIER': (
+            node: N_POSSESSIVE_QUANTIFIER,
             interpret: Interpret
-        ): I_QUANTIFIER => {
+        ): I_POSSESSIVE_QUANTIFIER => {
             return {
-                'name': 'I_QUANTIFIER',
+                'name': 'I_POSSESSIVE_QUANTIFIER',
                 'quantifier': node.quantifier,
                 'component': interpret(node.component),
             };

@@ -16,7 +16,8 @@ export default class Match {
     constructor(
         private numberedCaptures: string[],
         private namedCaptures: { [key: string]: string },
-        private indices: RegExpMatchArrayIndices
+        private numberedCaptureIndices: RegExpMatchArrayIndices,
+        private namedCaptureIndices: RegExpMatchArrayIndices['groups']
     ) {}
 
     /**
@@ -37,7 +38,7 @@ export default class Match {
      * Fetches the zero-based offset of the end of this match into the subject string.
      */
     getEnd(): number {
-        return this.indices[0][1];
+        return this.numberedCaptureIndices[0][1];
     }
 
     /**
@@ -62,7 +63,7 @@ export default class Match {
      * @param {string} name
      */
     getNamedCaptureEnd(name: string): number | null {
-        return this.indices.groups[name][1];
+        return this.namedCaptureIndices[name][1];
     }
 
     /**
@@ -71,7 +72,7 @@ export default class Match {
      * @param {string} name
      */
     getNamedCaptureStart(name: string): number | null {
-        return this.indices.groups[name][0];
+        return this.namedCaptureIndices[name][0];
     }
 
     /**
@@ -96,7 +97,7 @@ export default class Match {
      * @param {number} number
      */
     getNumberedCaptureEnd(number: number): number | null {
-        return this.indices[number][1];
+        return this.numberedCaptureIndices[number][1];
     }
 
     /**
@@ -105,7 +106,7 @@ export default class Match {
      * @param {number} number
      */
     getNumberedCaptureStart(number: number): number | null {
-        return this.indices[number][0];
+        return this.numberedCaptureIndices[number][0];
     }
 
     /**
@@ -119,6 +120,6 @@ export default class Match {
      * Fetches the zero-based offset of the start of this match into the subject string.
      */
     getStart(): number {
-        return this.indices[0][0];
+        return this.numberedCaptureIndices[0][0];
     }
 }

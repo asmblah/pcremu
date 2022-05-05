@@ -7,7 +7,10 @@
  * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
  */
 
-import { IndexCapturingRegExpMatchArray } from './declarations/types';
+import {
+    IndexCapturingRegExpExecArray,
+    RegExpMatchArrayIndices,
+} from './declarations/types';
 import Match from './Match';
 
 /**
@@ -19,7 +22,8 @@ import Match from './Match';
 export default class Pattern {
     constructor(
         private regex: RegExp,
-        private capturingGroupNames: Array<number | string>
+        private capturingGroupNames: Array<number | string>,
+        private patternToEmulatedNumberedGroupIndex: number[]
     ) {}
 
     /**
@@ -39,22 +43,35 @@ export default class Pattern {
      * @param {number=} start
      */
     match(subject: string, start = 0): Match | null {
-        // Note we use the "g" flag to ensure matches can only start at or after the given start offset.
+        // Note we always use the "g" flag to ensure matches can only start at or after the given start offset.
         this.regex.lastIndex = start;
 
         const match = this.regex.exec(
             subject
-        ) as IndexCapturingRegExpMatchArray;
+        ) as IndexCapturingRegExpExecArray | null;
 
         if (!match) {
             return null;
         }
 
-        const numberedCaptures = [...match];
-        const namedCaptures = match.groups || {};
-        const indices = match.indices || [];
+        const numberedCaptures: string[] = [];
+        const numberedCaptureIndices: RegExpMatchArrayIndices =
+            [] as unknown as RegExpMatchArrayIndices;
 
-        return new Match(numberedCaptures, namedCaptures, indices);
+        // Map the numbered match captures from the emulated groups in the native regex to the original pattern.
+        for (const emulatedIndex of this.patternToEmulatedNumberedGroupIndex) {
+            numberedCaptures.push(match[emulatedIndex]);
+            numberedCaptureIndices.push(match.indices[emulatedIndex]);
+        }
+
+        const namedCaptures = match.groups || {};
+
+        return new Match(
+            numberedCaptures,
+            namedCaptures,
+            numberedCaptureIndices,
+            match.indices.groups
+        );
     }
 
     /**

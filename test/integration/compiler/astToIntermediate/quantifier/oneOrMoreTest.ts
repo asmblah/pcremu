@@ -29,12 +29,12 @@ describe('AST-to-IR compiler one-or-more quantifier integration', () => {
             'components': [
                 { 'name': 'N_LITERAL', 'text': 'a' },
                 {
-                    'name': 'N_QUANTIFIER',
+                    'name': 'N_MAXIMISING_QUANTIFIER',
                     'quantifier': '+',
                     'component': { 'name': 'N_LITERAL', 'text': 'b' },
                 },
                 {
-                    'name': 'N_QUANTIFIER',
+                    'name': 'N_MAXIMISING_QUANTIFIER',
                     'quantifier': '+',
                     'component': { 'name': 'N_LITERAL', 'text': 'c' },
                 },
@@ -53,12 +53,12 @@ describe('AST-to-IR compiler one-or-more quantifier integration', () => {
                     'chars': 'a',
                 },
                 {
-                    'name': 'I_QUANTIFIER',
+                    'name': 'I_MAXIMISING_QUANTIFIER',
                     'quantifier': '+',
                     'component': { 'name': 'I_RAW_REGEX', 'chars': 'b' },
                 },
                 {
-                    'name': 'I_QUANTIFIER',
+                    'name': 'I_MAXIMISING_QUANTIFIER',
                     'quantifier': '+',
                     'component': { 'name': 'I_RAW_REGEX', 'chars': 'c' },
                 },

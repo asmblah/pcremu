@@ -8,20 +8,20 @@
  */
 
 import { expect } from 'chai';
-import emulator from '../../../../src';
-import Parser from '../../../../src/Parser';
+import emulator from '../../../../../src';
+import Parser from '../../../../../src/Parser';
 
-describe('Parser one-or-more quantifier integration', () => {
+describe('Parser possessive quantifier integration', () => {
     let parser: Parser;
 
     beforeEach(() => {
         parser = emulator.createParser();
     });
 
-    it('should be able to parse a regex pattern containing a one-or-more quantifier of a single character', () => {
-        const ast = parser.parse('beforeH+after');
+    it('should be able to parse a regex pattern containing a possessive quantifier of a single character', () => {
+        const ast = parser.parse('beforeH*+after');
 
-        expect(ast.getPattern()).to.equal('beforeH+after');
+        expect(ast.getPattern()).to.equal('beforeH*+after');
         expect(ast.getParsingAst()).to.deep.equal({
             'name': 'N_PATTERN',
             'components': [
@@ -30,8 +30,8 @@ describe('Parser one-or-more quantifier integration', () => {
                     'text': 'before',
                 },
                 {
-                    'name': 'N_MAXIMISING_QUANTIFIER',
-                    'quantifier': '+',
+                    'name': 'N_POSSESSIVE_QUANTIFIER',
+                    'quantifier': '*',
                     'component': {
                         'name': 'N_LITERAL',
                         'text': 'H',
@@ -45,10 +45,10 @@ describe('Parser one-or-more quantifier integration', () => {
         });
     });
 
-    it('should be able to parse a regex pattern containing a one-or-more quantifier of a capturing group', () => {
-        const ast = parser.parse('before (inner)+ after');
+    it('should be able to parse a regex pattern containing a possessive quantifier of a capturing group', () => {
+        const ast = parser.parse('before (inner)++ after');
 
-        expect(ast.getPattern()).to.equal('before (inner)+ after');
+        expect(ast.getPattern()).to.equal('before (inner)++ after');
         expect(ast.getParsingAst()).to.deep.equal({
             'name': 'N_PATTERN',
             'components': [
@@ -61,7 +61,7 @@ describe('Parser one-or-more quantifier integration', () => {
                     'chars': ' ',
                 },
                 {
-                    'name': 'N_MAXIMISING_QUANTIFIER',
+                    'name': 'N_POSSESSIVE_QUANTIFIER',
                     'quantifier': '+',
                     'component': {
                         'name': 'N_CAPTURING_GROUP',

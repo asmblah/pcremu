@@ -30,7 +30,7 @@ describe('Parser zero-or-more quantifier integration', () => {
                     'text': 'before',
                 },
                 {
-                    'name': 'N_QUANTIFIER',
+                    'name': 'N_MAXIMISING_QUANTIFIER',
                     'quantifier': '*',
                     'component': {
                         'name': 'N_LITERAL',
@@ -61,7 +61,7 @@ describe('Parser zero-or-more quantifier integration', () => {
                     'chars': ' ',
                 },
                 {
-                    'name': 'N_QUANTIFIER',
+                    'name': 'N_MAXIMISING_QUANTIFIER',
                     'quantifier': '*',
                     'component': {
                         'name': 'N_CAPTURING_GROUP',

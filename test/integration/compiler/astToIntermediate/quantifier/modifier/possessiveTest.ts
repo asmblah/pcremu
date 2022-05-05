@@ -8,13 +8,13 @@
  */
 
 import { expect } from 'chai';
-import emulator from '../../../../../src';
+import emulator from '../../../../../../src';
 import sinon = require('sinon');
-import AstToIntermediateCompiler from '../../../../../src/AstToIntermediateCompiler';
-import Ast from '../../../../../src/Ast';
+import AstToIntermediateCompiler from '../../../../../../src/AstToIntermediateCompiler';
+import Ast from '../../../../../../src/Ast';
 import { SinonStubbedInstance } from 'sinon';
 
-describe('AST-to-IR compiler zero-or-more quantifier integration', () => {
+describe('AST-to-IR compiler possessive quantifier integration', () => {
     let compiler: AstToIntermediateCompiler;
 
     beforeEach(() => {
@@ -29,12 +29,12 @@ describe('AST-to-IR compiler zero-or-more quantifier integration', () => {
             'components': [
                 { 'name': 'N_LITERAL', 'text': 'a' },
                 {
-                    'name': 'N_MAXIMISING_QUANTIFIER',
-                    'quantifier': '*',
+                    'name': 'N_POSSESSIVE_QUANTIFIER',
+                    'quantifier': '+',
                     'component': { 'name': 'N_LITERAL', 'text': 'b' },
                 },
                 {
-                    'name': 'N_MAXIMISING_QUANTIFIER',
+                    'name': 'N_POSSESSIVE_QUANTIFIER',
                     'quantifier': '*',
                     'component': { 'name': 'N_LITERAL', 'text': 'c' },
                 },
@@ -53,12 +53,12 @@ describe('AST-to-IR compiler zero-or-more quantifier integration', () => {
                     'chars': 'a',
                 },
                 {
-                    'name': 'I_MAXIMISING_QUANTIFIER',
-                    'quantifier': '*',
+                    'name': 'I_POSSESSIVE_QUANTIFIER',
+                    'quantifier': '+',
                     'component': { 'name': 'I_RAW_REGEX', 'chars': 'b' },
                 },
                 {
-                    'name': 'I_MAXIMISING_QUANTIFIER',
+                    'name': 'I_POSSESSIVE_QUANTIFIER',
                     'quantifier': '*',
                     'component': { 'name': 'I_RAW_REGEX', 'chars': 'c' },
                 },

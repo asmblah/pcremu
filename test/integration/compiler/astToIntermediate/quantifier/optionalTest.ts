@@ -14,7 +14,7 @@ import AstToIntermediateCompiler from '../../../../../src/AstToIntermediateCompi
 import Ast from '../../../../../src/Ast';
 import { SinonStubbedInstance } from 'sinon';
 
-describe('AST-to-IR compiler zero-or-more quantifier integration', () => {
+describe('AST-to-IR compiler optional quantifier integration', () => {
     let compiler: AstToIntermediateCompiler;
 
     beforeEach(() => {
@@ -30,12 +30,12 @@ describe('AST-to-IR compiler zero-or-more quantifier integration', () => {
                 { 'name': 'N_LITERAL', 'text': 'a' },
                 {
                     'name': 'N_MAXIMISING_QUANTIFIER',
-                    'quantifier': '*',
+                    'quantifier': '?',
                     'component': { 'name': 'N_LITERAL', 'text': 'b' },
                 },
                 {
                     'name': 'N_MAXIMISING_QUANTIFIER',
-                    'quantifier': '*',
+                    'quantifier': '?',
                     'component': { 'name': 'N_LITERAL', 'text': 'c' },
                 },
             ],
@@ -54,12 +54,12 @@ describe('AST-to-IR compiler zero-or-more quantifier integration', () => {
                 },
                 {
                     'name': 'I_MAXIMISING_QUANTIFIER',
-                    'quantifier': '*',
+                    'quantifier': '?',
                     'component': { 'name': 'I_RAW_REGEX', 'chars': 'b' },
                 },
                 {
                     'name': 'I_MAXIMISING_QUANTIFIER',
-                    'quantifier': '*',
+                    'quantifier': '?',
                     'component': { 'name': 'I_RAW_REGEX', 'chars': 'c' },
                 },
             ],

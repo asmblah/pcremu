@@ -106,18 +106,45 @@ export default {
                     'N_CAPTURING_GROUP',
                     'N_CHARACTER_CLASS',
                     'N_GENERIC_CHAR',
+                    'N_DOT',
                     'N_LITERAL',
                     'N_WHITESPACE',
                 ],
             },
         },
         'N_COMPONENT_LEVEL_1': {
-            captureAs: 'N_QUANTIFIER',
+            components: {
+                oneOf: [
+                    'N_POSSESSIVE_QUANTIFIER',
+                    'N_MINIMISING_QUANTIFIER',
+                    'N_MAXIMISING_QUANTIFIER',
+                    'N_COMPONENT_LEVEL_0',
+                ],
+            },
+        },
+        'N_MAXIMISING_QUANTIFIER': {
             components: [
                 { name: 'component', rule: 'N_COMPONENT_LEVEL_0' },
-                { name: 'quantifier', optionally: /[*+]/ },
+                { name: 'quantifier', what: /[*+?]/ },
             ],
-            ifNoMatch: { component: 'quantifier', capture: 'component' },
+        },
+        'N_MINIMISING_QUANTIFIER': {
+            components: [
+                { name: 'component', rule: 'N_COMPONENT_LEVEL_0' },
+                { name: 'quantifier', what: /[*+?]/ },
+                // Keep as a separate component to allow for whitespace/comments in between
+                // (in extended mode).
+                { what: /\?/ },
+            ],
+        },
+        'N_POSSESSIVE_QUANTIFIER': {
+            components: [
+                { name: 'component', rule: 'N_COMPONENT_LEVEL_0' },
+                { name: 'quantifier', what: /[*+?]/ },
+                // Keep as a separate component to allow for whitespace/comments in between
+                // (in extended mode).
+                { what: /\+/ },
+            ],
         },
         'N_COMPONENT_LEVEL_2': {
             components: [
@@ -175,6 +202,9 @@ export default {
                 };
             },
         },
+        'N_DOT': {
+            components: { allowMerge: false, what: /\./ },
+        },
         'N_GENERIC_CHAR': {
             components: {
                 name: 'type',
@@ -195,9 +225,17 @@ export default {
              */
             components: {
                 name: 'text',
-                // Note we exclude the escape sequences in N_GENERIC_CHAR.
-                what: /(?:[^^$.[|()*+?{\s\\]|\\[^dDhHNsSvVwW])+/,
+                oneOf: [
+                    // Capture a run of characters that have no quantifier applied, or...
+                    { oneOrMoreOf: ['N_LITERAL_CHAR', /(?![*+?{])/] },
+                    // ... a single character that does have a quantifier applied.
+                    ['N_LITERAL_CHAR', /(?=[*+?{])/],
+                ],
             },
+        },
+        'N_LITERAL_CHAR': {
+            // Note we exclude the escape sequences in N_GENERIC_CHAR.
+            components: { what: /[^^$.[|()*+?{\s\\]|\\[^dDhHNsSvVwW]/ },
         },
         'N_NAMED_CAPTURING_GROUP': {
             components: [

@@ -10,9 +10,9 @@
 import emulator from '../../../../src';
 import { expect } from 'chai';
 
-describe('One-or-more quantifier match integration', () => {
+describe('Optional quantifier match integration', () => {
     it('should be able to match a quantifier one time', () => {
-        const matcher = emulator.compile('my (possible)+ text');
+        const matcher = emulator.compile('my (possible)? text');
 
         const match = matcher.matchOne('my possible text');
 
@@ -22,24 +22,22 @@ describe('One-or-more quantifier match integration', () => {
         expect(match?.getNumberedCapture(1)).to.equal('possible');
     });
 
-    it('should be able to match a quantifier multiple times', () => {
-        const matcher = emulator.compile('my (possible)+ text');
+    it('should be able to match a quantifier zero times', () => {
+        const matcher = emulator.compile('my (possible)? text');
 
-        const match = matcher.matchOne('my possiblepossiblepossible text');
+        const match = matcher.matchOne('my  text');
 
         expect(match).not.to.be.null;
         expect(match?.getCaptureCount()).to.equal(2);
-        expect(match?.getNumberedCapture(0)).to.equal(
-            'my possiblepossiblepossible text'
-        );
-        // Note that only the last capture is kept.
-        expect(match?.getNumberedCapture(1)).to.equal('possible');
+        expect(match?.getNumberedCapture(0)).to.equal('my  text');
+        // Note that a capture that was not reached has a value of null.
+        expect(match?.getNumberedCapture(1)).to.be.null;
     });
 
-    it('should not be able to match a quantifier zero times', () => {
-        const matcher = emulator.compile('my (possible)+ text');
+    it('should not be able to match a quantifier multiple times', () => {
+        const matcher = emulator.compile('my (possible)? text');
 
-        const match = matcher.matchOne('my  text');
+        const match = matcher.matchOne('my possiblepossiblepossible text');
 
         expect(match).to.be.null;
     });

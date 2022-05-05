@@ -11,6 +11,16 @@ import { N_NODE } from './astToIntermediate';
 
 export interface Context {
     /**
+     * Records an atomic group.
+     *
+     * Atomic groups are emulated with a real native capturing group inside a lookahead,
+     * that is then immediately referenced by a backreference.
+     *
+     * Returns the index of the emulation capturing group.
+     */
+    addAtomicGroup(): number;
+
+    /**
      * Records a named capturing group.
      * Note that named capturing groups are also recorded by their index.
      *
@@ -37,6 +47,16 @@ export type I_CAPTURING_GROUP = I_COMPONENT & {
     components: I_COMPONENT[];
 };
 export type I_COMPONENT = I_NODE;
+export type I_MAXIMISING_QUANTIFIER = I_COMPONENT & {
+    name: 'I_MAXIMISING_QUANTIFIER';
+    quantifier: string;
+    component: I_COMPONENT;
+};
+export type I_MINIMISING_QUANTIFIER = I_COMPONENT & {
+    name: 'I_MINIMISING_QUANTIFIER';
+    quantifier: string;
+    component: I_COMPONENT;
+};
 export type I_NAMED_CAPTURING_GROUP = I_COMPONENT & {
     name: 'I_NAMED_CAPTURING_GROUP';
     components: I_COMPONENT[];
@@ -48,8 +68,8 @@ export type I_PATTERN = I_NODE & {
     name: 'I_PATTERN';
     components: I_COMPONENT[];
 };
-export type I_QUANTIFIER = I_COMPONENT & {
-    name: 'I_QUANTIFIER';
+export type I_POSSESSIVE_QUANTIFIER = I_COMPONENT & {
+    name: 'I_POSSESSIVE_QUANTIFIER';
     quantifier: string;
     component: I_COMPONENT;
 };
@@ -92,6 +112,18 @@ export default {
                 ')'
             );
         },
+        'I_MAXIMISING_QUANTIFIER': (
+            node: I_MAXIMISING_QUANTIFIER,
+            interpret: Interpret
+        ): string => {
+            return interpret(node.component) + node.quantifier;
+        },
+        'I_MINIMISING_QUANTIFIER': (
+            node: I_MINIMISING_QUANTIFIER,
+            interpret: Interpret
+        ): string => {
+            return interpret(node.component) + node.quantifier + '?';
+        },
         'I_NAMED_CAPTURING_GROUP': (
             node: I_NAMED_CAPTURING_GROUP,
             interpret: Interpret,
@@ -117,8 +149,20 @@ export default {
                 .map((node: I_COMPONENT) => interpret(node))
                 .join('');
         },
-        'I_QUANTIFIER': (node: I_QUANTIFIER, interpret: Interpret) => {
-            return interpret(node.component) + node.quantifier;
+        'I_POSSESSIVE_QUANTIFIER': (
+            node: I_POSSESSIVE_QUANTIFIER,
+            interpret: Interpret,
+            context: Context
+        ): string => {
+            const atomicGroupIndex = context.addAtomicGroup();
+
+            return (
+                '(?=(' +
+                interpret(node.component) +
+                node.quantifier +
+                '))\\' +
+                atomicGroupIndex
+            );
         },
         'I_RAW_REGEX': (node: I_RAW_REGEX): string => {
             return node.chars;

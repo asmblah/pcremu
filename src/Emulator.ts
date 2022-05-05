@@ -13,6 +13,7 @@ import { Flags } from './declarations/types';
 import IntermediateToPatternCompiler from './IntermediateToPatternCompiler';
 import Matcher from './Matcher';
 import Parser, { DEFAULT_FLAGS } from './Parser';
+import PatternFactory from './PatternFactory';
 
 /**
  * Outermost library abstraction for PCREmu.
@@ -68,7 +69,10 @@ export default class Emulator {
             this.intermediateToPatternTranspilerSpec
         );
 
-        return new IntermediateToPatternCompiler(transpiler);
+        return new IntermediateToPatternCompiler(
+            new PatternFactory(),
+            transpiler
+        );
     }
 
     /**

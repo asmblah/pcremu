@@ -7,22 +7,22 @@
  * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
  */
 
-import emulator from '../../../../src';
+import emulator from '../../../../../../src';
 import { expect } from 'chai';
-import sinon = require('sinon');
-import { DEFAULT_FLAGS } from '../../../../src/Parser';
-import IntermediateToPatternCompiler from '../../../../src/IntermediateToPatternCompiler';
-import IntermediateRepresentation from '../../../../src/IntermediateRepresentation';
+import { DEFAULT_FLAGS } from '../../../../../../src/Parser';
 import { SinonStubbedInstance } from 'sinon';
+import IntermediateToPatternCompiler from '../../../../../../src/IntermediateToPatternCompiler';
+import IntermediateRepresentation from '../../../../../../src/IntermediateRepresentation';
+import sinon = require('sinon');
 
-describe('IR-to-Pattern compiler raw regex characters integration', () => {
+describe('IR-to-Pattern compiler possessive quantifier integration', () => {
     let compiler: IntermediateToPatternCompiler;
 
     beforeEach(() => {
         compiler = emulator.createIntermediateToPatternCompiler();
     });
 
-    it('should be able to compile an IR with two raw regex nodes to Pattern', () => {
+    it('should be able to compile an IR with one possessive quantifier node to Pattern', () => {
         const intermediateRepresentation = sinon.createStubInstance(
             IntermediateRepresentation
         ) as SinonStubbedInstance<IntermediateRepresentation> &
@@ -32,18 +32,15 @@ describe('IR-to-Pattern compiler raw regex characters integration', () => {
             'name': 'I_PATTERN',
             'components': [
                 {
-                    'name': 'I_RAW_REGEX',
-                    'chars': 'hello',
-                },
-                {
-                    'name': 'I_RAW_REGEX',
-                    'chars': 'world',
+                    'name': 'I_POSSESSIVE_QUANTIFIER',
+                    'quantifier': '*',
+                    'component': { 'name': 'I_RAW_REGEX', 'chars': 'X' },
                 },
             ],
         });
 
         const pattern = compiler.compile(intermediateRepresentation);
 
-        expect(pattern.toString()).to.equal('/helloworld/dg');
+        expect(pattern.toString()).to.equal('/(?=(X*))\\1/dg');
     });
 });

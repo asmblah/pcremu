@@ -17,6 +17,6 @@ export type RegExpMatchArrayIndices = [[number, number]] & {
     groups: { [key: string]: [number, number] };
 };
 
-export type IndexCapturingRegExpMatchArray = RegExpMatchArray & {
+export type IndexCapturingRegExpExecArray = RegExpExecArray & {
     indices: RegExpMatchArrayIndices;
 };
