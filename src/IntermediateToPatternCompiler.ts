@@ -81,6 +81,10 @@ export default class IntermediateToPatternCompiler {
             nativeFlags += 'i';
         }
 
+        if (flags.dotAll) {
+            nativeFlags += 's';
+        }
+
         if (flags.multiline) {
             nativeFlags += 'm';
         }

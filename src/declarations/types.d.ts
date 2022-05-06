@@ -10,6 +10,7 @@
 export type Flags = {
     anchored?: boolean;
     caseless?: boolean;
+    dotAll?: boolean;
     extended?: boolean;
     multiline?: boolean;
 };

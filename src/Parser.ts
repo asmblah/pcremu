@@ -13,6 +13,7 @@ import { Flags } from './declarations/types';
 export const DEFAULT_FLAGS: Flags = {
     anchored: false,
     caseless: false,
+    dotAll: false,
     extended: false,
     multiline: false,
 };
