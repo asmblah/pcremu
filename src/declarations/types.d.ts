@@ -13,6 +13,7 @@ export type Flags = {
     dotAll?: boolean;
     extended?: boolean;
     multiline?: boolean;
+    optimise?: boolean;
 };
 
 export type RegExpMatchArrayIndices = [[number, number]] & {

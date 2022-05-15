@@ -11,14 +11,28 @@ import emulator from '../../../src';
 import { expect } from 'chai';
 
 describe('Literal match integration', () => {
-    it('should be able to match a string with a regex containing only a literal', () => {
-        const matcher = emulator.compile('myliteral');
+    describe('in optimised mode', () => {
+        it('should be able to match a string with a regex containing only a literal', () => {
+            const matcher = emulator.compile('myliteral');
 
-        const match = matcher.matchOne('myliteral');
+            const match = matcher.matchOne('myliteral');
 
-        expect(match).not.to.be.null;
-        expect(match?.getCaptureCount()).to.equal(1);
-        expect(match?.getNumberedCapture(0)).to.equal('myliteral');
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(1);
+            expect(match?.getNumberedCapture(0)).to.equal('myliteral');
+        });
+    });
+
+    describe('in unoptimised mode', () => {
+        it('should be able to match a string with a regex containing only a literal', () => {
+            const matcher = emulator.compile('myliteral', { optimise: false });
+
+            const match = matcher.matchOne('myliteral');
+
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(1);
+            expect(match?.getNumberedCapture(0)).to.equal('myliteral');
+        });
     });
 
     describe('in non-extended mode', () => {

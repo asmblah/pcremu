@@ -15,7 +15,7 @@ import IntermediateToPatternCompiler from '../../../../../../src/IntermediateToP
 import IntermediateRepresentation from '../../../../../../src/IntermediateRepresentation';
 import sinon = require('sinon');
 
-describe('IR-to-Pattern compiler possessive quantifier integration', () => {
+describe('IR-to-Pattern compiler (unoptimised) possessive quantifier integration', () => {
     let compiler: IntermediateToPatternCompiler;
 
     beforeEach(() => {
@@ -30,17 +30,36 @@ describe('IR-to-Pattern compiler possessive quantifier integration', () => {
         intermediateRepresentation.getFlags.returns(DEFAULT_FLAGS);
         intermediateRepresentation.getTranspilerRepresentation.returns({
             'name': 'I_PATTERN',
+            'capturingGroups': [],
             'components': [
                 {
                     'name': 'I_POSSESSIVE_QUANTIFIER',
                     'quantifier': '*',
-                    'component': { 'name': 'I_RAW_REGEX', 'chars': 'X' },
+                    'component': {
+                        'name': 'I_RAW_REGEX',
+                        'chunks': [{ 'name': 'I_RAW_CHARS', chars: 'X' }],
+                    },
                 },
             ],
         });
 
         const pattern = compiler.compile(intermediateRepresentation);
 
-        expect(pattern.toString()).to.equal('/(?=(X*))\\1/dg');
+        expect(pattern.toStructure()).to.deep.equal({
+            type: 'pattern',
+            capturingGroups: [],
+            components: [
+                {
+                    type: 'possessive-quantifier',
+                    minimumMatches: 0,
+                    maximumMatches: null,
+                    component: {
+                        type: 'native',
+                        chars: 'X',
+                        patternToEmulatedNumberedGroupIndex: [],
+                    },
+                },
+            ],
+        });
     });
 });

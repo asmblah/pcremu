@@ -11,22 +11,48 @@ import emulator from '../../../../src';
 import { expect } from 'chai';
 
 describe('Caseless mode match integration', () => {
-    it('should be able to match case-insensitively in caseless mode', () => {
-        const matcher = emulator.compile('my[t]eXt', { caseless: true });
+    describe('in optimised mode', () => {
+        it('should be able to match case-insensitively in caseless mode', () => {
+            const matcher = emulator.compile('my[t]eXt', { caseless: true });
 
-        const matches = matcher.matchAll('MyTExTmytextMYtext');
+            const matches = matcher.matchAll('MyTExTmytextMYtext');
 
-        expect(matches).to.have.length(3);
-        expect(matches[0].getCaptureCount()).to.equal(1);
-        expect(matches[0].getStart()).to.equal(0);
-        expect(matches[0].getNumberedCapture(0)).to.equal('MyTExT');
+            expect(matches).to.have.length(3);
+            expect(matches[0].getCaptureCount()).to.equal(1);
+            expect(matches[0].getStart()).to.equal(0);
+            expect(matches[0].getNumberedCapture(0)).to.equal('MyTExT');
 
-        expect(matches[1].getCaptureCount()).to.equal(1);
-        expect(matches[1].getStart()).to.equal(6);
-        expect(matches[1].getNumberedCapture(0)).to.equal('mytext');
+            expect(matches[1].getCaptureCount()).to.equal(1);
+            expect(matches[1].getStart()).to.equal(6);
+            expect(matches[1].getNumberedCapture(0)).to.equal('mytext');
 
-        expect(matches[2].getCaptureCount()).to.equal(1);
-        expect(matches[2].getStart()).to.equal(12);
-        expect(matches[2].getNumberedCapture(0)).to.equal('MYtext');
+            expect(matches[2].getCaptureCount()).to.equal(1);
+            expect(matches[2].getStart()).to.equal(12);
+            expect(matches[2].getNumberedCapture(0)).to.equal('MYtext');
+        });
+    });
+
+    describe('in unoptimised mode', () => {
+        it('should be able to match case-insensitively in caseless mode', () => {
+            const matcher = emulator.compile('my[t]eXt', {
+                caseless: true,
+                optimise: false,
+            });
+
+            const matches = matcher.matchAll('MyTExTmytextMYtext');
+
+            expect(matches).to.have.length(3);
+            expect(matches[0].getCaptureCount()).to.equal(1);
+            expect(matches[0].getStart()).to.equal(0);
+            expect(matches[0].getNumberedCapture(0)).to.equal('MyTExT');
+
+            expect(matches[1].getCaptureCount()).to.equal(1);
+            expect(matches[1].getStart()).to.equal(6);
+            expect(matches[1].getNumberedCapture(0)).to.equal('mytext');
+
+            expect(matches[2].getCaptureCount()).to.equal(1);
+            expect(matches[2].getStart()).to.equal(12);
+            expect(matches[2].getNumberedCapture(0)).to.equal('MYtext');
+        });
     });
 });

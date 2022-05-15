@@ -65,18 +65,34 @@ describe('AST-to-IR compiler character class integration', () => {
             intermediateRepresentation.getTranspilerRepresentation()
         ).to.deep.equal({
             'name': 'I_PATTERN',
+            'capturingGroups': [0],
             'components': [
                 {
                     'name': 'I_RAW_REGEX',
-                    'chars': 'hello',
+                    'chunks': [
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': 'hello',
+                        },
+                    ],
                 },
                 {
                     'name': 'I_RAW_REGEX',
-                    'chars': '[^]c-dfg-]',
+                    'chunks': [
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': '[^]c-dfg-]',
+                        },
+                    ],
                 },
                 {
                     'name': 'I_RAW_REGEX',
-                    'chars': 'world',
+                    'chunks': [
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': 'world',
+                        },
+                    ],
                 },
             ],
         });

@@ -16,6 +16,7 @@ export const DEFAULT_FLAGS: Flags = {
     dotAll: false,
     extended: false,
     multiline: false,
+    optimise: true,
 };
 
 /**

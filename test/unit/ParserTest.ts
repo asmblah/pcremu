@@ -25,8 +25,10 @@ describe('Parser', () => {
             expect(ast.getFlags()).to.deep.equal({
                 anchored: false,
                 caseless: false,
+                dotAll: false,
                 extended: false,
                 multiline: false,
+                optimise: true,
             });
             expect(ast.getPattern()).to.equal('my.*?regex');
         });
@@ -37,8 +39,10 @@ describe('Parser', () => {
             expect(ast.getFlags()).to.deep.equal({
                 anchored: false,
                 caseless: false,
+                dotAll: false,
                 extended: true,
                 multiline: false,
+                optimise: true,
             });
             expect(ast.getPattern()).to.equal('my.*?regex');
         });

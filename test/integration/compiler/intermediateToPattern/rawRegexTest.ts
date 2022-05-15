@@ -15,7 +15,7 @@ import IntermediateToPatternCompiler from '../../../../src/IntermediateToPattern
 import IntermediateRepresentation from '../../../../src/IntermediateRepresentation';
 import { SinonStubbedInstance } from 'sinon';
 
-describe('IR-to-Pattern compiler raw regex characters integration', () => {
+describe('IR-to-Pattern compiler (unoptimised) raw regex characters integration', () => {
     let compiler: IntermediateToPatternCompiler;
 
     beforeEach(() => {
@@ -30,20 +30,36 @@ describe('IR-to-Pattern compiler raw regex characters integration', () => {
         intermediateRepresentation.getFlags.returns(DEFAULT_FLAGS);
         intermediateRepresentation.getTranspilerRepresentation.returns({
             'name': 'I_PATTERN',
+            'capturingGroups': [],
             'components': [
                 {
                     'name': 'I_RAW_REGEX',
-                    'chars': 'hello',
+                    'chunks': [{ 'name': 'I_RAW_CHARS', chars: 'hello' }],
                 },
                 {
                     'name': 'I_RAW_REGEX',
-                    'chars': 'world',
+                    'chunks': [{ 'name': 'I_RAW_CHARS', chars: 'world' }],
                 },
             ],
         });
 
         const pattern = compiler.compile(intermediateRepresentation);
 
-        expect(pattern.toString()).to.equal('/helloworld/dg');
+        expect(pattern.toStructure()).to.deep.equal({
+            type: 'pattern',
+            capturingGroups: [],
+            components: [
+                {
+                    type: 'native',
+                    chars: 'hello',
+                    patternToEmulatedNumberedGroupIndex: [],
+                },
+                {
+                    type: 'native',
+                    chars: 'world',
+                    patternToEmulatedNumberedGroupIndex: [],
+                },
+            ],
+        });
     });
 });

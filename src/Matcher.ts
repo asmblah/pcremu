@@ -37,15 +37,14 @@ export default class Matcher {
         const matches: Match[] = [];
         let position = start;
 
-        while ((match = this.pattern.match(subject, position))) {
+        while (
+            position <= subject.length &&
+            (match = this.pattern.match(subject, position))
+        ) {
             matches.push(match);
 
             // Start the next match just after this one.
-            position =
-                match.getEnd() +
-                // Prevent infinite loop if match is zero-width -
-                // ensure we always advance by at least 1 character.
-                (match.getLength() === 0 ? 1 : 0);
+            position = match.getNextMatchPosition();
         }
 
         return matches;

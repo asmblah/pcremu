@@ -7,181 +7,225 @@
  * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
  */
 
-import { N_NODE } from './astToIntermediate';
+import {
+    I_ALTERNATION,
+    I_ALTERNATIVE,
+    I_CAPTURING_GROUP,
+    I_MAXIMISING_QUANTIFIER,
+    I_MINIMISING_QUANTIFIER,
+    I_NAMED_CAPTURING_GROUP,
+    I_NON_CAPTURING_GROUP,
+    I_PATTERN,
+    I_POSSESSIVE_QUANTIFIER,
+    I_RAW_REGEX,
+} from './types/intermediateRepresentation';
+import { N_NODE } from './types/ast';
+import AlternativeFragment from '../Match/Fragment/AlternativeFragment';
+import AlternationFragment from '../Match/Fragment/AlternationFragment';
+import CapturingGroupFragment from '../Match/Fragment/CapturingGroupFragment';
+import Exception from '../Exception/Exception';
+import { Flags } from '../declarations/types';
+import FragmentInterface from '../Match/Fragment/FragmentInterface';
+import FragmentMatcher from '../Match/FragmentMatcher';
+import MaximisingQuantifierFragment from '../Match/Fragment/MaximisingQuantifierFragment';
+import NamedCapturingGroupFragment from '../Match/Fragment/NamedCapturingGroupFragment';
+import NativeFragment from '../Match/Fragment/NativeFragment';
+import NoopFragment from '../Match/Fragment/NoopFragment';
+import PatternFragment from '../Match/Fragment/PatternFragment';
+import QuantifierMatcher from '../Match/QuantifierMatcher';
+import PossessiveQuantifierFragment from '../Match/Fragment/PossessiveQuantifierFragment';
+import MinimisingQuantifierFragment from '../Match/Fragment/MinimisingQuantifierFragment';
+import NonCapturingGroupFragment from '../Match/Fragment/NonCapturingGroupFragment';
 
-export interface Context {
-    /**
-     * Records an atomic group.
-     *
-     * Atomic groups are emulated with a real native capturing group inside a lookahead,
-     * that is then immediately referenced by a backreference.
-     *
-     * Returns the index of the emulation capturing group.
-     */
-    addAtomicGroup(): number;
-
-    /**
-     * Records a named capturing group.
-     * Note that named capturing groups are also recorded by their index.
-     *
-     * @param {string} name
-     */
-    addNamedCapturingGroup(name: number | string): void;
-
-    /**
-     * Records a numbered capturing group.
-     */
-    addNumberedCapturingGroup(): void;
-}
-type Interpret = (node: N_NODE) => I_NODE;
-export type I_ALTERNATION = I_COMPONENT & {
-    name: 'I_ALTERNATION';
-    alternatives: I_ALTERNATIVE[];
+type Context = {
+    flags: Flags;
+    fragmentMatcher: FragmentMatcher;
+    quantifierMatcher: QuantifierMatcher;
 };
-export type I_ALTERNATIVE = I_COMPONENT & {
-    name: 'I_ALTERNATIVE';
-    components: I_COMPONENT[];
-};
-export type I_CAPTURING_GROUP = I_COMPONENT & {
-    name: 'I_CAPTURING_GROUP';
-    components: I_COMPONENT[];
-};
-export type I_COMPONENT = I_NODE;
-export type I_MAXIMISING_QUANTIFIER = I_COMPONENT & {
-    name: 'I_MAXIMISING_QUANTIFIER';
-    quantifier: string;
-    component: I_COMPONENT;
-};
-export type I_MINIMISING_QUANTIFIER = I_COMPONENT & {
-    name: 'I_MINIMISING_QUANTIFIER';
-    quantifier: string;
-    component: I_COMPONENT;
-};
-export type I_NAMED_CAPTURING_GROUP = I_COMPONENT & {
-    name: 'I_NAMED_CAPTURING_GROUP';
-    components: I_COMPONENT[];
-    groupName: string;
-};
-export type I_NODE = { name: string };
-export type I_NON_CAPTURING_GROUP = I_COMPONENT & {
-    name: 'I_NON_CAPTURING_GROUP';
-    components: I_COMPONENT[];
-};
-export type I_NOOP = I_COMPONENT & { name: 'I_NOOP' };
-export type I_PATTERN = I_NODE & {
-    name: 'I_PATTERN';
-    components: I_COMPONENT[];
-};
-export type I_POSSESSIVE_QUANTIFIER = I_COMPONENT & {
-    name: 'I_POSSESSIVE_QUANTIFIER';
-    quantifier: string;
-    component: I_COMPONENT;
-};
-export type I_RAW_REGEX = I_COMPONENT & { name: 'I_RAW_REGEX'; chars: string };
+type Interpret = (node: N_NODE, context?: object) => FragmentInterface;
 
 /**
  * Transpiler library spec to translate a regular expression Intermediate Representation (IR)
- * to data suitable for building a Pattern.
+ * to Fragment instances suitable for building a Pattern.
  */
 export default {
     nodes: {
         'I_ALTERNATION': (
             node: I_ALTERNATION,
             interpret: Interpret
-        ): string => {
-            return node.alternatives
-                .map((node: I_ALTERNATIVE) => interpret(node))
-                .join('|');
+        ): AlternationFragment => {
+            const alternativeFragments = node.alternatives.map(
+                (node: I_ALTERNATIVE) => interpret(node) as AlternativeFragment
+            );
+
+            return new AlternationFragment(alternativeFragments);
         },
         'I_ALTERNATIVE': (
             node: I_ALTERNATIVE,
-            interpret: Interpret
-        ): string => {
-            return node.components
-                .map((node: I_COMPONENT) => interpret(node))
-                .join('');
+            interpret: Interpret,
+            context: Context
+        ): AlternativeFragment => {
+            const componentFragments = node.components.map((node) =>
+                interpret(node)
+            );
+
+            return new AlternativeFragment(
+                context.fragmentMatcher,
+                componentFragments
+            );
         },
         'I_CAPTURING_GROUP': (
             node: I_CAPTURING_GROUP,
             interpret: Interpret,
             context: Context
-        ): string => {
-            context.addNumberedCapturingGroup();
+        ): CapturingGroupFragment => {
+            const componentFragments = node.components.map((node) =>
+                interpret(node)
+            );
 
-            return (
-                '(' +
-                node.components
-                    .map((node: I_COMPONENT) => interpret(node))
-                    .join('') +
-                ')'
+            return new CapturingGroupFragment(
+                context.fragmentMatcher,
+                componentFragments,
+                node.groupIndex
             );
         },
         'I_MAXIMISING_QUANTIFIER': (
             node: I_MAXIMISING_QUANTIFIER,
-            interpret: Interpret
-        ): string => {
-            return interpret(node.component) + node.quantifier;
+            interpret: Interpret,
+            context: Context
+        ): MaximisingQuantifierFragment => {
+            const componentFragment = interpret(node.component);
+            const { minimumMatches, maximumMatches } =
+                context.quantifierMatcher.parseQuantifier(node.quantifier);
+
+            return new MaximisingQuantifierFragment(
+                context.fragmentMatcher,
+                context.quantifierMatcher,
+                componentFragment,
+                minimumMatches,
+                maximumMatches
+            );
         },
         'I_MINIMISING_QUANTIFIER': (
             node: I_MINIMISING_QUANTIFIER,
-            interpret: Interpret
-        ): string => {
-            return interpret(node.component) + node.quantifier + '?';
+            interpret: Interpret,
+            context: Context
+        ): MinimisingQuantifierFragment => {
+            const componentFragment = interpret(node.component);
+            const { minimumMatches, maximumMatches } =
+                context.quantifierMatcher.parseQuantifier(node.quantifier);
+
+            return new MinimisingQuantifierFragment(
+                context.fragmentMatcher,
+                componentFragment,
+                minimumMatches,
+                maximumMatches
+            );
         },
         'I_NAMED_CAPTURING_GROUP': (
             node: I_NAMED_CAPTURING_GROUP,
             interpret: Interpret,
             context: Context
-        ): string => {
-            context.addNamedCapturingGroup(node.groupName);
+        ): NamedCapturingGroupFragment => {
+            const componentFragments = node.components.map((node) =>
+                interpret(node)
+            );
 
-            return (
-                '(?<' +
-                node.groupName +
-                '>' +
-                node.components
-                    .map((node: I_COMPONENT) => interpret(node))
-                    .join('') +
-                ')'
+            return new NamedCapturingGroupFragment(
+                context.fragmentMatcher,
+                componentFragments,
+                node.groupIndex,
+                node.groupName
             );
         },
         'I_NON_CAPTURING_GROUP': (
             node: I_NON_CAPTURING_GROUP,
-            interpret: Interpret
-        ): string => {
-            return (
-                '(?:' +
-                node.components
-                    .map((node: I_COMPONENT) => interpret(node))
-                    .join('') +
-                ')'
+            interpret: Interpret,
+            context: Context
+        ): NonCapturingGroupFragment => {
+            const componentFragments = node.components.map((node) =>
+                interpret(node)
+            );
+
+            return new NonCapturingGroupFragment(
+                context.fragmentMatcher,
+                componentFragments
             );
         },
-        'I_NOOP': (): string => {
-            return '';
+        'I_NOOP': (): NoopFragment => {
+            return new NoopFragment();
         },
-        'I_PATTERN': (node: I_PATTERN, interpret: Interpret): string => {
-            return node.components
-                .map((node: I_COMPONENT) => interpret(node))
-                .join('');
+        'I_PATTERN': (
+            node: I_PATTERN,
+            interpret: Interpret
+        ): PatternFragment => {
+            const fragmentMatcher = new FragmentMatcher();
+            const quantifierMatcher = new QuantifierMatcher(fragmentMatcher);
+            const context = { fragmentMatcher, quantifierMatcher };
+
+            const componentFragments = node.components.map((node) =>
+                interpret(node, context)
+            );
+
+            return new PatternFragment(
+                fragmentMatcher,
+                componentFragments,
+                node.capturingGroups
+            );
         },
         'I_POSSESSIVE_QUANTIFIER': (
             node: I_POSSESSIVE_QUANTIFIER,
             interpret: Interpret,
             context: Context
-        ): string => {
-            const atomicGroupIndex = context.addAtomicGroup();
+        ): PossessiveQuantifierFragment => {
+            const componentFragment = interpret(node.component);
+            const { minimumMatches, maximumMatches } =
+                context.quantifierMatcher.parseQuantifier(node.quantifier);
 
-            return (
-                '(?=(' +
-                interpret(node.component) +
-                node.quantifier +
-                '))\\' +
-                atomicGroupIndex
+            return new PossessiveQuantifierFragment(
+                context.quantifierMatcher,
+                componentFragment,
+                minimumMatches,
+                maximumMatches
             );
         },
-        'I_RAW_REGEX': (node: I_RAW_REGEX): string => {
-            return node.chars;
+        'I_RAW_REGEX': (
+            node: I_RAW_REGEX,
+            interpret: Interpret,
+            context: Context
+        ): NativeFragment => {
+            if (node.chunks.length !== 1) {
+                throw new Exception(
+                    'Only a single I_RAW_CHARS or I_RAW_OPTIMISED I_RAW_CHUNK is expected at this point'
+                );
+            }
+
+            const optimisedNode = node.chunks[0];
+
+            if (optimisedNode.name === 'I_RAW_CHARS') {
+                // Unoptimised I_RAW_CHARS provides no pattern-to-emulated-group-index map,
+                // as no native capturing groups should have been output that would require mapping.
+                return new NativeFragment(
+                    optimisedNode.chars,
+                    [],
+                    context.flags
+                );
+            }
+
+            if (optimisedNode.name === 'I_RAW_OPTIMISED') {
+                return new NativeFragment(
+                    optimisedNode.chars,
+                    optimisedNode.patternToEmulatedNumberedGroupIndex,
+                    context.flags
+                );
+            }
+
+            // compileRawPass will compile any complex trees inside I_RAW_REGEX from accelerateRawPass
+            // to a single I_RAW_OPTIMISED chunk.
+            throw new Exception(
+                'Only plain I_RAW_CHARS or I_RAW_OPTIMISED are expected at this point - ' +
+                    'did you forget to run compileRawPass?'
+            );
         },
     },
 };

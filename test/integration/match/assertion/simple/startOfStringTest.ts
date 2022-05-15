@@ -11,21 +11,43 @@ import emulator from '../../../../../src';
 import { expect } from 'chai';
 
 describe('Start-of-string simple (anchor) assertion match integration', () => {
-    it('should be able to match the start of string', () => {
-        const matcher = emulator.compile('^mytext');
+    describe('in optimised mode', () => {
+        it('should be able to match the start of string', () => {
+            const matcher = emulator.compile('^mytext');
 
-        const match = matcher.matchOne('mytext and some more');
+            const match = matcher.matchOne('mytext and some more');
 
-        expect(match).not.to.be.null;
-        expect(match?.getCaptureCount()).to.equal(1);
-        expect(match?.getNumberedCapture(0)).to.equal('mytext');
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(1);
+            expect(match?.getNumberedCapture(0)).to.equal('mytext');
+        });
+
+        it('should be able to fail to match the start of string', () => {
+            const matcher = emulator.compile('^mytext');
+
+            const match = matcher.matchOne('something before and then mytext');
+
+            expect(match).to.be.null;
+        });
     });
 
-    it('should be able to fail to match the start of string', () => {
-        const matcher = emulator.compile('^mytext');
+    describe('in unoptimised mode', () => {
+        it('should be able to match the start of string', () => {
+            const matcher = emulator.compile('^mytext', { optimise: false });
 
-        const match = matcher.matchOne('something before and then mytext');
+            const match = matcher.matchOne('mytext and some more');
 
-        expect(match).to.be.null;
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(1);
+            expect(match?.getNumberedCapture(0)).to.equal('mytext');
+        });
+
+        it('should be able to fail to match the start of string', () => {
+            const matcher = emulator.compile('^mytext', { optimise: false });
+
+            const match = matcher.matchOne('something before and then mytext');
+
+            expect(match).to.be.null;
+        });
     });
 });

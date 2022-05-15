@@ -11,14 +11,31 @@ import emulator from '../../../../src';
 import { expect } from 'chai';
 
 describe('Capturing group match integration', () => {
-    it('should be able to capture a capturing group', () => {
-        const matcher = emulator.compile('my (captured) text');
+    describe('in optimised mode', () => {
+        it('should be able to capture a capturing group', () => {
+            const matcher = emulator.compile('my (captured) text');
 
-        const match = matcher.matchOne('my captured text');
+            const match = matcher.matchOne('my captured text');
 
-        expect(match).not.to.be.null;
-        expect(match?.getCaptureCount()).to.equal(2);
-        expect(match?.getNumberedCapture(0)).to.equal('my captured text');
-        expect(match?.getNumberedCapture(1)).to.equal('captured');
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(2);
+            expect(match?.getNumberedCapture(0)).to.equal('my captured text');
+            expect(match?.getNumberedCapture(1)).to.equal('captured');
+        });
+    });
+
+    describe('in unoptimised mode', () => {
+        it('should be able to capture a capturing group', () => {
+            const matcher = emulator.compile('my (captured) text', {
+                optimise: false,
+            });
+
+            const match = matcher.matchOne('my captured text');
+
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(2);
+            expect(match?.getNumberedCapture(0)).to.equal('my captured text');
+            expect(match?.getNumberedCapture(1)).to.equal('captured');
+        });
     });
 });

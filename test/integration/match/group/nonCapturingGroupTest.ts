@@ -11,13 +11,33 @@ import emulator from '../../../../src';
 import { expect } from 'chai';
 
 describe('Non-capturing group match integration', () => {
-    it('should be able to group part of a pattern without capturing', () => {
-        const matcher = emulator.compile('my (?:one two)* text');
+    describe('in optimised mode', () => {
+        it('should be able to group part of a pattern without capturing', () => {
+            const matcher = emulator.compile('my (?:one two)* text');
 
-        const match = matcher.matchOne('my one twoone two text');
+            const match = matcher.matchOne('my one twoone two text');
 
-        expect(match).not.to.be.null;
-        expect(match?.getCaptureCount()).to.equal(1);
-        expect(match?.getNumberedCapture(0)).to.equal('my one twoone two text');
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(1);
+            expect(match?.getNumberedCapture(0)).to.equal(
+                'my one twoone two text'
+            );
+        });
+    });
+
+    describe('in unoptimised mode', () => {
+        it('should be able to group part of a pattern without capturing', () => {
+            const matcher = emulator.compile('my (?:one two)* text', {
+                optimise: false,
+            });
+
+            const match = matcher.matchOne('my one twoone two text');
+
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(1);
+            expect(match?.getNumberedCapture(0)).to.equal(
+                'my one twoone two text'
+            );
+        });
     });
 });

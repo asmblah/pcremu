@@ -7,31 +7,36 @@
  * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
  */
 
-import { RegExpMatchArrayIndices } from './declarations/types';
+import {
+    NamedCaptureIndices,
+    NamedCaptures,
+    NumberedCaptureIndices,
+    NumberedCaptures,
+} from './spec/types/match';
 
 /**
  * Represents a match against a subject string.
  */
 export default class Match {
     constructor(
-        private numberedCaptures: string[],
-        private namedCaptures: { [key: string]: string },
-        private numberedCaptureIndices: RegExpMatchArrayIndices,
-        private namedCaptureIndices: RegExpMatchArrayIndices['groups']
+        private numberedCaptures: NumberedCaptures,
+        private namedCaptures: NamedCaptures,
+        private numberedCaptureIndices: NumberedCaptureIndices,
+        private namedCaptureIndices: NamedCaptureIndices
     ) {}
 
     /**
      * Fetches the entire match.
      */
     getCapture(): string {
-        return this.numberedCaptures[0];
+        return this.numberedCaptures[0] ?? '';
     }
 
     /**
      * Fetches the number of captures (both numbered and named) made by this match.
      */
     getCaptureCount(): number {
-        return this.numberedCaptures.length;
+        return Object.keys(this.numberedCaptures).length;
     }
 
     /**
@@ -45,7 +50,7 @@ export default class Match {
      * Fetches the total length of this match.
      */
     getLength(): number {
-        return this.numberedCaptures[0].length;
+        return this.getCapture().length;
     }
 
     /**
@@ -78,8 +83,20 @@ export default class Match {
     /**
      * Fetches all named captures, without their indices.
      */
-    getNamedCaptures(): { [key: string]: string } {
+    getNamedCaptures(): NamedCaptures {
         return this.namedCaptures;
+    }
+
+    /**
+     * Fetches the position at which a subsequent match should be tried.
+     */
+    getNextMatchPosition(): number {
+        return (
+            this.getEnd() +
+            // Prevent infinite loop if match is zero-width -
+            // ensure we always advance by at least 1 character.
+            (this.getLength() === 0 ? 1 : 0)
+        );
     }
 
     /**
@@ -111,9 +128,17 @@ export default class Match {
 
     /**
      * Fetches all numbered captures, without their indices.
+     *
+     * Presents as an array, note this differs from FragmentMatch.
      */
     getNumberedCaptures(): string[] {
-        return this.numberedCaptures;
+        // Build an array-like object from the captures to spread below.
+        const capturesArray = {
+            length: Object.keys(this.numberedCaptures).length,
+            ...this.numberedCaptures,
+        };
+
+        return [...(capturesArray as string[])];
     }
 
     /**

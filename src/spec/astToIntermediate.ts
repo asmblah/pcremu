@@ -11,95 +11,59 @@ import {
     I_ALTERNATION,
     I_ALTERNATIVE,
     I_CAPTURING_GROUP,
-    I_NAMED_CAPTURING_GROUP,
-    I_NODE,
-    I_NOOP,
-    I_PATTERN,
     I_MAXIMISING_QUANTIFIER,
     I_MINIMISING_QUANTIFIER,
+    I_NAMED_CAPTURING_GROUP,
+    I_NODE,
     I_NON_CAPTURING_GROUP,
+    I_NOOP,
+    I_PATTERN,
     I_POSSESSIVE_QUANTIFIER,
     I_RAW_REGEX,
-} from './intermediateToPattern';
+} from './types/intermediateRepresentation';
 import { Flags } from '../declarations/types';
+import {
+    N_ALTERNATION,
+    N_ALTERNATIVE,
+    N_CAPTURING_GROUP,
+    N_CHARACTER,
+    N_CHARACTER_CLASS,
+    N_CHARACTER_RANGE,
+    N_COMPONENT,
+    N_GENERIC_CHAR,
+    N_LITERAL,
+    N_MAXIMISING_QUANTIFIER,
+    N_MINIMISING_QUANTIFIER,
+    N_NAMED_CAPTURING_GROUP,
+    N_NODE,
+    N_NON_CAPTURING_GROUP,
+    N_PATTERN,
+    N_POSSESSIVE_QUANTIFIER,
+    N_SIMPLE_ASSERTION,
+    N_WHITESPACE,
+} from './types/ast';
 
-interface Context {
+export interface TrackingContext {
+    /**
+     * Records a named capturing group.
+     * Note that named capturing groups are also recorded by their index.
+     *
+     * @param {string} name
+     * @returns {number} Returns the index of the group
+     */
+    addNamedCapturingGroup(name: number | string): number;
+
+    /**
+     * Records a numbered capturing group.
+     *
+     * @returns {number} Returns the index of the group
+     */
+    addNumberedCapturingGroup(): number;
+}
+export interface Context extends TrackingContext {
     flags: Flags;
 }
-type Interpret = (node: N_NODE) => I_NODE;
-export type N_ALTERNATION = N_COMPONENT & {
-    name: 'N_ALTERNATION';
-    alternatives: N_ALTERNATIVE[];
-};
-export type N_ALTERNATIVE = N_COMPONENT & {
-    name: 'N_ALTERNATIVE';
-    components: N_COMPONENT[];
-};
-export type N_CAPTURING_GROUP = N_COMPONENT & {
-    name: 'N_CAPTURING_GROUP';
-    components: N_COMPONENT[];
-};
-export type N_CHARACTER = N_CHARACTER_CLASS_COMPONENT & {
-    name: 'N_CHARACTER';
-    char: string;
-};
-export type N_CHARACTER_CLASS = N_COMPONENT & {
-    name: 'N_CHARACTER_CLASS';
-    components: N_CHARACTER_CLASS_COMPONENT[];
-    negated: boolean;
-};
-export type N_CHARACTER_CLASS_COMPONENT = N_COMPONENT;
-export type N_CHARACTER_RANGE = N_CHARACTER_CLASS_COMPONENT & {
-    name: 'N_CHARACTER_RANGE';
-    from: string;
-    to: string;
-};
-export type N_COMPONENT = N_NODE;
-export type N_DOT = N_COMPONENT & {
-    name: 'N_DOT';
-};
-export type N_GENERIC_CHAR = N_COMPONENT & {
-    name: 'N_GENERIC_CHAR';
-    type: string;
-};
-export type N_LITERAL = N_COMPONENT & { name: 'N_LITERAL'; text: string };
-export type N_MAXIMISING_QUANTIFIER = N_COMPONENT & {
-    name: 'N_MAXIMISING_QUANTIFIER';
-    quantifier: string;
-    component: N_COMPONENT;
-};
-export type N_MINIMISING_QUANTIFIER = N_COMPONENT & {
-    name: 'N_MINIMISING_QUANTIFIER';
-    quantifier: string;
-    component: N_COMPONENT;
-};
-export type N_NAMED_CAPTURING_GROUP = N_COMPONENT & {
-    name: 'N_NAMED_CAPTURING_GROUP';
-    components: N_COMPONENT[];
-    groupName: string;
-};
-export type N_NODE = { name: string };
-export type N_NON_CAPTURING_GROUP = N_COMPONENT & {
-    name: 'N_NON_CAPTURING_GROUP';
-    components: N_COMPONENT[];
-};
-export type N_PATTERN = N_NODE & {
-    name: 'N_PATTERN';
-    components: N_COMPONENT[];
-};
-export type N_POSSESSIVE_QUANTIFIER = N_COMPONENT & {
-    name: 'N_POSSESSIVE_QUANTIFIER';
-    quantifier: string;
-    component: N_COMPONENT;
-};
-export type N_SIMPLE_ASSERTION = N_COMPONENT & {
-    name: 'N_SIMPLE_ASSERTION';
-    assertion: string;
-};
-export type N_WHITESPACE = N_COMPONENT & {
-    name: 'N_WHITESPACE';
-    chars: string;
-};
+type Interpret = (node: N_NODE, context?: object) => I_NODE;
 
 /**
  * Transpiler library spec to translate a regular expression AST to an Intermediate Representation (IR).
@@ -130,10 +94,14 @@ export default {
         },
         'N_CAPTURING_GROUP': (
             node: N_CAPTURING_GROUP,
-            interpret: Interpret
+            interpret: Interpret,
+            context: Context
         ): I_CAPTURING_GROUP => {
+            const groupIndex = context.addNumberedCapturingGroup();
+
             return {
                 'name': 'I_CAPTURING_GROUP',
+                'groupIndex': groupIndex,
                 'components': node.components.map((node: N_NODE) =>
                     interpret(node)
                 ),
@@ -148,31 +116,54 @@ export default {
         ): I_RAW_REGEX => {
             return {
                 'name': 'I_RAW_REGEX',
-                'chars':
-                    '[' +
-                    (node.negated ? '^' : '') +
-                    node.components
-                        .map((node: N_NODE) => interpret(node))
-                        .join('') +
-                    ']',
+                'chunks': [
+                    {
+                        'name': 'I_RAW_CHARS',
+                        'chars':
+                            '[' +
+                            (node.negated ? '^' : '') +
+                            node.components
+                                .map((node: N_NODE) => interpret(node))
+                                .join('') +
+                            ']',
+                    },
+                ],
             };
         },
         'N_CHARACTER_RANGE': (node: N_CHARACTER_RANGE): string => {
             return node.from + '-' + node.to;
         },
         'N_DOT': (): I_RAW_REGEX => {
-            return { 'name': 'I_RAW_REGEX', chars: '.' };
+            return {
+                'name': 'I_RAW_REGEX',
+                'chunks': [
+                    {
+                        'name': 'I_RAW_CHARS',
+                        'chars': '.',
+                    },
+                ],
+            };
         },
         'N_GENERIC_CHAR': (node: N_GENERIC_CHAR): I_RAW_REGEX => {
             return {
                 'name': 'I_RAW_REGEX',
-                'chars': '\\' + node.type,
+                'chunks': [
+                    {
+                        'name': 'I_RAW_CHARS',
+                        'chars': '\\' + node.type,
+                    },
+                ],
             };
         },
         'N_LITERAL': (node: N_LITERAL): I_RAW_REGEX => {
             return {
                 'name': 'I_RAW_REGEX',
-                'chars': node.text,
+                'chunks': [
+                    {
+                        'name': 'I_RAW_CHARS',
+                        'chars': node.text,
+                    },
+                ],
             };
         },
         'N_MAXIMISING_QUANTIFIER': (
@@ -197,11 +188,15 @@ export default {
         },
         'N_NAMED_CAPTURING_GROUP': (
             node: N_NAMED_CAPTURING_GROUP,
-            interpret: Interpret
+            interpret: Interpret,
+            context: Context
         ): I_NAMED_CAPTURING_GROUP => {
+            const groupIndex = context.addNamedCapturingGroup(node.groupName);
+
             return {
                 'name': 'I_NAMED_CAPTURING_GROUP',
                 'groupName': node.groupName,
+                'groupIndex': groupIndex,
                 'components': node.components.map((node: N_NODE) =>
                     interpret(node)
                 ),
@@ -219,10 +214,41 @@ export default {
             };
         },
         'N_PATTERN': (node: N_PATTERN, interpret: Interpret): I_PATTERN => {
+            // Note we include "0" as the entire match is always captured as group 0.
+            const capturingGroupNames: Array<number | string> = [0];
+            let patternCapturingGroupCount = 1;
+
+            const context: TrackingContext = {
+                /**
+                 * @inheritDoc
+                 */
+                addNamedCapturingGroup(name: number | string): number {
+                    const groupIndex = patternCapturingGroupCount++;
+
+                    capturingGroupNames.push(name);
+                    // Named capturing groups are also stored by their index.
+                    capturingGroupNames.push(groupIndex);
+
+                    return groupIndex;
+                },
+
+                /**
+                 * @inheritDoc
+                 */
+                addNumberedCapturingGroup(): number {
+                    const groupIndex = patternCapturingGroupCount++;
+
+                    capturingGroupNames.push(groupIndex);
+
+                    return groupIndex;
+                },
+            };
+
             return {
                 'name': 'I_PATTERN',
+                'capturingGroups': capturingGroupNames,
                 'components': node.components.map((node: N_NODE) =>
-                    interpret(node)
+                    interpret(node, context)
                 ),
             };
         },
@@ -239,7 +265,12 @@ export default {
         'N_SIMPLE_ASSERTION': (node: N_SIMPLE_ASSERTION): I_RAW_REGEX => {
             return {
                 'name': 'I_RAW_REGEX',
-                'chars': node.assertion,
+                'chunks': [
+                    {
+                        'name': 'I_RAW_CHARS',
+                        'chars': node.assertion,
+                    },
+                ],
             };
         },
         'N_WHITESPACE': (
@@ -254,7 +285,12 @@ export default {
 
             return {
                 'name': 'I_RAW_REGEX',
-                'chars': node.chars,
+                'chunks': [
+                    {
+                        'name': 'I_RAW_CHARS',
+                        'chars': node.chars,
+                    },
+                ],
             };
         },
     },

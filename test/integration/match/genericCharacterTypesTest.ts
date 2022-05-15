@@ -11,13 +11,29 @@ import emulator from '../../../src';
 import { expect } from 'chai';
 
 describe('Generic character types match integration', () => {
-    it('should be able to match a string with a regex containing a decimal digit escape sequence', () => {
-        const matcher = emulator.compile('my number \\d first');
+    describe('in optimised mode', () => {
+        it('should be able to match a string with a regex containing a decimal digit escape sequence', () => {
+            const matcher = emulator.compile('my number \\d first');
 
-        const match = matcher.matchOne('my number 7 first');
+            const match = matcher.matchOne('my number 7 first');
 
-        expect(match).not.to.be.null;
-        expect(match?.getCaptureCount()).to.equal(1);
-        expect(match?.getNumberedCapture(0)).to.equal('my number 7 first');
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(1);
+            expect(match?.getNumberedCapture(0)).to.equal('my number 7 first');
+        });
+    });
+
+    describe('in unoptimised mode', () => {
+        it('should be able to match a string with a regex containing a decimal digit escape sequence', () => {
+            const matcher = emulator.compile('my number \\d first', {
+                optimise: false,
+            });
+
+            const match = matcher.matchOne('my number 7 first');
+
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(1);
+            expect(match?.getNumberedCapture(0)).to.equal('my number 7 first');
+        });
     });
 });

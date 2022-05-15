@@ -7,7 +7,9 @@
  * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
  */
 
+import { Flags } from './declarations/types';
 import Pattern from './Pattern';
+import PatternFragment from './Match/Fragment/PatternFragment';
 
 /**
  * Creates Pattern-related objects.
@@ -16,19 +18,10 @@ export default class PatternFactory {
     /**
      * Creates a new Pattern.
      *
-     * @param {RegExp} regex
-     * @param {Array<number | string>} capturingGroupNames
-     * @param {number[]} patternToEmulatedNumberedGroupIndex
+     * @param {PatternFragment} patternFragment
+     * @param {Flags} flags
      */
-    createPattern(
-        regex: RegExp,
-        capturingGroupNames: Array<number | string>,
-        patternToEmulatedNumberedGroupIndex: number[]
-    ): Pattern {
-        return new Pattern(
-            regex,
-            capturingGroupNames,
-            patternToEmulatedNumberedGroupIndex
-        );
+    createPattern(patternFragment: PatternFragment, flags: Flags): Pattern {
+        return new Pattern(patternFragment, flags);
     }
 }

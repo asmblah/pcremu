@@ -15,7 +15,7 @@ import { SinonStubbedInstance } from 'sinon';
 import IntermediateToPatternCompiler from '../../../../../src/IntermediateToPatternCompiler';
 import IntermediateRepresentation from '../../../../../src/IntermediateRepresentation';
 
-describe('IR-to-Pattern compiler non-capturing group integration', () => {
+describe('IR-to-Pattern compiler (unoptimised) non-capturing group integration', () => {
     let compiler: IntermediateToPatternCompiler;
 
     beforeEach(() => {
@@ -30,10 +30,16 @@ describe('IR-to-Pattern compiler non-capturing group integration', () => {
         intermediateRepresentation.getFlags.returns(DEFAULT_FLAGS);
         intermediateRepresentation.getTranspilerRepresentation.returns({
             'name': 'I_PATTERN',
+            'capturingGroups': [],
             'components': [
                 {
                     'name': 'I_NON_CAPTURING_GROUP',
-                    'components': [{ 'name': 'I_RAW_REGEX', 'chars': 'X' }],
+                    'components': [
+                        {
+                            'name': 'I_RAW_REGEX',
+                            'chunks': [{ 'name': 'I_RAW_CHARS', chars: 'X' }],
+                        },
+                    ],
                 },
             ],
         });
@@ -41,6 +47,21 @@ describe('IR-to-Pattern compiler non-capturing group integration', () => {
         const pattern = compiler.compile(intermediateRepresentation);
 
         // Note we just use the native syntax for this.
-        expect(pattern.toString()).to.equal('/(?:X)/dg');
+        expect(pattern.toStructure()).to.deep.equal({
+            type: 'pattern',
+            capturingGroups: [],
+            components: [
+                {
+                    type: 'non-capturing-group',
+                    components: [
+                        {
+                            type: 'native',
+                            chars: 'X',
+                            patternToEmulatedNumberedGroupIndex: [],
+                        },
+                    ],
+                },
+            ],
+        });
     });
 });
