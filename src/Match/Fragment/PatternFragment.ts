@@ -41,18 +41,26 @@ export default class PatternFragment implements FragmentInterface {
         position: number,
         isAnchored: boolean
     ): FragmentMatch | null {
-        const match = this.fragmentMatcher.matchComponents(
-            subject,
-            position,
-            isAnchored,
-            this.componentFragments
-        );
+        do {
+            const match = this.fragmentMatcher.matchComponents(
+                subject,
+                position,
+                isAnchored,
+                this.componentFragments
+            );
 
-        if (!match) {
-            return null;
-        }
+            if (match) {
+                return match.withMissingCapturesBackfilled(
+                    this.capturingGroupNames
+                );
+            }
 
-        return match.withMissingCapturesBackfilled(this.capturingGroupNames);
+            // Match failed: if it is un-anchored then the top-level of the pattern is special,
+            // as it can then move to the next character position to try again.
+            position++;
+        } while (!isAnchored && position < subject.length);
+
+        return null;
     }
 
     /**

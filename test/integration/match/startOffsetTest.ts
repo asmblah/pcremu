@@ -91,6 +91,36 @@ describe('Start offset match integration', () => {
                 expect(match?.getNumberedCapture(0)).to.equal('myliteral');
             });
 
+            it('should backtrack the top level of an un-anchored regex along the string', () => {
+                // First capturing group will make zero-length matches along the string until "a" is reached.
+                const matcher = emulator.compile('((?:^1234.*?)?)a(..)d', {
+                    optimise: false,
+                });
+
+                const match = matcher.matchOne('abcd 1234 axyd', 5);
+
+                expect(match).not.to.be.null;
+                expect(match?.getCaptureCount()).to.equal(3);
+                expect(match?.getNumberedCapture(0)).to.equal('axyd');
+                expect(match?.getNumberedCaptureStart(0)).to.equal(10);
+                expect(match?.getNumberedCapture(1)).to.equal('');
+                expect(match?.getNumberedCaptureStart(1)).to.equal(10);
+                expect(match?.getNumberedCapture(2)).to.equal('xy');
+                expect(match?.getNumberedCaptureStart(2)).to.equal(11);
+            });
+
+            it('should not backtrack the top level of an anchored regex along the string', () => {
+                // First capturing group will make zero-length matches along the string until "a" is reached.
+                const matcher = emulator.compile('((?:^1234.*?)?)a(..)d', {
+                    anchored: true,
+                    optimise: false,
+                });
+
+                const match = matcher.matchOne('abcd 1234 axyd', 5);
+
+                expect(match).to.be.null;
+            });
+
             it('should fail to match if the start offset is beyond all candidates', () => {
                 const matcher = emulator.compile('myliteral', {
                     optimise: false,
