@@ -44,7 +44,7 @@ export default class QuantifierMatcher {
         while (
             (match = componentFragment.match(subject, position, isAnchored))
         ) {
-            if (maximumMatches !== null && matches.length > maximumMatches) {
+            if (maximumMatches !== null && matches.length >= maximumMatches) {
                 /*
                  * Maximum reached, don't try to match any more.
                  * Note that it would actually be valid for there to be more matches,
@@ -67,6 +67,54 @@ export default class QuantifierMatcher {
 
         return this.fragmentMatcher.concatenateMatches(matches, position, () =>
             backtracker(matches)
+        );
+    }
+
+    /**
+     * Matches the given component with minimising (lazy) match logic.
+     *
+     * @param {string} subject
+     * @param {number} position
+     * @param {boolean} isAnchored
+     * @param {FragmentInterface} componentFragment
+     * @param {number} minimumMatches
+     * @param {number|null} maximumMatches
+     * @param {Function} backtracker
+     */
+    matchMinimising(
+        subject: string,
+        position: number,
+        isAnchored: boolean,
+        componentFragment: FragmentInterface,
+        minimumMatches: number,
+        maximumMatches: number | null,
+        backtracker: (matches: FragmentMatch[]) => FragmentMatch | null
+    ): FragmentMatch | null {
+        const initialPosition = position;
+        const matches: FragmentMatch[] = [];
+
+        for (let matchIndex = 0; matchIndex < minimumMatches; matchIndex++) {
+            const match = componentFragment.match(
+                subject,
+                position,
+                isAnchored
+            );
+
+            if (!match) {
+                // One of the minimum required matches has failed,
+                // so the entire quantifier match has failed.
+                return null;
+            }
+
+            matches.push(match);
+
+            position = match.getEnd();
+        }
+
+        return this.fragmentMatcher.concatenateMatches(
+            matches,
+            initialPosition,
+            () => backtracker(matches)
         );
     }
 

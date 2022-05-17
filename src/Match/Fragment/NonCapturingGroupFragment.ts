@@ -42,7 +42,7 @@ export default class NonCapturingGroupFragment implements FragmentInterface {
     toString(): string {
         const inner = this.componentFragments
             .map((componentFragment) => componentFragment.toString())
-            .join('|');
+            .join('');
 
         return `(?:${inner})`;
     }

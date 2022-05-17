@@ -37,9 +37,9 @@ export default class MaximisingQuantifierFragment implements FragmentInterface {
         const backtracker = (
             matches: FragmentMatch[]
         ): FragmentMatch | null => {
-            if (matches.length === this.minimumMatches) {
-                // We've already got a minimal match of this quantifier,
-                // we cannot backtrack further.
+            if (matches.length === 0) {
+                // We've got an empty match (therefore minimum must be zero)
+                // so we cannot backtrack.
                 return null;
             }
 
@@ -49,6 +49,12 @@ export default class MaximisingQuantifierFragment implements FragmentInterface {
                 // Overwrite the latest match with its backtracked version.
                 matches[matches.length - 1] = backtrackedMatch;
             } else {
+                if (matches.length === this.minimumMatches) {
+                    // We've already got a minimal match of this quantifier,
+                    // we cannot give up any matches.
+                    return null;
+                }
+
                 // Otherwise, we could not backtrack this repeated instance of the match,
                 // so we'll need to give up the whole instance (assuming we still meet our minimum).
                 matches.pop(); // Give up the latest match.

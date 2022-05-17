@@ -50,7 +50,7 @@ export default class NamedCapturingGroupFragment implements FragmentInterface {
     toString(): string {
         const inner = this.componentFragments
             .map((componentFragment) => componentFragment.toString())
-            .join('|');
+            .join('');
 
         return `(?<${this.groupName}>${inner})`;
     }

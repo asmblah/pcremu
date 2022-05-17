@@ -51,7 +51,7 @@ export default class CapturingGroupFragment implements FragmentInterface {
             '(' +
             this.componentFragments
                 .map((componentFragment) => componentFragment.toString())
-                .join('|') +
+                .join('') +
             ')'
         );
     }

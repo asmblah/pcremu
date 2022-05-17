@@ -23,8 +23,8 @@ export default class NativeFragment implements FragmentInterface {
         private chars: string,
         private patternToEmulatedNumberedGroupIndex: {
             [key: number]: number;
-        },
-        private flags: Flags
+        } = {},
+        private flags: Flags = {}
     ) {}
 
     /**
@@ -47,7 +47,11 @@ export default class NativeFragment implements FragmentInterface {
         }
 
         if (this.flags.multiline) {
-            nativeFlags += 'm'; // FIXME: See note below re. multiline and "$".
+            /**
+             * Note that use of "m" mode means we have no assertions that will only
+             * match start- or end-of-string. See notes for the backtracking regex below as an example.
+             */
+            nativeFlags += 'm';
         }
 
         if (this.flags.dotAll) {
@@ -56,11 +60,15 @@ export default class NativeFragment implements FragmentInterface {
 
         const normalNativeRegex = new RegExp(this.chars, nativeFlags);
 
-        // Ensure we never use native multiline mode, as $ must always match end-of-string only
-        // in order for backtracking logic to work.
-        // FIXME: Use a lookahead instead or in conjunction with "$" to allow native multiline
-        //        mode to be used while still supporting end-of-string here.
-        const backtrackingRegex = new RegExp(this.chars + '$', nativeFlags);
+        const backtrackingRegex = new RegExp(
+            /**
+             * Note we use a negative lookahead rather than "$" to anchor the backtracking regex
+             * to the end of the subject string slice, because in multiline mode "$" would also
+             * match the end of a line.
+             */
+            this.chars + '(?![\\s\\S])',
+            nativeFlags
+        );
 
         const match = (
             regex: RegExp,
@@ -150,12 +158,22 @@ export default class NativeFragment implements FragmentInterface {
                 return null;
             }
 
-            const subjectSlice = subject.substring(
-                0,
-                previousMatch.getLength() + 1
-            );
+            let endPosition = previousMatch.getEnd() + 1;
 
-            return match(backtrackingRegex, subjectSlice);
+            while (endPosition <= subject.length) {
+                const subjectSlice = subject.substring(0, endPosition);
+
+                const backtrackedMatch = match(backtrackingRegex, subjectSlice);
+
+                if (backtrackedMatch) {
+                    return backtrackedMatch;
+                }
+
+                // Backtracked match failed: move forwards by one character.
+                endPosition++;
+            }
+
+            return null;
         };
 
         const backwardBacktrack = (
@@ -166,12 +184,22 @@ export default class NativeFragment implements FragmentInterface {
                 return null;
             }
 
-            const subjectSlice = subject.substring(
-                0,
-                previousMatch.getLength() - 1
-            );
+            let endPosition = previousMatch.getEnd() - 1;
 
-            return match(backtrackingRegex, subjectSlice);
+            while (endPosition > position) {
+                const subjectSlice = subject.substring(0, endPosition);
+
+                const backtrackedMatch = match(backtrackingRegex, subjectSlice);
+
+                if (backtrackedMatch) {
+                    return backtrackedMatch;
+                }
+
+                // Backtracked match failed: move backwards by one character.
+                endPosition--;
+            }
+
+            return null;
         };
 
         let currentBacktrack = initialBacktrack;

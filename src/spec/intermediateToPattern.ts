@@ -117,6 +117,7 @@ export default {
 
             return new MinimisingQuantifierFragment(
                 context.fragmentMatcher,
+                context.quantifierMatcher,
                 componentFragment,
                 minimumMatches,
                 maximumMatches

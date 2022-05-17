@@ -10,6 +10,7 @@
 import FragmentInterface from './FragmentInterface';
 import FragmentMatch from '../FragmentMatch';
 import FragmentMatcher from '../FragmentMatcher';
+import QuantifierMatcher from '../QuantifierMatcher';
 
 /**
  * Performs a lazy match with the given quantifier.
@@ -17,6 +18,7 @@ import FragmentMatcher from '../FragmentMatcher';
 export default class MinimisingQuantifierFragment implements FragmentInterface {
     constructor(
         private fragmentMatcher: FragmentMatcher,
+        private quantifierMatcher: QuantifierMatcher,
         private componentFragment: FragmentInterface,
         private minimumMatches: number,
         private maximumMatches: number | null
@@ -31,33 +33,11 @@ export default class MinimisingQuantifierFragment implements FragmentInterface {
         isAnchored: boolean
     ): FragmentMatch | null {
         const initialPosition = position;
-        const matches: FragmentMatch[] = [];
-
-        for (
-            let matchIndex = 0;
-            matchIndex < this.minimumMatches;
-            matchIndex++
-        ) {
-            const match = this.componentFragment.match(
-                subject,
-                position,
-                isAnchored
-            );
-
-            if (!match) {
-                // One of the minimum required matches has failed,
-                // so the entire quantifier match has failed.
-                return null;
-            }
-
-            matches.push(match);
-
-            position = match.getEnd();
-        }
-
         let backtrackingBackwards = true;
 
-        const backtracker = (): FragmentMatch | null => {
+        const backtracker = (
+            matches: FragmentMatch[]
+        ): FragmentMatch | null => {
             if (backtrackingBackwards && matches.length > 0) {
                 const previousMatch = matches[matches.length - 1];
                 const backtrackedMatch = previousMatch.backtrack();
@@ -71,14 +51,17 @@ export default class MinimisingQuantifierFragment implements FragmentInterface {
                     return this.fragmentMatcher.concatenateMatches(
                         matches,
                         initialPosition,
-                        backtracker
+                        () => backtracker(matches)
                     );
                 }
             }
 
             backtrackingBackwards = false;
 
-            // FIXME: Check max
+            if (matches.length === this.maximumMatches) {
+                // Maximum reached; we cannot match any more occurrences.
+                return null;
+            }
 
             const nextMatch = this.componentFragment.match(
                 subject,
@@ -100,13 +83,17 @@ export default class MinimisingQuantifierFragment implements FragmentInterface {
             return this.fragmentMatcher.concatenateMatches(
                 matches,
                 initialPosition,
-                backtracker
+                () => backtracker(matches)
             );
         };
 
-        return this.fragmentMatcher.concatenateMatches(
-            matches,
-            initialPosition,
+        return this.quantifierMatcher.matchMinimising(
+            subject,
+            position,
+            isAnchored,
+            this.componentFragment,
+            this.minimumMatches,
+            this.maximumMatches,
             backtracker
         );
     }
