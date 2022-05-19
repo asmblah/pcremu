@@ -26,13 +26,12 @@
     "README.md"
   ],
   "scripts": {
-    "build:dev": "tsc",
-    "build:prod": "tsc -p src",
+    "build": "tsc",
     "mocha": "ts-mocha -r mocha-bootstrap --recursive 'test/integration/**/*Test.ts' 'test/unit/**/*Test.ts'",
     "lint:check": "eslint '{src,test}/**/*.ts'",
     "lint:fix": "eslint '{src,test}/**/*.ts' --fix",
-    "prepublishOnly": "npm test && npm run build:prod",
-    "test": "npm run lint:check && npm run build:dev && npm run mocha"
+    "prepublishOnly": "npm test",
+    "test": "npm run lint:check && npm run build && npm run mocha"
   },
   "dependencies": {
     "parsing": "^2.2.0",
