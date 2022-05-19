@@ -27,11 +27,7 @@ describe('Parser named capturing group integration', () => {
             'components': [
                 {
                     'name': 'N_LITERAL',
-                    'text': 'my',
-                },
-                {
-                    'name': 'N_WHITESPACE',
-                    'chars': ' ',
+                    'text': 'my ',
                 },
                 {
                     'name': 'N_NAMED_CAPTURING_GROUP',
@@ -39,25 +35,13 @@ describe('Parser named capturing group integration', () => {
                     'components': [
                         {
                             'name': 'N_LITERAL',
-                            'text': 'stuff',
-                        },
-                        {
-                            'name': 'N_WHITESPACE',
-                            'chars': ' ',
-                        },
-                        {
-                            'name': 'N_LITERAL',
-                            'text': 'inside',
+                            'text': 'stuff inside',
                         },
                     ],
                 },
                 {
-                    'name': 'N_WHITESPACE',
-                    'chars': ' ',
-                },
-                {
                     'name': 'N_LITERAL',
-                    'text': 'here',
+                    'text': ' here',
                 },
             ],
         });
@@ -74,22 +58,14 @@ describe('Parser named capturing group integration', () => {
             'components': [
                 {
                     'name': 'N_LITERAL',
-                    'text': 'my',
-                },
-                {
-                    'name': 'N_WHITESPACE',
-                    'chars': ' ',
+                    'text': 'my ',
                 },
                 {
                     'name': 'N_CAPTURING_GROUP',
                     'components': [
                         {
                             'name': 'N_LITERAL',
-                            'text': 'stuff',
-                        },
-                        {
-                            'name': 'N_WHITESPACE',
-                            'chars': ' ',
+                            'text': 'stuff ',
                         },
                         {
                             'name': 'N_NAMED_CAPTURING_GROUP',
@@ -102,22 +78,14 @@ describe('Parser named capturing group integration', () => {
                             ],
                         },
                         {
-                            'name': 'N_WHITESPACE',
-                            'chars': ' ',
-                        },
-                        {
                             'name': 'N_LITERAL',
-                            'text': 'inside',
+                            'text': ' inside',
                         },
                     ],
                 },
                 {
-                    'name': 'N_WHITESPACE',
-                    'chars': ' ',
-                },
-                {
                     'name': 'N_LITERAL',
-                    'text': 'here',
+                    'text': ' here',
                 },
             ],
         });

@@ -8,8 +8,8 @@
  */
 
 import { expect } from 'chai';
-import emulator from '../../../src';
-import Parser from '../../../src/Parser';
+import emulator from '../../../../src';
+import Parser from '../../../../src/Parser';
 
 describe('Parser generic character types integration', () => {
     let parser: Parser;

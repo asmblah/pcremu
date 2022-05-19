@@ -42,23 +42,7 @@ describe('Parser literal integration', () => {
             'components': [
                 {
                     'name': 'N_LITERAL',
-                    'text': 'my',
-                },
-                {
-                    'name': 'N_WHITESPACE',
-                    'chars': ' ',
-                },
-                {
-                    'name': 'N_LITERAL',
-                    'text': ']}-',
-                },
-                {
-                    'name': 'N_WHITESPACE',
-                    'chars': ' ',
-                },
-                {
-                    'name': 'N_LITERAL',
-                    'text': 'literal',
+                    'text': 'my ]}- literal',
                 },
             ],
         });
@@ -77,31 +61,7 @@ describe('Parser literal integration', () => {
             'components': [
                 {
                     'name': 'N_LITERAL',
-                    'text': 'my',
-                },
-                {
-                    'name': 'N_WHITESPACE',
-                    'chars': ' ',
-                },
-                {
-                    'name': 'N_LITERAL',
-                    'text': '\\\\',
-                },
-                {
-                    'name': 'N_WHITESPACE',
-                    'chars': ' ',
-                },
-                {
-                    'name': 'N_LITERAL',
-                    'text': '\\^\\$\\.\\[\\|\\(\\)\\*\\+\\?\\{',
-                },
-                {
-                    'name': 'N_WHITESPACE',
-                    'chars': ' ',
-                },
-                {
-                    'name': 'N_LITERAL',
-                    'text': 'literal',
+                    'text': 'my \\\\ \\^\\$\\.\\[\\|\\(\\)\\*\\+\\?\\{ literal',
                 },
             ],
         });
@@ -116,16 +76,8 @@ describe('Parser literal integration', () => {
             'components': [
                 {
                     'name': 'N_LITERAL',
-                    'text': 'my',
-                },
-                {
-                    'name': 'N_WHITESPACE',
-                    'chars': ' ',
-                },
-                {
-                    'name': 'N_LITERAL',
                     // TODO: Strip unnecessary escapes?
-                    'text': '\\literal',
+                    'text': 'my \\literal',
                 },
             ],
         });
@@ -140,15 +92,7 @@ describe('Parser literal integration', () => {
             'components': [
                 {
                     'name': 'N_LITERAL',
-                    'text': 'my',
-                },
-                {
-                    'name': 'N_WHITESPACE',
-                    'chars': ' ',
-                },
-                {
-                    'name': 'N_LITERAL',
-                    'text': 'literal',
+                    'text': 'my literal',
                 },
             ],
         });

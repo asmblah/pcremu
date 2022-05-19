@@ -72,10 +72,6 @@ describe('Parser extended mode integration', () => {
                         },
                     ],
                 },
-                {
-                    'name': 'N_WHITESPACE',
-                    'chars': ' ',
-                },
             ],
         });
     });

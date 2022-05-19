@@ -61,11 +61,7 @@ describe('Parser alternation integration', () => {
             'components': [
                 {
                     'name': 'N_LITERAL',
-                    'text': 'my',
-                },
-                {
-                    'name': 'N_WHITESPACE',
-                    'chars': ' ',
+                    'text': 'my ',
                 },
                 {
                     'name': 'N_CAPTURING_GROUP',
@@ -96,12 +92,8 @@ describe('Parser alternation integration', () => {
                     ],
                 },
                 {
-                    'name': 'N_WHITESPACE',
-                    'chars': ' ',
-                },
-                {
                     'name': 'N_LITERAL',
-                    'text': 'here',
+                    'text': ' here',
                 },
             ],
         });

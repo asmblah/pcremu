@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/asmblah/pcremu/workflows/CI/badge.svg)](https://github.com/asmblah/pcremu/actions?query=workflow%3ACI)
 
-PCRE emulation for JavaScript.
+[PCRE][] emulation for JavaScript.
 
 ## Usage
 
@@ -28,3 +28,5 @@ console.log(match.getLength()); // Outputs "9" (the length of the word "somethin
 See also
 --------
 - [XRegExp](http://xregexp.com/)
+
+[PCRE]: https://www.pcre.org/current/doc/html/pcre2pattern.html

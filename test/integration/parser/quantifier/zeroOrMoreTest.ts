@@ -54,11 +54,7 @@ describe('Parser zero-or-more quantifier integration', () => {
             'components': [
                 {
                     'name': 'N_LITERAL',
-                    'text': 'before',
-                },
-                {
-                    'name': 'N_WHITESPACE',
-                    'chars': ' ',
+                    'text': 'before ',
                 },
                 {
                     'name': 'N_MAXIMISING_QUANTIFIER',
@@ -74,12 +70,8 @@ describe('Parser zero-or-more quantifier integration', () => {
                     },
                 },
                 {
-                    'name': 'N_WHITESPACE',
-                    'chars': ' ',
-                },
-                {
                     'name': 'N_LITERAL',
-                    'text': 'after',
+                    'text': ' after',
                 },
             ],
         });

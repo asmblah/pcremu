@@ -12,7 +12,9 @@ import {
     N_CHARACTER,
     N_CHARACTER_CLASS,
     N_COMPONENT,
+    N_WHITESPACE,
 } from './types/ast';
+import { Context } from './types/parser';
 
 /**
  * Parsing library grammar for parsing PCRE regular expressions to an AST.
@@ -118,7 +120,7 @@ export default {
                     'N_GENERIC_CHAR',
                     'N_DOT',
                     'N_LITERAL',
-                    'N_WHITESPACE',
+                    'N_NUMBERED_BACKREFERENCE_OR_OCTAL_CHAR',
                 ],
             },
         },
@@ -226,6 +228,15 @@ export default {
             components: {
                 oneOrMoreOf: { oneOf: ['N_WHITESPACE', 'N_COMMENT'] },
             },
+            processor(
+                node: unknown,
+                parse: unknown,
+                abort: unknown,
+                context: Context
+            ) {
+                // Only skip whitespace and comments in extended mode.
+                return context.flags.extended ? node : null;
+            },
         },
         'N_LITERAL': {
             /*
@@ -256,7 +267,19 @@ export default {
                         // Allow escaped whitespace, but discard the backslash.
                         { what: /\\(\s)/, captureIndex: 1 },
                         // Note we exclude the escape sequences in N_GENERIC_CHAR.
-                        { what: /\\[^dDhHNsSvVwW]/ },
+                        { what: /\\[^dDhHNsSvVwW0-9]/ },
+                        {
+                            // Allow unescaped whitespace inside literals in non-extended mode.
+                            what: /\s/,
+                            modifier(
+                                capture: string,
+                                parse: unknown,
+                                abort: unknown,
+                                context: Context
+                            ) {
+                                return context.flags.extended ? null : capture;
+                            },
+                        },
                     ],
                 },
             ],
@@ -276,6 +299,35 @@ export default {
                 { name: 'components', zeroOrMoreOf: 'N_COMPONENT' },
                 /\)/,
             ],
+        },
+        'N_NUMBERED_BACKREFERENCE_OR_OCTAL_CHAR': {
+            components: [
+                /\\/,
+                {
+                    ignoreWhitespace: false,
+                    name: 'digits',
+                    what: /[^0]\d{0,2}/,
+                },
+            ],
+            processor(node: { digits: string; name: string }) {
+                const number = Number(node.digits);
+
+                /*
+                 * From the docs:
+                 *
+                 *   "... If the number is less than 10, begins with the digit 8 or 9,
+                 *   or if there are at least that many previous capture groups in the expression,
+                 *   the entire sequence is taken as a backreference".
+                 *
+                 * Note that at this point we do not know how many capturing groups there are,
+                 * so in the ambiguous scenario the node will be left as N_NUMBERED_BACKREFERENCE_OR_OCTAL_CHAR.
+                 */
+                if (number < 10 || /^[89]/.test(node.digits)) {
+                    return { name: 'N_NUMBERED_BACKREFERENCE', number };
+                }
+
+                return node;
+            },
         },
         'N_PATTERN': {
             components: {

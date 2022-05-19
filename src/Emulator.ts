@@ -15,6 +15,7 @@ import Matcher from './Matcher';
 import Parser, { DEFAULT_FLAGS } from './Parser';
 import PatternFactory from './PatternFactory';
 import IntermediateOptimiser from './IntermediateOptimiser';
+import { Context } from './spec/types/parser';
 
 /**
  * Outermost library abstraction for PCREmu.
@@ -93,13 +94,14 @@ export default class Emulator {
      * Creates a Parser.
      */
     createParser(): Parser {
+        const parsingContext: Context = { flags: DEFAULT_FLAGS };
         const parsingParser = this.parsing.create(
             this.parserGrammarSpec,
             null,
-            {}
+            { context: parsingContext }
         );
 
-        return new Parser(parsingParser);
+        return new Parser(parsingParser, parsingContext);
     }
 
     /**

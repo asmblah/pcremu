@@ -54,11 +54,7 @@ describe('Parser quantifier minimiser integration', () => {
             'components': [
                 {
                     'name': 'N_LITERAL',
-                    'text': 'before',
-                },
-                {
-                    'name': 'N_WHITESPACE',
-                    'chars': ' ',
+                    'text': 'before ',
                 },
                 {
                     'name': 'N_MINIMISING_QUANTIFIER',
@@ -74,12 +70,8 @@ describe('Parser quantifier minimiser integration', () => {
                     },
                 },
                 {
-                    'name': 'N_WHITESPACE',
-                    'chars': ' ',
-                },
-                {
                     'name': 'N_LITERAL',
-                    'text': 'after',
+                    'text': ' after',
                 },
             ],
         });
