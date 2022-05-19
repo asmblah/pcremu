@@ -14,6 +14,7 @@ import IntermediateToPatternCompiler from './IntermediateToPatternCompiler';
 import Matcher from './Matcher';
 import Parser, { DEFAULT_FLAGS } from './Parser';
 import PatternFactory from './PatternFactory';
+import IntermediateOptimiser from './IntermediateOptimiser';
 
 /**
  * Outermost library abstraction for PCREmu.
@@ -24,6 +25,7 @@ export default class Emulator {
         private transpiler: any,
         private parserGrammarSpec: any,
         private astToIntermediateTranspilerSpec: any,
+        private intermediateOptimiserSpecs: any[],
         private intermediateToPatternTranspilerSpec: any
     ) {}
 
@@ -57,7 +59,19 @@ export default class Emulator {
     createCompiler(): Compiler {
         return new Compiler(
             this.createAstToIntermediateCompiler(),
+            this.createIntermediateOptimiser(),
             this.createIntermediateToPatternCompiler()
+        );
+    }
+
+    /**
+     * Creates an IntermediateOptimiser.
+     */
+    createIntermediateOptimiser(): IntermediateOptimiser {
+        return new IntermediateOptimiser(
+            this.intermediateOptimiserSpecs.map((spec) =>
+                this.transpiler.create(spec)
+            )
         );
     }
 
@@ -86,5 +100,20 @@ export default class Emulator {
         );
 
         return new Parser(parsingParser);
+    }
+
+    /**
+     * Creates an IntermediateOptimiser with only the specified passes.
+     *
+     * @param {Object[]} intermediateOptimiserSpecs
+     */
+    createPartialIntermediateOptimiser(
+        intermediateOptimiserSpecs: any[]
+    ): IntermediateOptimiser {
+        return new IntermediateOptimiser(
+            intermediateOptimiserSpecs.map((spec) =>
+                this.transpiler.create(spec)
+            )
+        );
     }
 }

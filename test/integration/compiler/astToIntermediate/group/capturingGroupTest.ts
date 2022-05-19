@@ -42,23 +42,41 @@ describe('AST-to-IR compiler capturing group integration', () => {
             intermediateRepresentation.getTranspilerRepresentation()
         ).to.deep.equal({
             'name': 'I_PATTERN',
+            // Note that capturing group name "1" is included here.
+            'capturingGroups': [0, 1],
             'components': [
                 {
                     'name': 'I_RAW_REGEX',
-                    'chars': 'hello',
+                    'chunks': [
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': 'hello',
+                        },
+                    ],
                 },
                 {
                     'name': 'I_CAPTURING_GROUP',
+                    'groupIndex': 1,
                     'components': [
                         {
                             'name': 'I_RAW_REGEX',
-                            'chars': 'inner',
+                            'chunks': [
+                                {
+                                    'name': 'I_RAW_CHARS',
+                                    'chars': 'inner',
+                                },
+                            ],
                         },
                     ],
                 },
                 {
                     'name': 'I_RAW_REGEX',
-                    'chars': 'world',
+                    'chunks': [
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': 'world',
+                        },
+                    ],
                 },
             ],
         });

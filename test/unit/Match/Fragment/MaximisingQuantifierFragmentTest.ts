@@ -1,0 +1,309 @@
+/*
+ * PCREmu - PCRE emulation for JavaScript.
+ * Copyright (c) Dan Phillimore (asmblah)
+ * https://github.com/asmblah/pcremu/
+ *
+ * Released under the MIT license
+ * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
+ */
+
+import { expect } from 'chai';
+import CapturingGroupFragment from '../../../../src/Match/Fragment/CapturingGroupFragment';
+import FragmentMatcher from '../../../../src/Match/FragmentMatcher';
+import LiteralFragment from '../../../../src/Match/Fragment/LiteralFragment';
+import MaximisingQuantifierFragment from '../../../../src/Match/Fragment/MaximisingQuantifierFragment';
+import NativeFragment from '../../../../src/Match/Fragment/NativeFragment';
+import QuantifierMatcher from '../../../../src/Match/QuantifierMatcher';
+
+describe('MaximisingQuantifierFragment', () => {
+    let fragment: MaximisingQuantifierFragment;
+    let fragmentMatcher: FragmentMatcher;
+    let quantifierMatcher: QuantifierMatcher;
+
+    beforeEach(() => {
+        fragmentMatcher = new FragmentMatcher();
+        quantifierMatcher = new QuantifierMatcher(fragmentMatcher);
+
+        fragment = new MaximisingQuantifierFragment(
+            fragmentMatcher,
+            quantifierMatcher,
+            new LiteralFragment('my-text'),
+            2,
+            4
+        );
+    });
+
+    describe('match()', () => {
+        describe('when un-anchored', () => {
+            it('should not match when the component appears at the start position once', () => {
+                const match = fragment.match('here is my-text', 8, false);
+
+                expect(match).to.be.null;
+            });
+
+            it('should match when the component appears at the start position twice consecutively', () => {
+                const match = fragment.match(
+                    'here is my-textmy-text',
+                    8,
+                    false
+                );
+
+                expect(match).not.to.be.null;
+                expect(match?.getCapture()).to.equal('my-textmy-text');
+                expect(match?.getStart()).to.equal(8);
+            });
+
+            it('should match when the component appears at the start position three times consecutively', () => {
+                const match = fragment.match(
+                    'here is my-textmy-textmy-text',
+                    8,
+                    false
+                );
+
+                expect(match).not.to.be.null;
+                expect(match?.getCapture()).to.equal('my-textmy-textmy-text');
+                expect(match?.getStart()).to.equal(8);
+            });
+
+            it('should match when the component appears at the start position four times consecutively', () => {
+                const match = fragment.match(
+                    'here is my-textmy-textmy-textmy-text',
+                    8,
+                    false
+                );
+
+                expect(match).not.to.be.null;
+                expect(match?.getCapture()).to.equal(
+                    'my-textmy-textmy-textmy-text'
+                );
+                expect(match?.getStart()).to.equal(8);
+            });
+
+            it('should not include a fifth occurrence in the match', () => {
+                const match = fragment.match(
+                    'here is my-textmy-textmy-textmy-textmy-text',
+                    8,
+                    false
+                );
+
+                expect(match).not.to.be.null;
+                expect(match?.getCapture()).to.equal(
+                    // Only the first four (up to maximumMatches) are matched.
+                    'my-textmy-textmy-textmy-text'
+                );
+                expect(match?.getStart()).to.equal(8);
+            });
+
+            it('should match when the component appears after the start position', () => {
+                const match = fragment.match(
+                    'here is my-textmy-text',
+                    5,
+                    false
+                );
+
+                expect(match).not.to.be.null;
+                expect(match?.getCapture()).to.equal('my-textmy-text');
+                expect(match?.getStart()).to.equal(8);
+            });
+
+            it('should backtrack inside the most recent occurrence', () => {
+                fragment = new MaximisingQuantifierFragment(
+                    fragmentMatcher,
+                    quantifierMatcher,
+                    new CapturingGroupFragment(
+                        fragmentMatcher,
+                        [new NativeFragment('my(?:-text)?')],
+                        12
+                    ),
+                    2,
+                    4
+                );
+
+                const match = fragment.match(
+                    'here is my-textmy-text',
+                    8,
+                    false
+                );
+
+                expect(match).not.to.be.null;
+                expect(match?.getCapture()).to.equal('my-textmy-text');
+                const backtrackedMatch = match?.backtrack();
+                expect(backtrackedMatch?.getCapture()).to.equal('my-textmy');
+            });
+
+            it('should backtrack while there are more than the minimum number of matches to give up', () => {
+                const match = fragment.match(
+                    'here is my-textmy-textmy-text',
+                    8,
+                    false
+                );
+
+                expect(match).not.to.be.null;
+                const backtrackedMatch = match?.backtrack();
+                expect(backtrackedMatch?.getCapture()).to.equal(
+                    'my-textmy-text'
+                );
+            });
+
+            it('should fail to backtrack when there are no matches to give up beyond the minimum', () => {
+                const match = fragment.match(
+                    'here is my-textmy-textmy-text',
+                    8,
+                    false
+                );
+
+                expect(match).not.to.be.null;
+                const backtrackedMatch = match?.backtrack()?.backtrack(); // Backtrack twice.
+                expect(backtrackedMatch).to.be.null;
+            });
+
+            it('should return null when the component does not appear in the subject', () => {
+                expect(fragment.match('something-else', 0, false)).to.be.null;
+            });
+
+            it('should return null when the only match appears before the start position', () => {
+                expect(fragment.match('here is my-textmy-text', 9, false)).to.be
+                    .null;
+            });
+        });
+
+        describe('when anchored', () => {
+            it('should not match when the component appears at the start position once', () => {
+                const match = fragment.match('here is my-text', 8, true);
+
+                expect(match).to.be.null;
+            });
+
+            it('should match when the component appears at the start position twice consecutively', () => {
+                const match = fragment.match('here is my-textmy-text', 8, true);
+
+                expect(match).not.to.be.null;
+                expect(match?.getCapture()).to.equal('my-textmy-text');
+                expect(match?.getStart()).to.equal(8);
+            });
+
+            it('should match when the component appears at the start position three times consecutively', () => {
+                const match = fragment.match(
+                    'here is my-textmy-textmy-text',
+                    8,
+                    true
+                );
+
+                expect(match).not.to.be.null;
+                expect(match?.getCapture()).to.equal('my-textmy-textmy-text');
+                expect(match?.getStart()).to.equal(8);
+            });
+
+            it('should match when the component appears at the start position four times consecutively', () => {
+                const match = fragment.match(
+                    'here is my-textmy-textmy-textmy-text',
+                    8,
+                    true
+                );
+
+                expect(match).not.to.be.null;
+                expect(match?.getCapture()).to.equal(
+                    'my-textmy-textmy-textmy-text'
+                );
+                expect(match?.getStart()).to.equal(8);
+            });
+
+            it('should not include a fifth occurrence in the match', () => {
+                const match = fragment.match(
+                    'here is my-textmy-textmy-textmy-textmy-text',
+                    8,
+                    true
+                );
+
+                expect(match).not.to.be.null;
+                expect(match?.getCapture()).to.equal(
+                    // Only the first four (up to maximumMatches) are matched.
+                    'my-textmy-textmy-textmy-text'
+                );
+                expect(match?.getStart()).to.equal(8);
+            });
+
+            it('should return null when the component appears after the start position', () => {
+                const match = fragment.match('here is my-textmy-text', 5, true);
+
+                expect(match).to.be.null;
+            });
+
+            it('should backtrack inside the most recent occurrence', () => {
+                fragment = new MaximisingQuantifierFragment(
+                    fragmentMatcher,
+                    quantifierMatcher,
+                    new CapturingGroupFragment(
+                        fragmentMatcher,
+                        [new NativeFragment('my(?:-text)?')],
+                        12
+                    ),
+                    2,
+                    4
+                );
+
+                const match = fragment.match('here is my-textmy-text', 8, true);
+
+                expect(match).not.to.be.null;
+                expect(match?.getCapture()).to.equal('my-textmy-text');
+                const backtrackedMatch = match?.backtrack();
+                expect(backtrackedMatch?.getCapture()).to.equal('my-textmy');
+            });
+
+            it('should backtrack while there are more than the minimum number of matches to give up', () => {
+                const match = fragment.match(
+                    'here is my-textmy-textmy-text',
+                    8,
+                    true
+                );
+
+                expect(match).not.to.be.null;
+                const backtrackedMatch = match?.backtrack();
+                expect(backtrackedMatch?.getCapture()).to.equal(
+                    'my-textmy-text'
+                );
+            });
+
+            it('should fail to backtrack when there are no matches to give up beyond the minimum', () => {
+                const match = fragment.match(
+                    'here is my-textmy-textmy-text',
+                    8,
+                    true
+                );
+
+                expect(match).not.to.be.null;
+                const backtrackedMatch = match?.backtrack()?.backtrack(); // Backtrack twice.
+                expect(backtrackedMatch).to.be.null;
+            });
+
+            it('should return null when the component does not appear in the subject', () => {
+                expect(fragment.match('something-else', 0, true)).to.be.null;
+            });
+
+            it('should return null when the only match appears before the start position', () => {
+                expect(fragment.match('here is my-textmy-text', 9, true)).to.be
+                    .null;
+            });
+        });
+    });
+
+    describe('toString()', () => {
+        it('should return the correct string representation', () => {
+            expect(fragment.toString()).to.equal('my-text{2,4}');
+        });
+    });
+
+    describe('toStructure()', () => {
+        it('should return the correct structure', () => {
+            expect(fragment.toStructure()).to.deep.equal({
+                type: 'maximising-quantifier',
+                minimumMatches: 2,
+                maximumMatches: 4,
+                component: {
+                    type: 'literal',
+                    chars: 'my-text',
+                },
+            });
+        });
+    });
+});

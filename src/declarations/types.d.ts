@@ -10,8 +10,10 @@
 export type Flags = {
     anchored?: boolean;
     caseless?: boolean;
+    dotAll?: boolean;
     extended?: boolean;
     multiline?: boolean;
+    optimise?: boolean;
 };
 
 export type RegExpMatchArrayIndices = [[number, number]] & {

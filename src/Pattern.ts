@@ -7,11 +7,9 @@
  * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
  */
 
-import {
-    IndexCapturingRegExpExecArray,
-    RegExpMatchArrayIndices,
-} from './declarations/types';
+import { Flags } from './declarations/types';
 import Match from './Match';
+import PatternFragment from './Match/Fragment/PatternFragment';
 
 /**
  * Inner pattern matching logic for a Matcher.
@@ -21,9 +19,8 @@ import Match from './Match';
  */
 export default class Pattern {
     constructor(
-        private regex: RegExp,
-        private capturingGroupNames: Array<number | string>,
-        private patternToEmulatedNumberedGroupIndex: number[]
+        private patternFragment: PatternFragment,
+        private flags: Flags
     ) {}
 
     /**
@@ -33,7 +30,7 @@ export default class Pattern {
      * Note that named capturing groups also appear by their index.
      */
     getCapturingGroupNames(): Array<number | string> {
-        return this.capturingGroupNames;
+        return this.patternFragment.getCapturingGroupNames();
     }
 
     /**
@@ -43,44 +40,49 @@ export default class Pattern {
      * @param {number=} start
      */
     match(subject: string, start = 0): Match | null {
-        // Note we always use the "g" flag to ensure matches can only start at or after the given start offset.
-        this.regex.lastIndex = start;
+        const fragmentMatch = this.patternFragment.match(
+            subject,
+            start,
+            Boolean(this.flags.anchored)
+        );
 
-        const match = this.regex.exec(
-            subject
-        ) as IndexCapturingRegExpExecArray | null;
-
-        if (!match) {
+        if (!fragmentMatch) {
             return null;
         }
 
-        const numberedCaptures: string[] = [];
-        const numberedCaptureIndices: RegExpMatchArrayIndices =
-            [] as unknown as RegExpMatchArrayIndices;
+        // TODO: Use fragmentMatch.withCaptureAs(...)?
+        const numberedCaptures = fragmentMatch.getNumberedCaptures();
+        const namedCaptures = fragmentMatch.getNamedCaptures();
+        const numberedCaptureIndices =
+            fragmentMatch.getNumberedCaptureIndices();
+        const namedCaptureIndices = fragmentMatch.getNamedCaptureIndices();
 
-        // Map the numbered match captures from the emulated groups in the native regex to the original pattern.
-        for (const emulatedIndex of this.patternToEmulatedNumberedGroupIndex) {
-            numberedCaptures.push(match[emulatedIndex]);
-            numberedCaptureIndices.push(match.indices[emulatedIndex]);
-        }
-
-        const namedCaptures = match.groups || {};
+        // Add the full match as the special "0" capturing group.
+        numberedCaptures[0] = fragmentMatch.getCapture();
+        numberedCaptureIndices[0] = [
+            fragmentMatch.getStart(),
+            fragmentMatch.getEnd(),
+        ];
 
         return new Match(
             numberedCaptures,
             namedCaptures,
             numberedCaptureIndices,
-            match.indices.groups
+            namedCaptureIndices
         );
     }
 
     /**
      * Fetches a string representation of this pattern.
-     *
-     * Note that in future versions there may not be one single native regex,
-     * so this string representation is not guaranteed to also be a valid JavaScript regex.
      */
     toString(): string {
-        return String(this.regex);
+        return this.patternFragment.toString();
+    }
+
+    /**
+     * Fetches a recursive structure representing the pattern's fragments.
+     */
+    toStructure(): object {
+        return this.patternFragment.toStructure();
     }
 }

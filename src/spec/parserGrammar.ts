@@ -12,7 +12,7 @@ import {
     N_CHARACTER,
     N_CHARACTER_CLASS,
     N_COMPONENT,
-} from './astToIntermediate';
+} from './types/ast';
 
 /**
  * Parsing library grammar for parsing PCRE regular expressions to an AST.

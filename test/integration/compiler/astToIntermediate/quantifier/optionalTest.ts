@@ -9,10 +9,10 @@
 
 import { expect } from 'chai';
 import emulator from '../../../../../src';
-import sinon = require('sinon');
 import AstToIntermediateCompiler from '../../../../../src/AstToIntermediateCompiler';
 import Ast from '../../../../../src/Ast';
 import { SinonStubbedInstance } from 'sinon';
+import sinon = require('sinon');
 
 describe('AST-to-IR compiler optional quantifier integration', () => {
     let compiler: AstToIntermediateCompiler;
@@ -47,20 +47,42 @@ describe('AST-to-IR compiler optional quantifier integration', () => {
             intermediateRepresentation.getTranspilerRepresentation()
         ).to.deep.equal({
             'name': 'I_PATTERN',
+            'capturingGroups': [0],
             'components': [
                 {
                     'name': 'I_RAW_REGEX',
-                    'chars': 'a',
+                    'chunks': [
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': 'a',
+                        },
+                    ],
                 },
                 {
                     'name': 'I_MAXIMISING_QUANTIFIER',
                     'quantifier': '?',
-                    'component': { 'name': 'I_RAW_REGEX', 'chars': 'b' },
+                    'component': {
+                        'name': 'I_RAW_REGEX',
+                        'chunks': [
+                            {
+                                'name': 'I_RAW_CHARS',
+                                'chars': 'b',
+                            },
+                        ],
+                    },
                 },
                 {
                     'name': 'I_MAXIMISING_QUANTIFIER',
                     'quantifier': '?',
-                    'component': { 'name': 'I_RAW_REGEX', 'chars': 'c' },
+                    'component': {
+                        'name': 'I_RAW_REGEX',
+                        'chunks': [
+                            {
+                                'name': 'I_RAW_CHARS',
+                                'chars': 'c',
+                            },
+                        ],
+                    },
                 },
             ],
         });

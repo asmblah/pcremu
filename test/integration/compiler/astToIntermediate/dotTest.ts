@@ -9,10 +9,10 @@
 
 import { expect } from 'chai';
 import emulator from '../../../../src';
-import sinon = require('sinon');
 import AstToIntermediateCompiler from '../../../../src/AstToIntermediateCompiler';
 import Ast from '../../../../src/Ast';
 import { SinonStubbedInstance } from 'sinon';
+import sinon = require('sinon');
 
 describe('AST-to-IR compiler dot (all) integration', () => {
     let compiler: AstToIntermediateCompiler;
@@ -39,18 +39,34 @@ describe('AST-to-IR compiler dot (all) integration', () => {
             intermediateRepresentation.getTranspilerRepresentation()
         ).to.deep.equal({
             'name': 'I_PATTERN',
+            'capturingGroups': [0],
             'components': [
                 {
                     'name': 'I_RAW_REGEX',
-                    'chars': 'hello',
+                    'chunks': [
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': 'hello',
+                        },
+                    ],
                 },
                 {
                     'name': 'I_RAW_REGEX',
-                    'chars': '.',
+                    'chunks': [
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': '.',
+                        },
+                    ],
                 },
                 {
                     'name': 'I_RAW_REGEX',
-                    'chars': 'world',
+                    'chunks': [
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': 'world',
+                        },
+                    ],
                 },
             ],
         });

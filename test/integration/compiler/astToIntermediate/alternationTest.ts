@@ -61,10 +61,16 @@ describe('AST-to-IR compiler alternation integration', () => {
             intermediateRepresentation.getTranspilerRepresentation()
         ).to.deep.equal({
             'name': 'I_PATTERN',
+            'capturingGroups': [0],
             'components': [
                 {
                     'name': 'I_RAW_REGEX',
-                    'chars': 'hello',
+                    'chunks': [
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': 'hello',
+                        },
+                    ],
                 },
                 {
                     'name': 'I_ALTERNATION',
@@ -74,7 +80,12 @@ describe('AST-to-IR compiler alternation integration', () => {
                             'components': [
                                 {
                                     'name': 'I_RAW_REGEX',
-                                    'chars': 'to',
+                                    'chunks': [
+                                        {
+                                            'name': 'I_RAW_CHARS',
+                                            'chars': 'to',
+                                        },
+                                    ],
                                 },
                             ],
                         },
@@ -83,7 +94,12 @@ describe('AST-to-IR compiler alternation integration', () => {
                             'components': [
                                 {
                                     'name': 'I_RAW_REGEX',
-                                    'chars': 'you',
+                                    'chunks': [
+                                        {
+                                            'name': 'I_RAW_CHARS',
+                                            'chars': 'you',
+                                        },
+                                    ],
                                 },
                             ],
                         },
@@ -91,7 +107,12 @@ describe('AST-to-IR compiler alternation integration', () => {
                 },
                 {
                     'name': 'I_RAW_REGEX',
-                    'chars': 'world',
+                    'chunks': [
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': 'world',
+                        },
+                    ],
                 },
             ],
         });
