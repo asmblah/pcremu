@@ -8,8 +8,8 @@
  */
 
 import FragmentInterface from './FragmentInterface';
-import FragmentMatch from '../FragmentMatch';
 import FragmentMatcher from '../FragmentMatcher';
+import FragmentMatchInterface from '../FragmentMatchInterface';
 
 /**
  * Groups part of a regular expression, without causing the result to be captured.
@@ -27,7 +27,7 @@ export default class NonCapturingGroupFragment implements FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean
-    ): FragmentMatch | null {
+    ): FragmentMatchInterface | null {
         return this.fragmentMatcher.matchComponents(
             subject,
             position,

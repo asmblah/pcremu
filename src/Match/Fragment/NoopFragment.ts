@@ -9,6 +9,7 @@
 
 import FragmentInterface from './FragmentInterface';
 import FragmentMatch from '../FragmentMatch';
+import FragmentMatchInterface from '../FragmentMatchInterface';
 
 /**
  * Represents a part of a matcher pattern that does nothing; may be the result of an optimisation.
@@ -17,7 +18,7 @@ export default class NoopFragment implements FragmentInterface {
     /**
      * @inheritDoc
      */
-    match(subject: string, position: number): FragmentMatch | null {
+    match(subject: string, position: number): FragmentMatchInterface | null {
         return new FragmentMatch(position);
     }
 

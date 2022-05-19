@@ -9,6 +9,7 @@
 
 import FragmentInterface from './FragmentInterface';
 import FragmentMatch from '../FragmentMatch';
+import FragmentMatchInterface from '../FragmentMatchInterface';
 import {
     Flags,
     IndexCapturingRegExpExecArray,
@@ -34,7 +35,7 @@ export default class NativeFragment implements FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean
-    ): FragmentMatch | null {
+    ): FragmentMatchInterface | null {
         // Always include the "d" flag for capture indices/offsets and "g" to allow offset to be specified.
         let nativeFlags = 'dg';
 
@@ -73,7 +74,7 @@ export default class NativeFragment implements FragmentInterface {
         const match = (
             regex: RegExp,
             subjectSlice: string
-        ): FragmentMatch | null => {
+        ): FragmentMatchInterface | null => {
             // Note we always use the "g" flag to ensure matches can only start at or after the given start offset.
             regex.lastIndex = position;
 
@@ -132,8 +133,8 @@ export default class NativeFragment implements FragmentInterface {
          */
 
         const initialBacktrack = (
-            previousMatch: FragmentMatch
-        ): FragmentMatch | null => {
+            previousMatch: FragmentMatchInterface
+        ): FragmentMatchInterface | null => {
             const backtrackMatch = forwardBacktrack(previousMatch);
 
             if (backtrackMatch) {
@@ -151,8 +152,8 @@ export default class NativeFragment implements FragmentInterface {
         };
 
         const forwardBacktrack = (
-            previousMatch: FragmentMatch
-        ): FragmentMatch | null => {
+            previousMatch: FragmentMatchInterface
+        ): FragmentMatchInterface | null => {
             if (previousMatch.getEnd() === subject.length) {
                 // Match is already at end of string: there are no more characters to go.
                 return null;
@@ -177,8 +178,8 @@ export default class NativeFragment implements FragmentInterface {
         };
 
         const backwardBacktrack = (
-            previousMatch: FragmentMatch
-        ): FragmentMatch | null => {
+            previousMatch: FragmentMatchInterface
+        ): FragmentMatchInterface | null => {
             if (previousMatch.getEnd() === position) {
                 // Match is already back at start: there are no more characters to go.
                 return null;
@@ -205,8 +206,8 @@ export default class NativeFragment implements FragmentInterface {
         let currentBacktrack = initialBacktrack;
 
         const backtrack = (
-            previousMatch: FragmentMatch
-        ): FragmentMatch | null => {
+            previousMatch: FragmentMatchInterface
+        ): FragmentMatchInterface | null => {
             return currentBacktrack(previousMatch);
         };
 

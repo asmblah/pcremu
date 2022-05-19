@@ -8,7 +8,7 @@
  */
 
 import FragmentInterface from './FragmentInterface';
-import FragmentMatch from '../FragmentMatch';
+import FragmentMatchInterface from '../FragmentMatchInterface';
 import QuantifierMatcher from '../QuantifierMatcher';
 
 /**
@@ -30,7 +30,7 @@ export default class PossessiveQuantifierFragment implements FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean
-    ): FragmentMatch | null {
+    ): FragmentMatchInterface | null {
         return this.quantifierMatcher.matchMaximising(
             subject,
             position,

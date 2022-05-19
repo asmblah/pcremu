@@ -14,16 +14,17 @@ import {
     NumberedCaptureIndices,
     NumberedCaptures,
 } from '../spec/types/match';
+import FragmentMatchInterface from './FragmentMatchInterface';
 
 const hasOwn = {}.hasOwnProperty;
 
 /**
- * Represents a match against a subject string.
+ * Represents a match of a pattern fragment against a subject string.
  *
  * This is an internal representation used during matching;
  * once the final result is known it will be returned as a Match instead.
  */
-export default class FragmentMatch {
+export default class FragmentMatch implements FragmentMatchInterface {
     constructor(
         private position: number,
         private capture: string = '',
@@ -36,14 +37,14 @@ export default class FragmentMatch {
     ) {}
 
     /**
-     * Attempts to backtrack from this fragment match one position.
+     * @inheritDoc
      */
-    backtrack(): FragmentMatch | null {
+    backtrack(): FragmentMatchInterface | null {
         return this.backtracker(this);
     }
 
     /**
-     * Fetches the entire match.
+     * @inheritDoc
      */
     getCapture(): string {
         // Note that we cannot fetch the capture with index 0 as it is not defined for FragmentMatches.
@@ -51,62 +52,58 @@ export default class FragmentMatch {
     }
 
     /**
-     * Fetches the zero-based offset of the end of this match into the subject string.
+     * @inheritDoc
      */
     getEnd(): number {
         return this.position + this.capture.length;
     }
 
     /**
-     * Fetches the total length of this match.
+     * @inheritDoc
      */
     getLength(): number {
         return this.capture.length;
     }
 
     /**
-     * Fetches a map from named capture name to indices.
+     * @inheritDoc
      */
     getNamedCaptureIndices(): NamedCaptureIndices {
         return Object.assign({}, this.namedCaptureIndices);
     }
 
     /**
-     * Fetches a map from named capture name to captured text.
+     * @inheritDoc
      */
     getNamedCaptures(): NamedCaptures {
         return Object.assign({}, this.namedCaptures);
     }
 
     /**
-     * Fetches a map from numbered capture name to indices.
+     * @inheritDoc
      */
     getNumberedCaptureIndices(): NumberedCaptureIndices {
         return Object.assign({}, this.numberedCaptureIndices);
     }
 
     /**
-     * Fetches a map from numbered capture name to captured text.
+     * @inheritDoc
      */
     getNumberedCaptures(): NumberedCaptures {
         return Object.assign({}, this.numberedCaptures);
     }
 
     /**
-     * Fetches the zero-based offset of the start of this match into the subject string.
+     * @inheritDoc
      */
     getStart(): number {
         return this.position;
     }
 
     /**
-     * Creates a new FragmentMatch with the entire capture stored under the given index,
-     * optionally by name too.
-     *
-     * @param {number} index
-     * @param {string=} name
+     * @inheritDoc
      */
-    withCaptureAs(index: number, name?: string): FragmentMatch {
+    withCaptureAs(index: number, name?: string): FragmentMatchInterface {
         const numberedCaptures = this.getNumberedCaptures();
         const namedCaptures = this.getNamedCaptures();
         const numberedCaptureIndices = this.getNumberedCaptureIndices();
@@ -134,14 +131,11 @@ export default class FragmentMatch {
     }
 
     /**
-     * Creates a new FragmentMatch with any of the specified captures backfilled
-     * with empty matches if they are missing.
-     *
-     * @param {Array<number, string>} capturingGroupNames
+     * @inheritDoc
      */
     withMissingCapturesBackfilled(
         capturingGroupNames: (number | string)[]
-    ): FragmentMatch {
+    ): FragmentMatchInterface {
         const numberedCaptures = this.getNumberedCaptures();
         const namedCaptures = this.getNamedCaptures();
         const numberedCaptureIndices = this.getNumberedCaptureIndices();
@@ -176,16 +170,14 @@ export default class FragmentMatch {
     }
 
     /**
-     * Creates a new FragmentMatch with the given backtracker.
-     *
-     * @param {Function} backtracker
+     * @inheritDoc
      */
     wrapBacktracker(
         backtracker: (
-            previousMatch: FragmentMatch,
-            previousBacktracker: () => FragmentMatch | null
-        ) => FragmentMatch | null
-    ): FragmentMatch {
+            previousMatch: FragmentMatchInterface,
+            previousBacktracker: () => FragmentMatchInterface | null
+        ) => FragmentMatchInterface | null
+    ): FragmentMatchInterface {
         return new FragmentMatch(
             this.position,
             this.capture,

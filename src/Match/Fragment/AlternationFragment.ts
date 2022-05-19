@@ -9,7 +9,7 @@
 
 import AlternativeFragment from './AlternativeFragment';
 import FragmentInterface from './FragmentInterface';
-import FragmentMatch from '../FragmentMatch';
+import FragmentMatchInterface from '../FragmentMatchInterface';
 
 /**
  * Matches one of a series of possible alternatives.
@@ -26,10 +26,10 @@ export default class AlternationFragment implements FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean
-    ): FragmentMatch | null {
+    ): FragmentMatchInterface | null {
         let alternativeIndex = 0;
 
-        const tryNextAlternative = (): FragmentMatch | null => {
+        const tryNextAlternative = (): FragmentMatchInterface | null => {
             for (
                 ;
                 alternativeIndex < this.alternativeFragments.length;

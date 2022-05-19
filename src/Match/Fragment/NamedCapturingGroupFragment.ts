@@ -8,8 +8,8 @@
  */
 
 import FragmentInterface from './FragmentInterface';
-import FragmentMatch from '../FragmentMatch';
 import FragmentMatcher from '../FragmentMatcher';
+import FragmentMatchInterface from '../FragmentMatchInterface';
 
 /**
  * Captures part of a regular expression match as both a given numbered index and name.
@@ -29,7 +29,7 @@ export default class NamedCapturingGroupFragment implements FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean
-    ): FragmentMatch | null {
+    ): FragmentMatchInterface | null {
         const match = this.fragmentMatcher.matchComponents(
             subject,
             position,

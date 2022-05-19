@@ -9,6 +9,7 @@
 
 import FragmentInterface from './Fragment/FragmentInterface';
 import FragmentMatch from './FragmentMatch';
+import FragmentMatchInterface from './FragmentMatchInterface';
 import {
     Backtracker,
     NamedCaptureIndices,
@@ -24,15 +25,15 @@ export default class FragmentMatcher {
     /**
      * Joins all the given matches together into a single FragmentMatch.
      *
-     * @param {FragmentMatch[]} matches
+     * @param {FragmentMatchInterface[]} matches
      * @param {number} position
      * @param {Function} backtracker
      */
     concatenateMatches(
-        matches: FragmentMatch[],
+        matches: FragmentMatchInterface[],
         position: number,
         backtracker: Backtracker
-    ): FragmentMatch {
+    ): FragmentMatchInterface {
         position = matches.length > 0 ? matches[0].getStart() : position;
         let capture = '';
         const namedCaptures: NamedCaptures = {};
@@ -77,8 +78,8 @@ export default class FragmentMatcher {
         position: number,
         isAnchored: boolean,
         componentFragments: FragmentInterface[]
-    ): FragmentMatch | null {
-        const componentMatches: FragmentMatch[] = [];
+    ): FragmentMatchInterface | null {
+        const componentMatches: FragmentMatchInterface[] = [];
 
         const backtrack = (): boolean => {
             if (componentMatches.length === 0) {
@@ -86,7 +87,8 @@ export default class FragmentMatcher {
             }
 
             while (componentMatches.length > 0) {
-                const previousMatch = componentMatches.pop() as FragmentMatch;
+                const previousMatch =
+                    componentMatches.pop() as FragmentMatchInterface;
 
                 const backtrackedMatch = previousMatch.backtrack();
 
@@ -114,7 +116,7 @@ export default class FragmentMatcher {
             return true; // We have successfully backtracked.
         };
 
-        const tryNextComponent = (): FragmentMatch | null => {
+        const tryNextComponent = (): FragmentMatchInterface | null => {
             while (componentMatches.length < componentFragments.length) {
                 const componentFragment =
                     componentFragments[componentMatches.length];
@@ -143,7 +145,7 @@ export default class FragmentMatcher {
             return this.concatenateMatches(
                 componentMatches,
                 position,
-                (): FragmentMatch | null => {
+                (): FragmentMatchInterface | null => {
                     if (!backtrack()) {
                         return null;
                     }

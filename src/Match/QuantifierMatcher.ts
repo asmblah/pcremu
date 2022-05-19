@@ -7,10 +7,10 @@
  * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
  */
 
-import FragmentInterface from './Fragment/FragmentInterface';
-import FragmentMatch from './FragmentMatch';
-import FragmentMatcher from './FragmentMatcher';
 import Exception from '../Exception/Exception';
+import FragmentInterface from './Fragment/FragmentInterface';
+import FragmentMatcher from './FragmentMatcher';
+import FragmentMatchInterface from './FragmentMatchInterface';
 
 /**
  * Helper class with methods used specifically by quantifier matchers.
@@ -36,10 +36,12 @@ export default class QuantifierMatcher {
         componentFragment: FragmentInterface,
         minimumMatches: number,
         maximumMatches: number | null,
-        backtracker: (matches: FragmentMatch[]) => FragmentMatch | null
-    ): FragmentMatch | null {
-        let match: FragmentMatch | null;
-        const matches: FragmentMatch[] = [];
+        backtracker: (
+            matches: FragmentMatchInterface[]
+        ) => FragmentMatchInterface | null
+    ): FragmentMatchInterface | null {
+        let match: FragmentMatchInterface | null;
+        const matches: FragmentMatchInterface[] = [];
 
         while (
             (match = componentFragment.match(subject, position, isAnchored))
@@ -88,10 +90,12 @@ export default class QuantifierMatcher {
         componentFragment: FragmentInterface,
         minimumMatches: number,
         maximumMatches: number | null,
-        backtracker: (matches: FragmentMatch[]) => FragmentMatch | null
-    ): FragmentMatch | null {
+        backtracker: (
+            matches: FragmentMatchInterface[]
+        ) => FragmentMatchInterface | null
+    ): FragmentMatchInterface | null {
         const initialPosition = position;
-        const matches: FragmentMatch[] = [];
+        const matches: FragmentMatchInterface[] = [];
 
         for (let matchIndex = 0; matchIndex < minimumMatches; matchIndex++) {
             const match = componentFragment.match(

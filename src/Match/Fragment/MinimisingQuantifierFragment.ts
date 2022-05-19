@@ -8,8 +8,8 @@
  */
 
 import FragmentInterface from './FragmentInterface';
-import FragmentMatch from '../FragmentMatch';
 import FragmentMatcher from '../FragmentMatcher';
+import FragmentMatchInterface from '../FragmentMatchInterface';
 import QuantifierMatcher from '../QuantifierMatcher';
 
 /**
@@ -31,13 +31,13 @@ export default class MinimisingQuantifierFragment implements FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean
-    ): FragmentMatch | null {
+    ): FragmentMatchInterface | null {
         const initialPosition = position;
         let backtrackingBackwards = true;
 
         const backtracker = (
-            matches: FragmentMatch[]
-        ): FragmentMatch | null => {
+            matches: FragmentMatchInterface[]
+        ): FragmentMatchInterface | null => {
             if (backtrackingBackwards && matches.length > 0) {
                 const previousMatch = matches[matches.length - 1];
                 const backtrackedMatch = previousMatch.backtrack();

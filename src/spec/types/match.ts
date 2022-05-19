@@ -11,11 +11,11 @@
  * General match-related types.
  */
 
-import FragmentMatch from '../../Match/FragmentMatch';
+import FragmentMatchInterface from '../../Match/FragmentMatchInterface';
 
 export type Backtracker = (
-    previousMatch: FragmentMatch
-) => FragmentMatch | null;
+    previousMatch: FragmentMatchInterface
+) => FragmentMatchInterface | null;
 
 export type NamedCaptures = { [key: string]: string | null };
 export type NamedCaptureIndices = { [key: string]: [number, number] };

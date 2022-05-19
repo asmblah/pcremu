@@ -7,7 +7,7 @@
  * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
  */
 
-import FragmentMatch from '../FragmentMatch';
+import FragmentMatchInterface from '../FragmentMatchInterface';
 
 export default interface FragmentInterface {
     /**
@@ -21,7 +21,7 @@ export default interface FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean
-    ): FragmentMatch | null;
+    ): FragmentMatchInterface | null;
 
     /**
      * Fetches a string representation of this pattern fragment.

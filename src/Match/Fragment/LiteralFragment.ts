@@ -9,6 +9,7 @@
 
 import FragmentInterface from './FragmentInterface';
 import FragmentMatch from '../FragmentMatch';
+import FragmentMatchInterface from '../FragmentMatchInterface';
 
 /**
  * Matches a series of plain characters with no special meaning.
@@ -23,7 +24,7 @@ export default class LiteralFragment implements FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean
-    ): FragmentMatch | null {
+    ): FragmentMatchInterface | null {
         const matchPosition = subject.indexOf(this.chars, position);
 
         if (matchPosition === -1) {

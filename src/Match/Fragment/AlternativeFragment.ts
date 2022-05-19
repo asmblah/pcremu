@@ -9,7 +9,7 @@
 
 import FragmentInterface from './FragmentInterface';
 import FragmentMatcher from '../FragmentMatcher';
-import FragmentMatch from '../FragmentMatch';
+import FragmentMatchInterface from '../FragmentMatchInterface';
 
 /**
  * Forms part of an alternation.
@@ -29,7 +29,7 @@ export default class AlternativeFragment implements FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean
-    ): FragmentMatch | null {
+    ): FragmentMatchInterface | null {
         return this.fragmentMatcher.matchComponents(
             subject,
             position,

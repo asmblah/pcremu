@@ -12,7 +12,6 @@ import {
     N_CHARACTER,
     N_CHARACTER_CLASS,
     N_COMPONENT,
-    N_WHITESPACE,
 } from './types/ast';
 import { Context } from './types/parser';
 
