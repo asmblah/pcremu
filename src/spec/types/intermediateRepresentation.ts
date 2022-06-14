@@ -49,6 +49,10 @@ export type I_NON_CAPTURING_GROUP = I_COMPONENT & {
     components: I_COMPONENT[];
 };
 export type I_NOOP = I_COMPONENT & { name: 'I_NOOP' };
+export type I_NUMBERED_BACKREFERENCE = I_COMPONENT & {
+    name: 'I_NUMBERED_BACKREFERENCE';
+    number: number;
+};
 export type I_OPTIMISED = I_COMPONENT;
 export type I_PATTERN = I_NODE & {
     name: 'I_PATTERN';

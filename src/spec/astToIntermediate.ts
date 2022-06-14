@@ -17,6 +17,7 @@ import {
     I_NODE,
     I_NON_CAPTURING_GROUP,
     I_NOOP,
+    I_NUMBERED_BACKREFERENCE,
     I_PATTERN,
     I_POSSESSIVE_QUANTIFIER,
     I_RAW_REGEX,
@@ -37,6 +38,8 @@ import {
     N_NAMED_CAPTURING_GROUP,
     N_NODE,
     N_NON_CAPTURING_GROUP,
+    N_NUMBERED_BACKREFERENCE,
+    N_NUMBERED_BACKREFERENCE_OR_OCTAL_CHAR,
     N_PATTERN,
     N_POSSESSIVE_QUANTIFIER,
     N_SIMPLE_ASSERTION,
@@ -59,6 +62,13 @@ export interface TrackingContext {
      * @returns {number} Returns the index of the group
      */
     addNumberedCapturingGroup(): number;
+
+    /**
+     * Determines whether a capturing group with the given index exists so far.
+     *
+     * @param {number} index
+     */
+    hasNumberedCapturingGroup(index: number): boolean;
 }
 export interface Context extends TrackingContext {
     flags: Flags;
@@ -213,6 +223,41 @@ export default {
                 ),
             };
         },
+        'N_NUMBERED_BACKREFERENCE': (
+            node: N_NUMBERED_BACKREFERENCE
+        ): I_NUMBERED_BACKREFERENCE => {
+            return {
+                'name': 'I_NUMBERED_BACKREFERENCE',
+                'number': node.number,
+            };
+        },
+        'N_NUMBERED_BACKREFERENCE_OR_OCTAL_CHAR': (
+            node: N_NUMBERED_BACKREFERENCE_OR_OCTAL_CHAR,
+            interpret: Interpret,
+            context: Context
+        ): I_NUMBERED_BACKREFERENCE | I_RAW_REGEX => {
+            const octalAsNumber: number = parseInt(node.digits, 8);
+
+            // Ambiguous escape sequences resolve to a numbered backreference if there have been
+            // that many in the pattern so far, otherwise an octal character code escape.
+            const isNumberedBackreference =
+                context.hasNumberedCapturingGroup(octalAsNumber);
+
+            return isNumberedBackreference
+                ? {
+                      'name': 'I_NUMBERED_BACKREFERENCE',
+                      'number': octalAsNumber,
+                  }
+                : {
+                      'name': 'I_RAW_REGEX',
+                      'chunks': [
+                          {
+                              'name': 'I_RAW_CHARS',
+                              'chars': String.fromCharCode(octalAsNumber),
+                          },
+                      ],
+                  };
+        },
         'N_PATTERN': (node: N_PATTERN, interpret: Interpret): I_PATTERN => {
             // Note we include "0" as the entire match is always captured as group 0.
             const capturingGroupNames: Array<number | string> = [0];
@@ -241,6 +286,13 @@ export default {
                     capturingGroupNames.push(groupIndex);
 
                     return groupIndex;
+                },
+
+                /**
+                 * @inheritDoc
+                 */
+                hasNumberedCapturingGroup(index: number): boolean {
+                    return patternCapturingGroupCount > index;
                 },
             };
 

@@ -69,6 +69,14 @@ export type N_NON_CAPTURING_GROUP = N_COMPONENT & {
     name: 'N_NON_CAPTURING_GROUP';
     components: N_COMPONENT[];
 };
+export type N_NUMBERED_BACKREFERENCE = N_COMPONENT & {
+    name: 'N_NUMBERED_BACKREFERENCE';
+    number: number;
+};
+export type N_NUMBERED_BACKREFERENCE_OR_OCTAL_CHAR = N_COMPONENT & {
+    name: 'N_NUMBERED_BACKREFERENCE_OR_OCTAL_CHAR';
+    digits: string;
+};
 export type N_PATTERN = N_NODE & {
     name: 'N_PATTERN';
     components: N_COMPONENT[];
