@@ -18,6 +18,7 @@ import {
     I_NODE,
     I_NON_CAPTURING_GROUP,
     I_NOOP,
+    I_NUMBERED_BACKREFERENCE,
     I_PATTERN,
     I_POSSESSIVE_QUANTIFIER,
     I_RAW_CHUNK,
@@ -239,6 +240,11 @@ export default {
             };
         },
         'I_NOOP': (node: I_NOOP): I_NOOP => {
+            return node;
+        },
+        'I_NUMBERED_BACKREFERENCE': (
+            node: I_NUMBERED_BACKREFERENCE
+        ): I_NUMBERED_BACKREFERENCE => {
             return node;
         },
         'I_PATTERN': (node: I_PATTERN, interpret: Interpret): I_PATTERN => {

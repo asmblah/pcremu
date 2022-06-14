@@ -39,14 +39,16 @@ export default class PatternFragment implements FragmentInterface {
     match(
         subject: string,
         position: number,
-        isAnchored: boolean
+        isAnchored: boolean,
+        existingMatch: FragmentMatchInterface
     ): FragmentMatchInterface | null {
         do {
             const match = this.fragmentMatcher.matchComponents(
                 subject,
                 position,
                 isAnchored,
-                this.componentFragments
+                this.componentFragments,
+                existingMatch
             );
 
             if (match) {

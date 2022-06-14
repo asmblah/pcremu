@@ -61,6 +61,7 @@ export default {
                             // Optimise the special case of an empty alternative in the alternation.
                             return {
                                 'name': 'I_RAW_REGEX',
+                                // TODO: Output an empty chunks array instead?
                                 'chunks': [
                                     {
                                         'name': 'I_RAW_NOOP',
@@ -307,6 +308,9 @@ export default {
                 }
             );
         },
+        /*
+         * TODO: Optimise N_NUMBERED_BACKREFERENCE where possible.
+         */
         'I_PATTERN': (node: I_PATTERN, interpret: Interpret): I_PATTERN => {
             // Apply optimisations to all components.
             const optimisedComponents = node.components.map(

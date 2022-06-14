@@ -8,8 +8,8 @@
  */
 
 import FragmentInterface from './FragmentInterface';
-import FragmentMatcher from '../FragmentMatcher';
 import FragmentMatchInterface from '../FragmentMatchInterface';
+import FragmentMatchTree from '../FragmentMatchTree';
 import QuantifierMatcher from '../QuantifierMatcher';
 
 /**
@@ -17,7 +17,6 @@ import QuantifierMatcher from '../QuantifierMatcher';
  */
 export default class MinimisingQuantifierFragment implements FragmentInterface {
     constructor(
-        private fragmentMatcher: FragmentMatcher,
         private quantifierMatcher: QuantifierMatcher,
         private componentFragment: FragmentInterface,
         private minimumMatches: number,
@@ -30,7 +29,8 @@ export default class MinimisingQuantifierFragment implements FragmentInterface {
     match(
         subject: string,
         position: number,
-        isAnchored: boolean
+        isAnchored: boolean,
+        existingMatch: FragmentMatchInterface
     ): FragmentMatchInterface | null {
         const initialPosition = position;
         let backtrackingBackwards = true;
@@ -48,10 +48,8 @@ export default class MinimisingQuantifierFragment implements FragmentInterface {
                     // Replace with the backtracked match in our record.
                     matches[matches.length - 1] = backtrackedMatch;
 
-                    return this.fragmentMatcher.concatenateMatches(
-                        matches,
-                        initialPosition,
-                        () => backtracker(matches)
+                    return new FragmentMatchTree(initialPosition, matches, () =>
+                        backtracker(matches)
                     );
                 }
             }
@@ -66,7 +64,8 @@ export default class MinimisingQuantifierFragment implements FragmentInterface {
             const nextMatch = this.componentFragment.match(
                 subject,
                 position,
-                isAnchored
+                isAnchored,
+                existingMatch.withSubsequentMatches(matches)
             );
 
             if (!nextMatch) {
@@ -80,10 +79,8 @@ export default class MinimisingQuantifierFragment implements FragmentInterface {
             // Add the new match to our record.
             matches.push(nextMatch);
 
-            return this.fragmentMatcher.concatenateMatches(
-                matches,
-                initialPosition,
-                () => backtracker(matches)
+            return new FragmentMatchTree(initialPosition, matches, () =>
+                backtracker(matches)
             );
         };
 
@@ -94,6 +91,7 @@ export default class MinimisingQuantifierFragment implements FragmentInterface {
             this.componentFragment,
             this.minimumMatches,
             this.maximumMatches,
+            existingMatch,
             backtracker
         );
     }

@@ -16,11 +16,13 @@ export default interface FragmentInterface {
      * @param {string} subject
      * @param {number} position
      * @param {boolean} isAnchored
+     * @param {FragmentMatchInterface} existingMatch
      */
     match(
         subject: string,
         position: number,
-        isAnchored: boolean
+        isAnchored: boolean,
+        existingMatch: FragmentMatchInterface
     ): FragmentMatchInterface | null;
 
     /**

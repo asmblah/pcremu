@@ -28,13 +28,15 @@ export default class NamedCapturingGroupFragment implements FragmentInterface {
     match(
         subject: string,
         position: number,
-        isAnchored: boolean
+        isAnchored: boolean,
+        existingMatch: FragmentMatchInterface
     ): FragmentMatchInterface | null {
         const match = this.fragmentMatcher.matchComponents(
             subject,
             position,
             isAnchored,
-            this.componentFragments
+            this.componentFragments,
+            existingMatch
         );
 
         if (!match) {

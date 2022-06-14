@@ -28,13 +28,15 @@ export default class AlternativeFragment implements FragmentInterface {
     match(
         subject: string,
         position: number,
-        isAnchored: boolean
+        isAnchored: boolean,
+        existingMatch: FragmentMatchInterface
     ): FragmentMatchInterface | null {
         return this.fragmentMatcher.matchComponents(
             subject,
             position,
             isAnchored,
-            this.componentFragments
+            this.componentFragments,
+            existingMatch
         );
     }
 

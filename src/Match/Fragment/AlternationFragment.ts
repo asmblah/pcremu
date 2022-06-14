@@ -25,7 +25,8 @@ export default class AlternationFragment implements FragmentInterface {
     match(
         subject: string,
         position: number,
-        isAnchored: boolean
+        isAnchored: boolean,
+        existingMatch: FragmentMatchInterface
     ): FragmentMatchInterface | null {
         let alternativeIndex = 0;
 
@@ -41,7 +42,9 @@ export default class AlternationFragment implements FragmentInterface {
                 const match = alternativeFragment.match(
                     subject,
                     position,
-                    isAnchored
+                    isAnchored,
+                    // No previous alternatives (if there have been any) are part of the existing match.
+                    existingMatch
                 );
 
                 if (match) {

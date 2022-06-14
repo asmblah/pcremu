@@ -8,62 +8,13 @@
  */
 
 import FragmentInterface from './Fragment/FragmentInterface';
-import FragmentMatch from './FragmentMatch';
 import FragmentMatchInterface from './FragmentMatchInterface';
-import {
-    Backtracker,
-    NamedCaptureIndices,
-    NamedCaptures,
-    NumberedCaptureIndices,
-    NumberedCaptures,
-} from '../spec/types/match';
+import FragmentMatchTree from './FragmentMatchTree';
 
 /**
  * Helper class with methods used during matching.
  */
 export default class FragmentMatcher {
-    /**
-     * Joins all the given matches together into a single FragmentMatch.
-     *
-     * @param {FragmentMatchInterface[]} matches
-     * @param {number} position
-     * @param {Function} backtracker
-     */
-    concatenateMatches(
-        matches: FragmentMatchInterface[],
-        position: number,
-        backtracker: Backtracker
-    ): FragmentMatchInterface {
-        position = matches.length > 0 ? matches[0].getStart() : position;
-        let capture = '';
-        const namedCaptures: NamedCaptures = {};
-        const namedCaptureIndices: NamedCaptureIndices = {};
-        const numberedCaptures: NumberedCaptures = {};
-        const numberedCaptureIndices: NumberedCaptureIndices = {};
-
-        for (const match of matches) {
-            capture += match.getCapture();
-
-            Object.assign(numberedCaptures, match.getNumberedCaptures());
-            Object.assign(namedCaptures, match.getNamedCaptures());
-            Object.assign(
-                numberedCaptureIndices,
-                match.getNumberedCaptureIndices()
-            );
-            Object.assign(namedCaptureIndices, match.getNamedCaptureIndices());
-        }
-
-        return new FragmentMatch(
-            position,
-            capture,
-            numberedCaptures,
-            namedCaptures,
-            numberedCaptureIndices,
-            namedCaptureIndices,
-            backtracker
-        );
-    }
-
     /**
      * Matches the given set of component fragments in order, to a single FragmentMatch
      * (or null if the match fails).
@@ -72,12 +23,14 @@ export default class FragmentMatcher {
      * @param {number} position
      * @param {boolean} isAnchored
      * @param {FragmentInterface[]} componentFragments
+     * @param {FragmentMatchInterface} existingMatch
      */
     matchComponents(
         subject: string,
         position: number,
         isAnchored: boolean,
-        componentFragments: FragmentInterface[]
+        componentFragments: FragmentInterface[],
+        existingMatch: FragmentMatchInterface
     ): FragmentMatchInterface | null {
         const componentMatches: FragmentMatchInterface[] = [];
 
@@ -124,7 +77,8 @@ export default class FragmentMatcher {
                 const match = componentFragment.match(
                     subject,
                     position,
-                    isAnchored || componentMatches.length > 0
+                    isAnchored || componentMatches.length > 0,
+                    existingMatch.withSubsequentMatches(componentMatches)
                 );
 
                 if (match) {
@@ -142,9 +96,9 @@ export default class FragmentMatcher {
                 }
             }
 
-            return this.concatenateMatches(
-                componentMatches,
+            return new FragmentMatchTree(
                 position,
+                componentMatches,
                 (): FragmentMatchInterface | null => {
                     if (!backtrack()) {
                         return null;

@@ -9,15 +9,13 @@
 
 import Exception from '../Exception/Exception';
 import FragmentInterface from './Fragment/FragmentInterface';
-import FragmentMatcher from './FragmentMatcher';
 import FragmentMatchInterface from './FragmentMatchInterface';
+import FragmentMatchTree from './FragmentMatchTree';
 
 /**
  * Helper class with methods used specifically by quantifier matchers.
  */
 export default class QuantifierMatcher {
-    constructor(private fragmentMatcher: FragmentMatcher) {}
-
     /**
      * Matches the given component with maximising (greedy) match logic.
      *
@@ -27,6 +25,7 @@ export default class QuantifierMatcher {
      * @param {FragmentInterface} componentFragment
      * @param {number} minimumMatches
      * @param {number|null} maximumMatches
+     * @param {FragmentMatchInterface} existingMatch
      * @param {Function} backtracker
      */
     matchMaximising(
@@ -36,6 +35,7 @@ export default class QuantifierMatcher {
         componentFragment: FragmentInterface,
         minimumMatches: number,
         maximumMatches: number | null,
+        existingMatch: FragmentMatchInterface,
         backtracker: (
             matches: FragmentMatchInterface[]
         ) => FragmentMatchInterface | null
@@ -44,7 +44,12 @@ export default class QuantifierMatcher {
         const matches: FragmentMatchInterface[] = [];
 
         while (
-            (match = componentFragment.match(subject, position, isAnchored))
+            (match = componentFragment.match(
+                subject,
+                position,
+                isAnchored,
+                existingMatch.withSubsequentMatches(matches)
+            ))
         ) {
             if (maximumMatches !== null && matches.length >= maximumMatches) {
                 /*
@@ -67,7 +72,7 @@ export default class QuantifierMatcher {
             return null;
         }
 
-        return this.fragmentMatcher.concatenateMatches(matches, position, () =>
+        return new FragmentMatchTree(position, matches, () =>
             backtracker(matches)
         );
     }
@@ -81,6 +86,7 @@ export default class QuantifierMatcher {
      * @param {FragmentInterface} componentFragment
      * @param {number} minimumMatches
      * @param {number|null} maximumMatches
+     * @param {FragmentMatchInterface} existingMatch
      * @param {Function} backtracker
      */
     matchMinimising(
@@ -90,6 +96,7 @@ export default class QuantifierMatcher {
         componentFragment: FragmentInterface,
         minimumMatches: number,
         maximumMatches: number | null,
+        existingMatch: FragmentMatchInterface,
         backtracker: (
             matches: FragmentMatchInterface[]
         ) => FragmentMatchInterface | null
@@ -101,7 +108,8 @@ export default class QuantifierMatcher {
             const match = componentFragment.match(
                 subject,
                 position,
-                isAnchored
+                isAnchored,
+                existingMatch.withSubsequentMatches(matches)
             );
 
             if (!match) {
@@ -115,10 +123,8 @@ export default class QuantifierMatcher {
             position = match.getEnd();
         }
 
-        return this.fragmentMatcher.concatenateMatches(
-            matches,
-            initialPosition,
-            () => backtracker(matches)
+        return new FragmentMatchTree(initialPosition, matches, () =>
+            backtracker(matches)
         );
     }
 

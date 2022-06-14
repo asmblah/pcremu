@@ -9,15 +9,19 @@
 
 import { expect } from 'chai';
 import FragmentMatcher from '../../../../src/Match/FragmentMatcher';
+import FragmentMatchInterface from '../../../../src/Match/FragmentMatchInterface';
+import FragmentMatchTree from '../../../../src/Match/FragmentMatchTree';
 import LiteralFragment from '../../../../src/Match/Fragment/LiteralFragment';
 import PatternFragment from '../../../../src/Match/Fragment/PatternFragment';
 
 describe('PatternFragment', () => {
+    let existingMatch: FragmentMatchInterface;
     let fragment: PatternFragment;
     let fragmentMatcher: FragmentMatcher;
 
     beforeEach(() => {
         fragmentMatcher = new FragmentMatcher();
+        existingMatch = new FragmentMatchTree(0);
 
         fragment = new PatternFragment(
             fragmentMatcher,
@@ -29,7 +33,12 @@ describe('PatternFragment', () => {
     describe('match()', () => {
         describe('when un-anchored', () => {
             it('should match when the pattern appears at the start position', () => {
-                const match = fragment.match('here is my-text', 8, false);
+                const match = fragment.match(
+                    'here is my-text',
+                    8,
+                    false,
+                    existingMatch
+                );
 
                 expect(match).not.to.be.null;
                 expect(match?.getCapture()).to.equal('my-text');
@@ -40,7 +49,8 @@ describe('PatternFragment', () => {
                 const match = fragment.match(
                     'here is my-prefix followed by my-text',
                     8,
-                    false
+                    false,
+                    existingMatch
                 );
 
                 expect(match).not.to.be.null;
@@ -49,7 +59,12 @@ describe('PatternFragment', () => {
             });
 
             it('should match when the pattern appears after the start position', () => {
-                const match = fragment.match('here is my-text', 5, false);
+                const match = fragment.match(
+                    'here is my-text',
+                    5,
+                    false,
+                    existingMatch
+                );
 
                 expect(match).not.to.be.null;
                 expect(match?.getCapture()).to.equal('my-text');
@@ -57,17 +72,26 @@ describe('PatternFragment', () => {
             });
 
             it('should return null when the pattern does not appear in the subject', () => {
-                expect(fragment.match('something-else', 0, false)).to.be.null;
+                expect(
+                    fragment.match('something-else', 0, false, existingMatch)
+                ).to.be.null;
             });
 
             it('should return null when the only match appears before the start position', () => {
-                expect(fragment.match('here is my-text', 9, false)).to.be.null;
+                expect(
+                    fragment.match('here is my-text', 9, false, existingMatch)
+                ).to.be.null;
             });
         });
 
         describe('when anchored', () => {
             it('should match when the pattern appears at the start position', () => {
-                const match = fragment.match('here is my-text', 8, true);
+                const match = fragment.match(
+                    'here is my-text',
+                    8,
+                    true,
+                    existingMatch
+                );
 
                 expect(match).not.to.be.null;
                 expect(match?.getCapture()).to.equal('my-text');
@@ -78,7 +102,8 @@ describe('PatternFragment', () => {
                 const match = fragment.match(
                     'here is my-prefix followed by my-text',
                     30,
-                    true
+                    true,
+                    existingMatch
                 );
 
                 expect(match).not.to.be.null;
@@ -87,17 +112,25 @@ describe('PatternFragment', () => {
             });
 
             it('should return null when the pattern appears after the start position', () => {
-                const match = fragment.match('here is my-text', 5, true);
+                const match = fragment.match(
+                    'here is my-text',
+                    5,
+                    true,
+                    existingMatch
+                );
 
                 expect(match).to.be.null;
             });
 
             it('should return null when the pattern does not appear in the subject', () => {
-                expect(fragment.match('something-else', 0, true)).to.be.null;
+                expect(fragment.match('something-else', 0, true, existingMatch))
+                    .to.be.null;
             });
 
             it('should return null when the only match appears before the start position', () => {
-                expect(fragment.match('here is my-text', 9, true)).to.be.null;
+                expect(
+                    fragment.match('here is my-text', 9, true, existingMatch)
+                ).to.be.null;
             });
         });
     });

@@ -52,9 +52,16 @@ export default interface FragmentMatchInterface {
     getNamedCaptures(): NamedCaptures;
 
     /**
-     * Fetches a map from numbered capture name to indices.
+     * Fetches a map from numbered capture index to indices.
      */
     getNumberedCaptureIndices(): NumberedCaptureIndices;
+
+    /**
+     * Fetches a numbered capture's text by its capturing group's index.
+     *
+     * If it has not yet been captured, null will be returned.
+     */
+    getNumberedCapture(index: number): string | null;
 
     /**
      * Fetches a map from numbered capture name to captured text.
@@ -67,7 +74,7 @@ export default interface FragmentMatchInterface {
     getStart(): number;
 
     /**
-     * Creates a new FragmentMatch with the entire capture stored under the given index,
+     * Creates a new fragment match with the entire capture stored under the given index,
      * optionally by name too.
      *
      * @param {number} index
@@ -76,7 +83,7 @@ export default interface FragmentMatchInterface {
     withCaptureAs(index: number, name?: string): FragmentMatchInterface;
 
     /**
-     * Creates a new FragmentMatch with any of the specified captures backfilled
+     * Creates a new fragment match with any of the specified captures backfilled
      * with empty matches if they are missing.
      *
      * @param {Array<number, string>} capturingGroupNames
@@ -86,7 +93,16 @@ export default interface FragmentMatchInterface {
     ): FragmentMatchInterface;
 
     /**
-     * Creates a new FragmentMatch with the given backtracker.
+     * Creates a new fragment match with the given subsequent matches.
+     *
+     * @param {FragmentMatchInterface[]} subsequentMatchFragments
+     */
+    withSubsequentMatches(
+        subsequentMatchFragments: FragmentMatchInterface[]
+    ): FragmentMatchInterface;
+
+    /**
+     * Creates a new fragment match with the given backtracker.
      *
      * @param {Function} backtracker
      */

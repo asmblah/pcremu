@@ -8,8 +8,8 @@
  */
 
 import FragmentInterface from './FragmentInterface';
-import FragmentMatcher from '../FragmentMatcher';
 import FragmentMatchInterface from '../FragmentMatchInterface';
+import FragmentMatchTree from '../FragmentMatchTree';
 import QuantifierMatcher from '../QuantifierMatcher';
 
 /**
@@ -17,7 +17,6 @@ import QuantifierMatcher from '../QuantifierMatcher';
  */
 export default class MaximisingQuantifierFragment implements FragmentInterface {
     constructor(
-        private fragmentMatcher: FragmentMatcher,
         private quantifierMatcher: QuantifierMatcher,
         private componentFragment: FragmentInterface,
         private minimumMatches: number,
@@ -30,7 +29,8 @@ export default class MaximisingQuantifierFragment implements FragmentInterface {
     match(
         subject: string,
         position: number,
-        isAnchored: boolean
+        isAnchored: boolean,
+        existingMatch: FragmentMatchInterface
     ): FragmentMatchInterface | null {
         const initialPosition = position;
 
@@ -74,10 +74,8 @@ export default class MaximisingQuantifierFragment implements FragmentInterface {
 
             position = backtrackedMatch.getEnd();
 
-            return this.fragmentMatcher.concatenateMatches(
-                matches,
-                initialPosition,
-                () => backtracker(matches)
+            return new FragmentMatchTree(initialPosition, matches, () =>
+                backtracker(matches)
             );
         };
 
@@ -88,6 +86,7 @@ export default class MaximisingQuantifierFragment implements FragmentInterface {
             this.componentFragment,
             this.minimumMatches,
             this.maximumMatches,
+            existingMatch,
             backtracker
         );
     }

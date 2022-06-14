@@ -10,6 +10,7 @@
 import { Flags } from './declarations/types';
 import Match from './Match';
 import PatternFragment from './Match/Fragment/PatternFragment';
+import FragmentMatchTree from './Match/FragmentMatchTree';
 
 /**
  * Inner pattern matching logic for a Matcher.
@@ -43,7 +44,8 @@ export default class Pattern {
         const fragmentMatch = this.patternFragment.match(
             subject,
             start,
-            Boolean(this.flags.anchored)
+            Boolean(this.flags.anchored),
+            new FragmentMatchTree(start)
         );
 
         if (!fragmentMatch) {

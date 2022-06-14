@@ -10,22 +10,25 @@
 import { expect } from 'chai';
 import CapturingGroupFragment from '../../../../src/Match/Fragment/CapturingGroupFragment';
 import FragmentMatcher from '../../../../src/Match/FragmentMatcher';
+import FragmentMatchInterface from '../../../../src/Match/FragmentMatchInterface';
+import FragmentMatchTree from '../../../../src/Match/FragmentMatchTree';
 import LiteralFragment from '../../../../src/Match/Fragment/LiteralFragment';
 import MaximisingQuantifierFragment from '../../../../src/Match/Fragment/MaximisingQuantifierFragment';
 import NativeFragment from '../../../../src/Match/Fragment/NativeFragment';
 import QuantifierMatcher from '../../../../src/Match/QuantifierMatcher';
 
 describe('MaximisingQuantifierFragment', () => {
+    let existingMatch: FragmentMatchInterface;
     let fragment: MaximisingQuantifierFragment;
     let fragmentMatcher: FragmentMatcher;
     let quantifierMatcher: QuantifierMatcher;
 
     beforeEach(() => {
         fragmentMatcher = new FragmentMatcher();
-        quantifierMatcher = new QuantifierMatcher(fragmentMatcher);
+        quantifierMatcher = new QuantifierMatcher();
+        existingMatch = new FragmentMatchTree(0);
 
         fragment = new MaximisingQuantifierFragment(
-            fragmentMatcher,
             quantifierMatcher,
             new LiteralFragment('my-text'),
             2,
@@ -36,7 +39,12 @@ describe('MaximisingQuantifierFragment', () => {
     describe('match()', () => {
         describe('when un-anchored', () => {
             it('should not match when the component appears at the start position once', () => {
-                const match = fragment.match('here is my-text', 8, false);
+                const match = fragment.match(
+                    'here is my-text',
+                    8,
+                    false,
+                    existingMatch
+                );
 
                 expect(match).to.be.null;
             });
@@ -45,7 +53,8 @@ describe('MaximisingQuantifierFragment', () => {
                 const match = fragment.match(
                     'here is my-textmy-text',
                     8,
-                    false
+                    false,
+                    existingMatch
                 );
 
                 expect(match).not.to.be.null;
@@ -57,7 +66,8 @@ describe('MaximisingQuantifierFragment', () => {
                 const match = fragment.match(
                     'here is my-textmy-textmy-text',
                     8,
-                    false
+                    false,
+                    existingMatch
                 );
 
                 expect(match).not.to.be.null;
@@ -69,7 +79,8 @@ describe('MaximisingQuantifierFragment', () => {
                 const match = fragment.match(
                     'here is my-textmy-textmy-textmy-text',
                     8,
-                    false
+                    false,
+                    existingMatch
                 );
 
                 expect(match).not.to.be.null;
@@ -83,7 +94,8 @@ describe('MaximisingQuantifierFragment', () => {
                 const match = fragment.match(
                     'here is my-textmy-textmy-textmy-textmy-text',
                     8,
-                    false
+                    false,
+                    existingMatch
                 );
 
                 expect(match).not.to.be.null;
@@ -98,7 +110,8 @@ describe('MaximisingQuantifierFragment', () => {
                 const match = fragment.match(
                     'here is my-textmy-text',
                     5,
-                    false
+                    false,
+                    existingMatch
                 );
 
                 expect(match).not.to.be.null;
@@ -108,7 +121,6 @@ describe('MaximisingQuantifierFragment', () => {
 
             it('should backtrack inside the most recent occurrence', () => {
                 fragment = new MaximisingQuantifierFragment(
-                    fragmentMatcher,
                     quantifierMatcher,
                     new CapturingGroupFragment(
                         fragmentMatcher,
@@ -122,7 +134,8 @@ describe('MaximisingQuantifierFragment', () => {
                 const match = fragment.match(
                     'here is my-textmy-text',
                     8,
-                    false
+                    false,
+                    existingMatch
                 );
 
                 expect(match).not.to.be.null;
@@ -135,7 +148,8 @@ describe('MaximisingQuantifierFragment', () => {
                 const match = fragment.match(
                     'here is my-textmy-textmy-text',
                     8,
-                    false
+                    false,
+                    existingMatch
                 );
 
                 expect(match).not.to.be.null;
@@ -149,7 +163,8 @@ describe('MaximisingQuantifierFragment', () => {
                 const match = fragment.match(
                     'here is my-textmy-textmy-text',
                     8,
-                    false
+                    false,
+                    existingMatch
                 );
 
                 expect(match).not.to.be.null;
@@ -158,24 +173,42 @@ describe('MaximisingQuantifierFragment', () => {
             });
 
             it('should return null when the component does not appear in the subject', () => {
-                expect(fragment.match('something-else', 0, false)).to.be.null;
+                expect(
+                    fragment.match('something-else', 0, false, existingMatch)
+                ).to.be.null;
             });
 
             it('should return null when the only match appears before the start position', () => {
-                expect(fragment.match('here is my-textmy-text', 9, false)).to.be
-                    .null;
+                expect(
+                    fragment.match(
+                        'here is my-textmy-text',
+                        9,
+                        false,
+                        existingMatch
+                    )
+                ).to.be.null;
             });
         });
 
         describe('when anchored', () => {
             it('should not match when the component appears at the start position once', () => {
-                const match = fragment.match('here is my-text', 8, true);
+                const match = fragment.match(
+                    'here is my-text',
+                    8,
+                    true,
+                    existingMatch
+                );
 
                 expect(match).to.be.null;
             });
 
             it('should match when the component appears at the start position twice consecutively', () => {
-                const match = fragment.match('here is my-textmy-text', 8, true);
+                const match = fragment.match(
+                    'here is my-textmy-text',
+                    8,
+                    true,
+                    existingMatch
+                );
 
                 expect(match).not.to.be.null;
                 expect(match?.getCapture()).to.equal('my-textmy-text');
@@ -186,7 +219,8 @@ describe('MaximisingQuantifierFragment', () => {
                 const match = fragment.match(
                     'here is my-textmy-textmy-text',
                     8,
-                    true
+                    true,
+                    existingMatch
                 );
 
                 expect(match).not.to.be.null;
@@ -198,7 +232,8 @@ describe('MaximisingQuantifierFragment', () => {
                 const match = fragment.match(
                     'here is my-textmy-textmy-textmy-text',
                     8,
-                    true
+                    true,
+                    existingMatch
                 );
 
                 expect(match).not.to.be.null;
@@ -212,7 +247,8 @@ describe('MaximisingQuantifierFragment', () => {
                 const match = fragment.match(
                     'here is my-textmy-textmy-textmy-textmy-text',
                     8,
-                    true
+                    true,
+                    existingMatch
                 );
 
                 expect(match).not.to.be.null;
@@ -224,14 +260,18 @@ describe('MaximisingQuantifierFragment', () => {
             });
 
             it('should return null when the component appears after the start position', () => {
-                const match = fragment.match('here is my-textmy-text', 5, true);
+                const match = fragment.match(
+                    'here is my-textmy-text',
+                    5,
+                    true,
+                    existingMatch
+                );
 
                 expect(match).to.be.null;
             });
 
             it('should backtrack inside the most recent occurrence', () => {
                 fragment = new MaximisingQuantifierFragment(
-                    fragmentMatcher,
                     quantifierMatcher,
                     new CapturingGroupFragment(
                         fragmentMatcher,
@@ -242,7 +282,12 @@ describe('MaximisingQuantifierFragment', () => {
                     4
                 );
 
-                const match = fragment.match('here is my-textmy-text', 8, true);
+                const match = fragment.match(
+                    'here is my-textmy-text',
+                    8,
+                    true,
+                    existingMatch
+                );
 
                 expect(match).not.to.be.null;
                 expect(match?.getCapture()).to.equal('my-textmy-text');
@@ -254,7 +299,8 @@ describe('MaximisingQuantifierFragment', () => {
                 const match = fragment.match(
                     'here is my-textmy-textmy-text',
                     8,
-                    true
+                    true,
+                    existingMatch
                 );
 
                 expect(match).not.to.be.null;
@@ -268,7 +314,8 @@ describe('MaximisingQuantifierFragment', () => {
                 const match = fragment.match(
                     'here is my-textmy-textmy-text',
                     8,
-                    true
+                    true,
+                    existingMatch
                 );
 
                 expect(match).not.to.be.null;
@@ -277,12 +324,19 @@ describe('MaximisingQuantifierFragment', () => {
             });
 
             it('should return null when the component does not appear in the subject', () => {
-                expect(fragment.match('something-else', 0, true)).to.be.null;
+                expect(fragment.match('something-else', 0, true, existingMatch))
+                    .to.be.null;
             });
 
             it('should return null when the only match appears before the start position', () => {
-                expect(fragment.match('here is my-textmy-text', 9, true)).to.be
-                    .null;
+                expect(
+                    fragment.match(
+                        'here is my-textmy-text',
+                        9,
+                        true,
+                        existingMatch
+                    )
+                ).to.be.null;
             });
         });
     });

@@ -29,7 +29,7 @@
     "build": "tsc --build src",
     "build:clean": "rm -rf dist/*",
     "mocha": "ts-mocha -r mocha-bootstrap --recursive 'test/integration/**/*Test.ts' 'test/unit/**/*Test.ts'",
-    "lint:eslint:check": "eslint '{src,test}/**/*.ts'",
+    "lint:eslint:check": "eslint '{src,test}/**/*.ts' --max-warnings=0",
     "lint:eslint:fix": "eslint '{src,test}/**/*.ts' --fix",
     "lint:tsc:check": "tsc --noEmit",
     "prepublishOnly": "npm test && npm run build:clean && npm run build",

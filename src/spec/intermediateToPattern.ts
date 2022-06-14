@@ -15,6 +15,7 @@ import {
     I_MINIMISING_QUANTIFIER,
     I_NAMED_CAPTURING_GROUP,
     I_NON_CAPTURING_GROUP,
+    I_NUMBERED_BACKREFERENCE,
     I_PATTERN,
     I_POSSESSIVE_QUANTIFIER,
     I_RAW_REGEX,
@@ -28,14 +29,15 @@ import { Flags } from '../declarations/types';
 import FragmentInterface from '../Match/Fragment/FragmentInterface';
 import FragmentMatcher from '../Match/FragmentMatcher';
 import MaximisingQuantifierFragment from '../Match/Fragment/MaximisingQuantifierFragment';
+import MinimisingQuantifierFragment from '../Match/Fragment/MinimisingQuantifierFragment';
 import NamedCapturingGroupFragment from '../Match/Fragment/NamedCapturingGroupFragment';
 import NativeFragment from '../Match/Fragment/NativeFragment';
+import NonCapturingGroupFragment from '../Match/Fragment/NonCapturingGroupFragment';
 import NoopFragment from '../Match/Fragment/NoopFragment';
 import PatternFragment from '../Match/Fragment/PatternFragment';
-import QuantifierMatcher from '../Match/QuantifierMatcher';
 import PossessiveQuantifierFragment from '../Match/Fragment/PossessiveQuantifierFragment';
-import MinimisingQuantifierFragment from '../Match/Fragment/MinimisingQuantifierFragment';
-import NonCapturingGroupFragment from '../Match/Fragment/NonCapturingGroupFragment';
+import QuantifierMatcher from '../Match/QuantifierMatcher';
+import NumberedBackreferenceFragment from '../Match/Fragment/NumberedBackreferenceFragment';
 
 type Context = {
     flags: Flags;
@@ -99,7 +101,6 @@ export default {
                 context.quantifierMatcher.parseQuantifier(node.quantifier);
 
             return new MaximisingQuantifierFragment(
-                context.fragmentMatcher,
                 context.quantifierMatcher,
                 componentFragment,
                 minimumMatches,
@@ -116,7 +117,6 @@ export default {
                 context.quantifierMatcher.parseQuantifier(node.quantifier);
 
             return new MinimisingQuantifierFragment(
-                context.fragmentMatcher,
                 context.quantifierMatcher,
                 componentFragment,
                 minimumMatches,
@@ -156,12 +156,17 @@ export default {
         'I_NOOP': (): NoopFragment => {
             return new NoopFragment();
         },
+        'I_NUMBERED_BACKREFERENCE': (
+            node: I_NUMBERED_BACKREFERENCE
+        ): NumberedBackreferenceFragment => {
+            return new NumberedBackreferenceFragment(node.number);
+        },
         'I_PATTERN': (
             node: I_PATTERN,
             interpret: Interpret
         ): PatternFragment => {
             const fragmentMatcher = new FragmentMatcher();
-            const quantifierMatcher = new QuantifierMatcher(fragmentMatcher);
+            const quantifierMatcher = new QuantifierMatcher();
             const context = { fragmentMatcher, quantifierMatcher };
 
             const componentFragments = node.components.map((node) =>

@@ -170,6 +170,8 @@ export default {
                 'name': 'I_RAW_REGEX',
                 'chunks': [
                     {
+                        // TODO: Implement I_RAW_LITERAL, concat with I_RAW_CHARS in optimiser,
+                        //       any isolated ones that remain become LiteralFragments.
                         'name': 'I_RAW_CHARS',
                         'chars': node.text,
                     },
