@@ -14,20 +14,24 @@ import FragmentMatchInterface from '../../../../src/Match/FragmentMatchInterface
 import FragmentMatchTree from '../../../../src/Match/FragmentMatchTree';
 
 describe('CharacterClassFragment', () => {
+    let createFragment: (negated: boolean) => void;
     let existingMatch: FragmentMatchInterface;
     let fragment: CharacterClassFragment;
 
     beforeEach(() => {
         existingMatch = new FragmentMatchTree(0);
 
-        fragment = new CharacterClassFragment(
-            [new NativeFragment('m'), new NativeFragment('t')],
-            false
-        );
+        createFragment = (negated: boolean) => {
+            fragment = new CharacterClassFragment(
+                [new NativeFragment('m'), new NativeFragment('t')],
+                negated
+            );
+        };
+        createFragment(false);
     });
 
     describe('match()', () => {
-        describe('when un-anchored', () => {
+        describe('when un-anchored and not negated', () => {
             it('should match when a component appears at the start position', () => {
                 const match = fragment.match(
                     'here is my-literal',
@@ -71,7 +75,56 @@ describe('CharacterClassFragment', () => {
             });
         });
 
-        describe('when anchored', () => {
+        describe('when un-anchored and negated', () => {
+            beforeEach(() => {
+                createFragment(true);
+            });
+
+            it('should return null when a component appears at the start position', () => {
+                const match = fragment.match(
+                    'here is my-literal',
+                    8,
+                    false,
+                    existingMatch
+                );
+
+                expect(match).to.be.null;
+            });
+
+            it('should return null when a component appears after the start position', () => {
+                const match = fragment.match(
+                    'here is my-literal',
+                    5,
+                    false,
+                    existingMatch
+                );
+
+                expect(match).to.be.null;
+            });
+
+            it('should match when a component does not appear in subject', () => {
+                const match = fragment.match('abcd', 0, false, existingMatch);
+
+                expect(match).not.to.be.null;
+                expect(match?.getCapture()).to.equal('a');
+                expect(match?.getStart()).to.equal(0);
+            });
+
+            it('should match when all matching components appear before the start position', () => {
+                const match = fragment.match(
+                    'here is my-literal',
+                    14,
+                    false,
+                    existingMatch
+                );
+
+                expect(match).not.to.be.null;
+                expect(match?.getCapture()).to.equal('e');
+                expect(match?.getStart()).to.equal(14);
+            });
+        });
+
+        describe('when anchored and not negated', () => {
             it('should match when a component appears at the start position', () => {
                 const match = fragment.match(
                     'here is my-literal',
@@ -105,6 +158,62 @@ describe('CharacterClassFragment', () => {
                 expect(
                     fragment.match('here is my-literal', 9, true, existingMatch)
                 ).to.be.null;
+            });
+        });
+
+        describe('when anchored and negated', () => {
+            beforeEach(() => {
+                createFragment(true);
+            });
+
+            it('should return null when a component appears at the start position', () => {
+                const match = fragment.match(
+                    'here is my-literal',
+                    8,
+                    true,
+                    existingMatch
+                );
+
+                expect(match).to.be.null;
+            });
+
+            it('should match when a component appears after the start position', () => {
+                const match = fragment.match(
+                    'here is my-literal',
+                    5,
+                    true,
+                    existingMatch
+                );
+
+                expect(match).not.to.be.null;
+                expect(match?.getCapture()).to.equal('i');
+                expect(match?.getStart()).to.equal(5);
+            });
+
+            it('should match when a component does not appear in subject', () => {
+                const match = fragment.match(
+                    'something-else',
+                    0,
+                    true,
+                    existingMatch
+                );
+
+                expect(match).not.to.be.null;
+                expect(match?.getCapture()).to.equal('s');
+                expect(match?.getStart()).to.equal(0);
+            });
+
+            it('should match when all matching components appear before the start position', () => {
+                const match = fragment.match(
+                    'here is my-literal',
+                    9,
+                    true,
+                    existingMatch
+                );
+
+                expect(match).not.to.be.null;
+                expect(match?.getCapture()).to.equal('y');
+                expect(match?.getStart()).to.equal(9);
             });
         });
     });
