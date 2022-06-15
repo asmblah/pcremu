@@ -57,7 +57,7 @@ describe('IR-to-Pattern compiler (unoptimised) non-capturing group integration',
                         {
                             type: 'native',
                             chars: 'X',
-                            patternToEmulatedNumberedGroupIndex: [],
+                            patternToEmulatedNumberedGroupIndex: {},
                         },
                     ],
                 },

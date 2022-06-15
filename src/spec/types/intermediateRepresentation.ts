@@ -26,7 +26,27 @@ export type I_CAPTURING_GROUP = I_COMPONENT & {
     groupIndex: number;
     components: I_COMPONENT[];
 };
+export type I_CHARACTER = I_CHARACTER_RANGE_EXTENT & {
+    name: 'I_CHARACTER';
+    char: string;
+};
+export type I_CHARACTER_CLASS = I_COMPONENT & {
+    name: 'I_CHARACTER_CLASS';
+    negated: boolean;
+    components: I_COMPONENT[];
+};
+export type I_CHARACTER_CLASS_COMPONENT = I_COMPONENT;
+export type I_CHARACTER_RANGE = I_CHARACTER_CLASS_COMPONENT & {
+    name: 'I_CHARACTER_RANGE';
+    from: I_CHARACTER_RANGE_EXTENT;
+    to: I_CHARACTER_RANGE_EXTENT;
+};
+export type I_CHARACTER_RANGE_EXTENT = I_CHARACTER_CLASS_COMPONENT;
 export type I_COMPONENT = I_NODE;
+export type I_HEX_CODE_CHAR = I_CHARACTER_RANGE_EXTENT & {
+    name: 'I_HEX_CODE_CHAR';
+    code: string;
+};
 export type I_MAXIMISING_QUANTIFIER = I_COMPONENT & {
     name: 'I_MAXIMISING_QUANTIFIER';
     quantifier: string;

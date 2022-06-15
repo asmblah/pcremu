@@ -87,7 +87,7 @@ describe('Parser extended mode integration', () => {
             'components': [
                 {
                     'name': 'N_LITERAL',
-                    'text': 'mytext\\#notacomment',
+                    'text': 'mytext#notacomment',
                 },
             ],
         });

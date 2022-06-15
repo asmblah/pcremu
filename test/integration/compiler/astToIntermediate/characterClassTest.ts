@@ -38,16 +38,33 @@ describe('AST-to-IR compiler character class integration', () => {
                         },
                         {
                             'name': 'N_CHARACTER_RANGE',
-                            'from': 'c',
-                            'to': 'd',
+                            'from': { 'name': 'N_CHARACTER', 'char': 'c' },
+                            'to': { 'name': 'N_CHARACTER', 'char': 'd' },
                         },
                         {
                             'name': 'N_CHARACTER',
                             'char': 'f',
                         },
                         {
+                            'name': 'N_ESCAPED_CHAR',
+                            // Check that we handle escaping of special chars correctly.
+                            'char': ']',
+                        },
+                        {
                             'name': 'N_CHARACTER',
                             'char': 'g',
+                        },
+                        {
+                            'name': 'N_HEX_CODE_CHAR',
+                            'code': '9e',
+                        },
+                        {
+                            'name': 'N_CHARACTER',
+                            'char': 'h',
+                        },
+                        {
+                            'name': 'N_CHARACTER',
+                            'char': '(',
                         },
                         {
                             'name': 'N_CHARACTER',
@@ -77,11 +94,101 @@ describe('AST-to-IR compiler character class integration', () => {
                     ],
                 },
                 {
-                    'name': 'I_RAW_REGEX',
-                    'chunks': [
+                    'name': 'I_CHARACTER_CLASS',
+                    'negated': true,
+                    'components': [
                         {
-                            'name': 'I_RAW_CHARS',
-                            'chars': '[^]c-dfg-]',
+                            'name': 'I_RAW_REGEX',
+                            'chunks': [
+                                {
+                                    'name': 'I_RAW_CHARS',
+                                    'chars': '\\]',
+                                },
+                            ],
+                        },
+                        {
+                            'name': 'I_CHARACTER_RANGE',
+                            'from': {
+                                'name': 'I_RAW_REGEX',
+                                'chunks': [
+                                    {
+                                        'chars': 'c',
+                                        'name': 'I_RAW_CHARS',
+                                    },
+                                ],
+                            },
+                            'to': {
+                                'name': 'I_RAW_REGEX',
+                                'chunks': [
+                                    {
+                                        'chars': 'd',
+                                        'name': 'I_RAW_CHARS',
+                                    },
+                                ],
+                            },
+                        },
+                        {
+                            'name': 'I_RAW_REGEX',
+                            'chunks': [
+                                {
+                                    'name': 'I_RAW_CHARS',
+                                    'chars': 'f',
+                                },
+                            ],
+                        },
+                        {
+                            'name': 'I_RAW_REGEX',
+                            'chunks': [
+                                {
+                                    'name': 'I_RAW_CHARS',
+                                    'chars': '\\]',
+                                },
+                            ],
+                        },
+                        {
+                            'name': 'I_RAW_REGEX',
+                            'chunks': [
+                                {
+                                    'chars': 'g',
+                                    'name': 'I_RAW_CHARS',
+                                },
+                            ],
+                        },
+                        {
+                            'name': 'I_RAW_REGEX',
+                            'chunks': [
+                                {
+                                    'chars': '\\x9e',
+                                    'name': 'I_RAW_CHARS',
+                                },
+                            ],
+                        },
+                        {
+                            'name': 'I_RAW_REGEX',
+                            'chunks': [
+                                {
+                                    'chars': 'h',
+                                    'name': 'I_RAW_CHARS',
+                                },
+                            ],
+                        },
+                        {
+                            'name': 'I_RAW_REGEX',
+                            'chunks': [
+                                {
+                                    'chars': '\\(',
+                                    'name': 'I_RAW_CHARS',
+                                },
+                            ],
+                        },
+                        {
+                            'name': 'I_RAW_REGEX',
+                            'chunks': [
+                                {
+                                    'chars': '\\x2d', // Hyphen.
+                                    'name': 'I_RAW_CHARS',
+                                },
+                            ],
                         },
                     ],
                 },

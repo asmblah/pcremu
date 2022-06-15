@@ -29,24 +29,36 @@ export type N_CHARACTER = N_CHARACTER_CLASS_COMPONENT & {
     name: 'N_CHARACTER';
     char: string;
 };
+export type N_ESCAPED_CHAR = N_CHARACTER_CLASS_COMPONENT & {
+    name: 'N_ESCAPED_CHAR';
+    char: string;
+};
 export type N_CHARACTER_CLASS = N_COMPONENT & {
     name: 'N_CHARACTER_CLASS';
-    components: N_CHARACTER_CLASS_COMPONENT[];
     negated: boolean;
+    components: N_CHARACTER_CLASS_COMPONENT[];
 };
 export type N_CHARACTER_CLASS_COMPONENT = N_COMPONENT;
 export type N_CHARACTER_RANGE = N_CHARACTER_CLASS_COMPONENT & {
     name: 'N_CHARACTER_RANGE';
-    from: string;
-    to: string;
+    from: N_CHARACTER_CLASS_COMPONENT;
+    to: N_CHARACTER_CLASS_COMPONENT;
 };
 export type N_COMPONENT = N_NODE;
+export type N_CONTROL_CHAR = N_CHARACTER_CLASS_COMPONENT & {
+    name: 'N_CONTROL_CHAR';
+    type: string;
+};
 export type N_DOT = N_COMPONENT & {
     name: 'N_DOT';
 };
-export type N_GENERIC_CHAR = N_COMPONENT & {
+export type N_GENERIC_CHAR = N_CHARACTER_CLASS_COMPONENT & {
     name: 'N_GENERIC_CHAR';
     type: string;
+};
+export type N_HEX_CODE_CHAR = N_CHARACTER_CLASS_COMPONENT & {
+    name: 'N_HEX_CODE_CHAR';
+    code: string;
 };
 export type N_LITERAL = N_COMPONENT & { name: 'N_LITERAL'; text: string };
 export type N_MAXIMISING_QUANTIFIER = N_COMPONENT & {

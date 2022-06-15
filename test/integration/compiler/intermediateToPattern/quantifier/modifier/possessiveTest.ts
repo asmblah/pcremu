@@ -56,7 +56,7 @@ describe('IR-to-Pattern compiler (unoptimised) possessive quantifier integration
                     component: {
                         type: 'native',
                         chars: 'X',
-                        patternToEmulatedNumberedGroupIndex: [],
+                        patternToEmulatedNumberedGroupIndex: {},
                     },
                 },
             ],

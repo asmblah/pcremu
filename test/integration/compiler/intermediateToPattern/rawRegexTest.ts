@@ -52,12 +52,12 @@ describe('IR-to-Pattern compiler (unoptimised) raw regex characters integration'
                 {
                     type: 'native',
                     chars: 'hello',
-                    patternToEmulatedNumberedGroupIndex: [],
+                    patternToEmulatedNumberedGroupIndex: {},
                 },
                 {
                     type: 'native',
                     chars: 'world',
-                    patternToEmulatedNumberedGroupIndex: [],
+                    patternToEmulatedNumberedGroupIndex: {},
                 },
             ],
         });

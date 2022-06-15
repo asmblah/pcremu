@@ -8,8 +8,8 @@
  */
 
 import { expect } from 'chai';
-import emulator from '../../../../src';
-import Parser from '../../../../src/Parser';
+import emulator from '../../../../../src';
+import Parser from '../../../../../src/Parser';
 
 describe('Parser numbered backreference integration', () => {
     let parser: Parser;

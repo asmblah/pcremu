@@ -56,7 +56,7 @@ describe('IR-to-Pattern compiler (unoptimised) quantifier minimiser integration'
                     component: {
                         type: 'native',
                         chars: 'X',
-                        patternToEmulatedNumberedGroupIndex: [],
+                        patternToEmulatedNumberedGroupIndex: {},
                     },
                 },
             ],

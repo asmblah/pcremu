@@ -11,6 +11,8 @@ import {
     I_ALTERNATION,
     I_ALTERNATIVE,
     I_CAPTURING_GROUP,
+    I_CHARACTER_CLASS,
+    I_CHARACTER_RANGE,
     I_MAXIMISING_QUANTIFIER,
     I_MINIMISING_QUANTIFIER,
     I_NAMED_CAPTURING_GROUP,
@@ -18,12 +20,14 @@ import {
     I_NUMBERED_BACKREFERENCE,
     I_PATTERN,
     I_POSSESSIVE_QUANTIFIER,
+    I_RAW_CHARS,
     I_RAW_REGEX,
 } from './types/intermediateRepresentation';
 import { N_NODE } from './types/ast';
 import AlternativeFragment from '../Match/Fragment/AlternativeFragment';
 import AlternationFragment from '../Match/Fragment/AlternationFragment';
 import CapturingGroupFragment from '../Match/Fragment/CapturingGroupFragment';
+import CharacterClassFragment from '../Match/Fragment/CharacterClassFragment';
 import Exception from '../Exception/Exception';
 import { Flags } from '../declarations/types';
 import FragmentInterface from '../Match/Fragment/FragmentInterface';
@@ -34,10 +38,10 @@ import NamedCapturingGroupFragment from '../Match/Fragment/NamedCapturingGroupFr
 import NativeFragment from '../Match/Fragment/NativeFragment';
 import NonCapturingGroupFragment from '../Match/Fragment/NonCapturingGroupFragment';
 import NoopFragment from '../Match/Fragment/NoopFragment';
+import NumberedBackreferenceFragment from '../Match/Fragment/NumberedBackreferenceFragment';
 import PatternFragment from '../Match/Fragment/PatternFragment';
 import PossessiveQuantifierFragment from '../Match/Fragment/PossessiveQuantifierFragment';
 import QuantifierMatcher from '../Match/QuantifierMatcher';
-import NumberedBackreferenceFragment from '../Match/Fragment/NumberedBackreferenceFragment';
 
 type Context = {
     flags: Flags;
@@ -90,6 +94,24 @@ export default {
                 componentFragments,
                 node.groupIndex
             );
+        },
+        'I_CHARACTER_CLASS': (
+            node: I_CHARACTER_CLASS,
+            interpret: Interpret
+        ): CharacterClassFragment => {
+            const componentFragments = node.components.map((node) =>
+                interpret(node)
+            );
+
+            return new CharacterClassFragment(componentFragments, node.negated);
+        },
+        'I_CHARACTER_RANGE': (node: I_CHARACTER_RANGE): NativeFragment => {
+            const from = ((node.from as I_RAW_REGEX).chunks[0] as I_RAW_CHARS)
+                .chars;
+            const to = ((node.to as I_RAW_REGEX).chunks[0] as I_RAW_CHARS)
+                .chars;
+
+            return new NativeFragment(`[${from}-${to}]`);
         },
         'I_MAXIMISING_QUANTIFIER': (
             node: I_MAXIMISING_QUANTIFIER,
@@ -213,7 +235,7 @@ export default {
                 // as no native capturing groups should have been output that would require mapping.
                 return new NativeFragment(
                     optimisedNode.chars,
-                    [],
+                    {},
                     context.flags
                 );
             }

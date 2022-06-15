@@ -7,10 +7,10 @@
  * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
  */
 
-import emulator from '../../../../../src';
+import emulator from '../../../../../../src';
 import { expect } from 'chai';
-import AstToIntermediateCompiler from '../../../../../src/AstToIntermediateCompiler';
-import Ast from '../../../../../src/Ast';
+import AstToIntermediateCompiler from '../../../../../../src/AstToIntermediateCompiler';
+import Ast from '../../../../../../src/Ast';
 import { SinonStubbedInstance } from 'sinon';
 import sinon = require('sinon');
 

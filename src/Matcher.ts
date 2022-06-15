@@ -59,4 +59,18 @@ export default class Matcher {
     matchOne(subject: string, start = 0): Match | null {
         return this.pattern.match(subject, start);
     }
+
+    /**
+     * Fetches a string representation of the pattern.
+     */
+    toString(): string {
+        return this.pattern.toString();
+    }
+
+    /**
+     * Fetches a recursive structure representing the pattern's fragments.
+     */
+    toStructure(): object {
+        return this.pattern.toStructure();
+    }
 }

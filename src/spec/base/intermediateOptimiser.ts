@@ -11,6 +11,8 @@ import {
     I_ALTERNATION,
     I_ALTERNATIVE,
     I_CAPTURING_GROUP,
+    I_CHARACTER_CLASS,
+    I_CHARACTER_RANGE,
     I_COMPONENT,
     I_MAXIMISING_QUANTIFIER,
     I_MINIMISING_QUANTIFIER,
@@ -21,6 +23,7 @@ import {
     I_NUMBERED_BACKREFERENCE,
     I_PATTERN,
     I_POSSESSIVE_QUANTIFIER,
+    I_RAW_CHARS,
     I_RAW_CHUNK,
     I_RAW_REGEX,
 } from '../types/intermediateRepresentation';
@@ -193,6 +196,34 @@ export default {
                 'components': node.components.map((node: I_COMPONENT) =>
                     interpret(node)
                 ),
+            };
+        },
+        'I_CHARACTER_CLASS': (
+            node: I_CHARACTER_CLASS,
+            interpret: Interpret
+        ): I_CHARACTER_CLASS => {
+            return {
+                'name': 'I_CHARACTER_CLASS',
+                'negated': node.negated,
+                'components': node.components.map((node: I_COMPONENT) =>
+                    interpret(node)
+                ),
+            };
+        },
+        'I_CHARACTER_RANGE': (node: I_CHARACTER_RANGE): I_RAW_REGEX => {
+            const from = ((node.from as I_RAW_REGEX).chunks[0] as I_RAW_CHARS)
+                .chars;
+            const to = ((node.to as I_RAW_REGEX).chunks[0] as I_RAW_CHARS)
+                .chars;
+
+            return {
+                'name': 'I_RAW_REGEX',
+                'chunks': [
+                    {
+                        'name': 'I_RAW_CHARS',
+                        'chars': `${from}-${to}`,
+                    },
+                ],
             };
         },
         'I_MAXIMISING_QUANTIFIER': (

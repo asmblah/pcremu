@@ -61,23 +61,29 @@ describe('Parser literal integration', () => {
             'components': [
                 {
                     'name': 'N_LITERAL',
-                    'text': 'my \\\\ \\^\\$\\.\\[\\|\\(\\)\\*\\+\\?\\{ literal',
+                    'text': 'my \\ ^$.[|()*+?{ literal',
                 },
             ],
         });
     });
 
-    it('should be able to parse a regex pattern containing a char that is unnecessarily escaped', () => {
-        const ast = parser.parse('my \\literal');
+    it('should not be able to parse a regex pattern containing an ASCII letter that is unnecessarily escaped', () => {
+        // TODO: Improve syntax error messages.
+        expect(() => {
+            parser.parse('my \\literal');
+        }).to.throw('Parser.parse() :: Unexpected "l"');
+    });
 
-        expect(ast.getPattern()).to.equal('my \\literal');
+    it('should not be able to parse a regex pattern containing an ASCII non-letter that is unnecessarily escaped', () => {
+        const ast = parser.parse('my\\;literal');
+
+        expect(ast.getPattern()).to.equal('my\\;literal');
         expect(ast.getParsingAst()).to.deep.equal({
             'name': 'N_PATTERN',
             'components': [
                 {
                     'name': 'N_LITERAL',
-                    // TODO: Strip unnecessary escapes?
-                    'text': 'my \\literal',
+                    'text': 'my;literal',
                 },
             ],
         });

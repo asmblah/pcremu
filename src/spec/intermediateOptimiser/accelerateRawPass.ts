@@ -11,6 +11,7 @@ import {
     I_ALTERNATION,
     I_ALTERNATIVE,
     I_CAPTURING_GROUP,
+    I_CHARACTER_CLASS,
     I_COMPONENT,
     I_MAXIMISING_QUANTIFIER,
     I_MINIMISING_QUANTIFIER,
@@ -161,6 +162,48 @@ export default {
                         'groupIndex': node.groupIndex,
                         'components': concatenatedComponents,
                     };
+                }
+            );
+        },
+        'I_CHARACTER_CLASS': (
+            node: I_CHARACTER_CLASS,
+            interpret: Interpret
+        ): I_CHARACTER_CLASS | I_RAW_REGEX => {
+            return optimiseComponents<I_CHARACTER_CLASS>(
+                node.components,
+                interpret,
+                (rawRegexNode) => {
+                    // Fully optimised mode - entire contents inside character class have been compiled down
+                    // to a native regex fragment, so we can wrap it all in a native character class.
+                    return {
+                        'name': 'I_RAW_REGEX',
+                        'chunks': [
+                            {
+                                'name': 'I_RAW_CHARS',
+                                'chars': '[' + (node.negated ? '^' : ''),
+                            },
+                            {
+                                'name': 'I_RAW_NESTED',
+                                'node': rawRegexNode,
+                            },
+                            {
+                                'name': 'I_RAW_CHARS',
+                                'chars': ']',
+                            },
+                        ],
+                    };
+                },
+                () => {
+                    /*
+                     * Partially-optimised mode: components have been optimised as much as possible,
+                     * but we've been unable to produce a single raw regex fragment.
+                     *
+                     * We cannot trivially partially optimise a character class
+                     * because any adjacent components are alternatives.
+                     *
+                     * Note that we could use a native alternation in future where applicable.
+                     */
+                    return node;
                 }
             );
         },

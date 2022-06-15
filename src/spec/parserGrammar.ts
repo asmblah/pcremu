@@ -37,6 +37,9 @@ export default {
                 { name: 'components', zeroOrMoreOf: 'N_COMPONENT_LEVEL_1' },
             ],
         },
+        'N_BACKSLASH': {
+            components: { oneOf: ['N_GENERIC_CHAR', 'N_NON_PRINTING_CHAR'] },
+        },
         'N_CAPTURING_GROUP': {
             components: [
                 /\(/,
@@ -45,7 +48,10 @@ export default {
             ],
         },
         'N_CHARACTER': {
-            components: { name: 'char', what: /[^\]]/ },
+            components: {
+                name: 'char',
+                what: /[^\]\\]/,
+            },
         },
         'N_CHARACTER_CLASS': {
             components: [
@@ -97,13 +103,33 @@ export default {
             },
         },
         'N_CHARACTER_CLASS_COMPONENT': {
-            components: { oneOf: ['N_CHARACTER_RANGE', 'N_CHARACTER'] },
+            components: {
+                oneOf: [
+                    'N_CHARACTER_RANGE',
+                    'N_GENERIC_CHAR',
+                    'N_CHARACTER_RANGE_EXTENT',
+                ],
+            },
+        },
+        'N_CHARACTER_RANGE_EXTENT': {
+            components: {
+                oneOf: [
+                    'N_ESCAPED_CHAR',
+                    'N_CHARACTER_CLASS_NON_PRINTING_CHAR',
+                    'N_CHARACTER',
+                ],
+            },
+        },
+        'N_CHARACTER_CLASS_NON_PRINTING_CHAR': {
+            components: {
+                oneOf: ['N_HEX_CODE_CHAR', 'N_CONTROL_CHAR'],
+            },
         },
         'N_CHARACTER_RANGE': {
             components: [
-                { name: 'from', what: /\w/ },
+                { name: 'from', rule: 'N_CHARACTER_RANGE_EXTENT' },
                 /-/,
-                { name: 'to', what: /\w/ },
+                { name: 'to', rule: 'N_CHARACTER_RANGE_EXTENT' },
             ],
         },
         'N_COMMENT': /#.*?(?:[\r\n]+|$)/,
@@ -116,10 +142,9 @@ export default {
                     'N_NON_CAPTURING_GROUP',
                     'N_CAPTURING_GROUP',
                     'N_CHARACTER_CLASS',
-                    'N_GENERIC_CHAR',
-                    'N_DOT',
+                    'N_BACKSLASH',
                     'N_LITERAL',
-                    'N_NUMBERED_BACKREFERENCE_OR_OCTAL_CHAR',
+                    'N_DOT',
                 ],
             },
         },
@@ -213,13 +238,38 @@ export default {
                 };
             },
         },
+        'N_CONTROL_CHAR': {
+            components: {
+                name: 'type',
+                what: /\\([nrt])/,
+                captureIndex: 1,
+            },
+        },
         'N_DOT': {
             components: { allowMerge: false, what: /\./ },
+        },
+        'N_ESCAPED_CHAR': {
+            components: {
+                name: 'char',
+                /*
+                 * Allow escaped special characters and whitespace
+                 * but discard the backslash.
+                 */
+                what: /\\([^a-zA-Z\d])/,
+                captureIndex: 1,
+            },
         },
         'N_GENERIC_CHAR': {
             components: {
                 name: 'type',
                 what: /\\([dDhHNsSvVwW])/,
+                captureIndex: 1,
+            },
+        },
+        'N_HEX_CODE_CHAR': {
+            components: {
+                name: 'code',
+                what: /\\x([0-9a-fA-F]{2})/,
                 captureIndex: 1,
             },
         },
@@ -262,11 +312,14 @@ export default {
             components: [
                 {
                     oneOf: [
-                        { what: /[^^$.[|()*+?{\s\\]/ },
-                        // Allow escaped whitespace, but discard the backslash.
-                        { what: /\\(\s)/, captureIndex: 1 },
-                        // Note we exclude the escape sequences in N_GENERIC_CHAR.
-                        { what: /\\[^dDhHNsSvVwW0-9]/ },
+                        // Allow unescaped non-special characters and whitespace.
+                        { what: /[^$^.[|()*+?{\s\\]/ },
+                        /*
+                         * Allow escaped special characters and whitespace
+                         * including hash (extended mode comment),
+                         * but discard the backslash.
+                         */
+                        { what: /\\([^a-zA-Z\d])/, captureIndex: 1 },
                         {
                             // Allow unescaped whitespace inside literals in non-extended mode.
                             what: /\s/,
@@ -299,13 +352,22 @@ export default {
                 /\)/,
             ],
         },
+        'N_NON_PRINTING_CHAR': {
+            components: {
+                oneOf: [
+                    'N_HEX_CODE_CHAR',
+                    'N_CONTROL_CHAR',
+                    'N_NUMBERED_BACKREFERENCE_OR_OCTAL_CHAR',
+                ],
+            },
+        },
         'N_NUMBERED_BACKREFERENCE_OR_OCTAL_CHAR': {
             components: [
                 /\\/,
                 {
                     ignoreWhitespace: false,
                     name: 'digits',
-                    what: /[^0]\d{0,2}/,
+                    what: /(?=\d)[^0]\d{0,2}/,
                 },
             ],
             processor(node: { digits: string; name: string }) {

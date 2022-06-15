@@ -11,6 +11,8 @@ import {
     I_ALTERNATION,
     I_ALTERNATIVE,
     I_CAPTURING_GROUP,
+    I_CHARACTER_CLASS,
+    I_CHARACTER_RANGE,
     I_MAXIMISING_QUANTIFIER,
     I_MINIMISING_QUANTIFIER,
     I_NAMED_CAPTURING_GROUP,
@@ -31,7 +33,10 @@ import {
     N_CHARACTER_CLASS,
     N_CHARACTER_RANGE,
     N_COMPONENT,
+    N_CONTROL_CHAR,
+    N_ESCAPED_CHAR,
     N_GENERIC_CHAR,
+    N_HEX_CODE_CHAR,
     N_LITERAL,
     N_MAXIMISING_QUANTIFIER,
     N_MINIMISING_QUANTIFIER,
@@ -45,6 +50,7 @@ import {
     N_SIMPLE_ASSERTION,
     N_WHITESPACE,
 } from './types/ast';
+import escapeStringRegexp = require('escape-string-regexp');
 
 export interface TrackingContext {
     /**
@@ -117,31 +123,49 @@ export default {
                 ),
             };
         },
-        'N_CHARACTER': (node: N_CHARACTER): string => {
-            return node.char;
-        },
-        'N_CHARACTER_CLASS': (
-            node: N_CHARACTER_CLASS,
-            interpret: Interpret
-        ): I_RAW_REGEX => {
+        'N_CHARACTER': (node: N_CHARACTER): I_RAW_REGEX => {
             return {
                 'name': 'I_RAW_REGEX',
                 'chunks': [
                     {
                         'name': 'I_RAW_CHARS',
-                        'chars':
-                            '[' +
-                            (node.negated ? '^' : '') +
-                            node.components
-                                .map((node: N_NODE) => interpret(node))
-                                .join('') +
-                            ']',
+                        'chars': escapeStringRegexp(node.char),
                     },
                 ],
             };
         },
-        'N_CHARACTER_RANGE': (node: N_CHARACTER_RANGE): string => {
-            return node.from + '-' + node.to;
+        'N_CHARACTER_CLASS': (
+            node: N_CHARACTER_CLASS,
+            interpret: Interpret
+        ): I_CHARACTER_CLASS => {
+            return {
+                'name': 'I_CHARACTER_CLASS',
+                'negated': node.negated,
+                'components': node.components.map((node: N_NODE) =>
+                    interpret(node)
+                ),
+            };
+        },
+        'N_CHARACTER_RANGE': (
+            node: N_CHARACTER_RANGE,
+            interpret: Interpret
+        ): I_CHARACTER_RANGE => {
+            return {
+                'name': 'I_CHARACTER_RANGE',
+                'from': interpret(node.from),
+                'to': interpret(node.to),
+            };
+        },
+        'N_CONTROL_CHAR': (node: N_CONTROL_CHAR): I_RAW_REGEX => {
+            return {
+                'name': 'I_RAW_REGEX',
+                'chunks': [
+                    {
+                        'name': 'I_RAW_CHARS',
+                        'chars': '\\' + node.type,
+                    },
+                ],
+            };
         },
         'N_DOT': (): I_RAW_REGEX => {
             return {
@@ -150,6 +174,17 @@ export default {
                     {
                         'name': 'I_RAW_CHARS',
                         'chars': '.',
+                    },
+                ],
+            };
+        },
+        'N_ESCAPED_CHAR': (node: N_ESCAPED_CHAR): I_RAW_REGEX => {
+            return {
+                'name': 'I_RAW_REGEX',
+                'chunks': [
+                    {
+                        'name': 'I_RAW_CHARS',
+                        'chars': '\\' + node.char,
                     },
                 ],
             };
@@ -165,6 +200,17 @@ export default {
                 ],
             };
         },
+        'N_HEX_CODE_CHAR': (node: N_HEX_CODE_CHAR): I_RAW_REGEX => {
+            return {
+                'name': 'I_RAW_REGEX',
+                'chunks': [
+                    {
+                        'name': 'I_RAW_CHARS',
+                        'chars': '\\x' + node.code,
+                    },
+                ],
+            };
+        },
         'N_LITERAL': (node: N_LITERAL): I_RAW_REGEX => {
             return {
                 'name': 'I_RAW_REGEX',
@@ -173,7 +219,7 @@ export default {
                         // TODO: Implement I_RAW_LITERAL, concat with I_RAW_CHARS in optimiser,
                         //       any isolated ones that remain become LiteralFragments.
                         'name': 'I_RAW_CHARS',
-                        'chars': node.text,
+                        'chars': escapeStringRegexp(node.text),
                     },
                 ],
             };

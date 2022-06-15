@@ -7,13 +7,13 @@
  * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
  */
 
-import emulator from '../../../src';
+import emulator from '../../../../src';
 import { expect } from 'chai';
 
-describe('Character class match integration', () => {
+describe('Character class range match integration', () => {
     describe('in optimised mode', () => {
-        it('should be able to match a character class', () => {
-            const matcher = emulator.compile('my [a-c] text');
+        it('should be able to match a character class with range and special char', () => {
+            const matcher = emulator.compile('my [a-c\\]] text');
 
             const match = matcher.matchOne('my b text');
 
@@ -24,8 +24,8 @@ describe('Character class match integration', () => {
     });
 
     describe('in unoptimised mode', () => {
-        it('should be able to match a character class', () => {
-            const matcher = emulator.compile('my [a-c] text', {
+        it('should be able to match a character class with range and special char', () => {
+            const matcher = emulator.compile('my [a-c\\]] text', {
                 optimise: false,
             });
 
