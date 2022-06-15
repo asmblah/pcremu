@@ -101,4 +101,54 @@ describe('Parser ReactPHP real example integration', () => {
             ],
         });
     });
+
+    it('should be able to parse the invalid socket server URI regex', () => {
+        // Taken from ReactPHP: https://github.com/reactphp/socket/blob/4227053eeecbf22b2a02a11e30bf6e9b32057aa5/src/SocketServer.php#L54.
+        const pattern = '^(?:\\w+://)?\\d+$';
+        const ast = parser.parse(pattern);
+
+        expect(ast.getPattern()).to.equal(pattern);
+        expect(ast.getParsingAst()).to.deep.equal({
+            'name': 'N_PATTERN',
+            'components': [
+                {
+                    'name': 'N_SIMPLE_ASSERTION',
+                    'assertion': '^',
+                },
+                {
+                    'name': 'N_MAXIMISING_QUANTIFIER',
+                    'quantifier': '?',
+                    'component': {
+                        'name': 'N_NON_CAPTURING_GROUP',
+                        'components': [
+                            {
+                                'name': 'N_MAXIMISING_QUANTIFIER',
+                                'component': {
+                                    'name': 'N_GENERIC_CHAR',
+                                    'type': 'w',
+                                },
+                                'quantifier': '+',
+                            },
+                            {
+                                'name': 'N_LITERAL',
+                                'text': '://',
+                            },
+                        ],
+                    },
+                },
+                {
+                    'name': 'N_MAXIMISING_QUANTIFIER',
+                    'quantifier': '+',
+                    'component': {
+                        'name': 'N_GENERIC_CHAR',
+                        'type': 'd',
+                    },
+                },
+                {
+                    'assertion': '$',
+                    'name': 'N_SIMPLE_ASSERTION',
+                },
+            ],
+        });
+    });
 });
