@@ -14,7 +14,7 @@ describe('ReactPHP real example match integration', () => {
     let pattern: string;
 
     describe('request line regex', () => {
-        beforeEach(function () {
+        beforeEach(() => {
             // Taken from ReactPHP: https://github.com/reactphp/http/blob/9c2d98f1f5b590082faa1a74aba5549cd0107977/src/Io/RequestHeaderParser.php#L133.
             pattern =
                 '^(?<method>[^ ]+) (?<target>[^ ]+) HTTP/(?<version>\\d\\.\\d)';
@@ -62,7 +62,7 @@ describe('ReactPHP real example match integration', () => {
     });
 
     describe('request header regex', () => {
-        beforeEach(function () {
+        beforeEach(() => {
             // Taken from ReactPHP:https://github.com/reactphp/http/blob/9c2d98f1f5b590082faa1a74aba5549cd0107977/src/Io/RequestHeaderParser.php#L144.
             pattern =
                 '^([^()<>@,;:\\\\\\"/\\[\\]?={}\\x01-\\x20\\x7F]++):[\\x20\\x09]*+((?:[\\x20\\x09]*+[\\x21-\\x7E\\x80-\\xFF]++)*+)[\\x20\\x09]*+[\\r]?+\\n';
