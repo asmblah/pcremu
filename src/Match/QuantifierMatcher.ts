@@ -154,7 +154,19 @@ export default class QuantifierMatcher {
                 maximumMatches = null;
                 break;
             default:
-                throw new Exception(`Unsupported quantifier "${quantifier}"`);
+                const match = quantifier.match(/\{(\d+)?,?(\d+)?}/);
+
+                if (match === null) {
+                    throw new Exception(
+                        `Unsupported quantifier "${quantifier}"`
+                    );
+                }
+
+                // Note that the default minimum is zero and not null.
+                minimumMatches =
+                    typeof match[1] !== 'undefined' ? Number(match[1]) : 0;
+                maximumMatches =
+                    typeof match[2] !== 'undefined' ? Number(match[2]) : null;
         }
 
         return { minimumMatches, maximumMatches };

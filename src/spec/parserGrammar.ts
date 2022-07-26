@@ -158,16 +158,19 @@ export default {
                 ],
             },
         },
+        'N_QUANTIFIER': {
+            components: /[*+?]|\{(?:\d+)?,?(?:\d+)?}/,
+        },
         'N_MAXIMISING_QUANTIFIER': {
             components: [
                 { name: 'component', rule: 'N_COMPONENT_LEVEL_0' },
-                { name: 'quantifier', what: /[*+?]/ },
+                { name: 'quantifier', rule: 'N_QUANTIFIER' },
             ],
         },
         'N_MINIMISING_QUANTIFIER': {
             components: [
                 { name: 'component', rule: 'N_COMPONENT_LEVEL_0' },
-                { name: 'quantifier', what: /[*+?]/ },
+                { name: 'quantifier', rule: 'N_QUANTIFIER' },
                 // Keep as a separate component to allow for whitespace/comments in between
                 // (in extended mode).
                 { what: /\?/ },
