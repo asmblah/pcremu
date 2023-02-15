@@ -16,8 +16,8 @@ export type Flags = {
     optimise?: boolean;
 };
 
-export type RegExpMatchArrayIndices = [[number, number]] & {
-    groups: { [key: string]: [number, number] };
+export type RegExpMatchArrayIndices = [number, number][] & {
+    groups?: { [key: string]: [number, number] };
 };
 
 export type IndexCapturingRegExpExecArray = RegExpExecArray & {
