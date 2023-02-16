@@ -71,15 +71,19 @@ export default class RegExpPolyfill extends RegExp {
 
         const indices: RegExpMatchArrayIndices = [];
 
-        for (let index = match.length - 1; index >= 0; index--) {
-            if ((index + 1) % 2 === 0) {
+        // TODO: Consider looping through capturing groups based on initial parsing that we already do.
+        for (let index = match.length - 1; index > 0; index--) {
+            if (index % 2 === 0) {
                 // This capture is one of the special ones added in the constructor above -
                 // use it to calculate the offset of the original capturing group it precedes.
 
-                if (match[index] !== undefined) {
-                    const start = string.length - match[index].length;
+                const restOfStringMatch = match[index];
+                const actualMatch = match[index - 1];
 
-                    indices.unshift([start, start + match[index + 1].length]);
+                if (restOfStringMatch !== undefined) {
+                    const start = string.length - restOfStringMatch.length;
+
+                    indices.unshift([start, start + actualMatch.length]);
                 } else {
                     // Nothing was captured (e.g. the original capturing group and this special one
                     // were part of an unmatched branch of an alternation) - so use -1 as the indices.

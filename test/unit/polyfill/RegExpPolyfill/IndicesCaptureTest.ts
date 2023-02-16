@@ -83,6 +83,62 @@ describe('RegExpPolyfill indices capture', () => {
             });
         });
 
+        describe('for a regex with more than 10 numbered capturing groups, backreferences and d flag', () => {
+            let regex: RegExpPolyfill;
+
+            beforeEach(() => {
+                regex = new RegExpPolyfill(
+                    'a(b)(c)(d)(e)(f)(g)(h)(i)(j)(k)(l)(m)n \\1\\2\\3\\4\\5\\6\\7\\8\\9\\10\\11\\12n end',
+                    'd'
+                );
+            });
+
+            it('should correctly match', () => {
+                const match = regex.exec('abcdefghijklmn bcdefghijklmn end');
+
+                expect(match).to.have.length(13);
+                expect(match).to.deep.equal([
+                    'abcdefghijklmn bcdefghijklmn end',
+                    'b',
+                    'c',
+                    'd',
+                    'e',
+                    'f',
+                    'g',
+                    'h',
+                    'i',
+                    'j',
+                    'k',
+                    'l',
+                    'm',
+                ]);
+                expect(match?.groups).to.be.undefined;
+                expect(match?.indices).to.have.length(13);
+                expect(match?.indices).to.deep.equal([
+                    [0, 32],
+                    [1, 2],
+                    [2, 3],
+                    [3, 4],
+                    [4, 5],
+                    [5, 6],
+                    [6, 7],
+                    [7, 8],
+                    [8, 9],
+                    [9, 10],
+                    [10, 11],
+                    [11, 12],
+                    [12, 13],
+                ]);
+                expect(match?.indices.groups).to.be.undefined;
+            });
+
+            it('should correctly fail to match', () => {
+                const match = regex.exec('I will not match');
+
+                expect(match).to.be.null;
+            });
+        });
+
         describe('for a regex with both named capturing groups and d flag', () => {
             let regex: RegExpPolyfill;
 
