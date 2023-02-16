@@ -13,13 +13,18 @@ import {
 } from '../../declarations/types';
 import polyfillIndexCapture from './polyfillIndexCapture';
 
+const HAS_INDICES = Symbol('RegExpPolyfill hasIndices');
+
 /**
  * Extends the built-in RegExp class with support for index capturing with the `d` flag.
  */
-export default class RegExpPolyfill extends RegExp {
-    public hasIndices: boolean;
+class RegExpPolyfill extends RegExp {
     private readonly namedCapturingGroupsToIndices: { [p: string]: number };
     private readonly originalPattern: string;
+
+    // Store against a symbol, which is fetched by the .hasIndices property getter set up below.
+    // In engines with later support, .hasIndices is defined on RegExp.prototype so we must shadow it here.
+    public [HAS_INDICES]: boolean;
 
     /**
      * @inheritDoc
@@ -47,9 +52,9 @@ export default class RegExpPolyfill extends RegExp {
 
         // As we are extending a builtin, the superconstructor call above will return a new RegExp instance -
         // we need to adjust that new instance's prototype chain to extend our custom RegExp class.
-        Object.setPrototypeOf(this, RegExpPolyfill.prototype);
+        Object.setPrototypeOf(this, new.target.prototype);
 
-        this.hasIndices = hasIndices;
+        this[HAS_INDICES] = hasIndices;
         this.namedCapturingGroupsToIndices = namedCapturingGroupsToIndices;
         this.originalPattern = originalPattern;
     }
@@ -119,4 +124,13 @@ export default class RegExpPolyfill extends RegExp {
 
         return match;
     }
+
+    /**
+     * Determines whether or not this regex captures indices.
+     */
+    get hasIndices(): boolean {
+        return this[HAS_INDICES];
+    }
 }
+
+export default RegExpPolyfill;
