@@ -9,6 +9,9 @@
 
 import RegExpPolyfill from './RegExpPolyfill';
 
+// Avoid minification of the test regex below.
+const RegExp = global.RegExp;
+
 const isRegExpIndicesFlagSupported = (() => {
     try {
         new RegExp('.', 'd');
