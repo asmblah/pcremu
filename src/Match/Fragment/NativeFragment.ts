@@ -16,6 +16,8 @@ import {
     RegExpMatchArrayIndices,
 } from '../../declarations/types';
 
+import EffectiveRegExp from '../../polyfill/RegExp/EffectiveRegExp';
+
 /**
  * Matches the subject string against a fragment of native JavaScript regex.
  */
@@ -59,9 +61,10 @@ export default class NativeFragment implements FragmentInterface {
             nativeFlags += 's';
         }
 
-        const normalNativeRegex = new RegExp(this.chars, nativeFlags);
+        // TODO: Create & cache these ahead of time in ctor (2x, one for each isAnchored mode) for performance.
+        const normalNativeRegex = new EffectiveRegExp(this.chars, nativeFlags);
 
-        const backtrackingRegex = new RegExp(
+        const backtrackingRegex = new EffectiveRegExp(
             /**
              * Note we use a negative lookahead rather than "$" to anchor the backtracking regex
              * to the end of the subject string slice, because in multiline mode "$" would also
