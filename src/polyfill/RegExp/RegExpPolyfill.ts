@@ -19,7 +19,7 @@ import polyfillIndexCapture from './polyfillIndexCapture';
 export default class RegExpPolyfill extends RegExp {
     public hasIndices: boolean;
     private readonly namedCapturingGroupsToIndices: { [p: string]: number };
-    private originalPattern: string;
+    private readonly originalPattern: string;
 
     /**
      * @inheritDoc
