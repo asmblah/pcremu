@@ -8,6 +8,8 @@
  */
 
 import {
+    Capture,
+    CaptureIndex,
     NamedCaptureIndices,
     NamedCaptures,
     NumberedCaptureIndices,
@@ -43,7 +45,7 @@ export default class Match {
      * Fetches the zero-based offset of the end of this match into the subject string.
      */
     getEnd(): number {
-        return this.numberedCaptureIndices[0][1];
+        return (this.numberedCaptureIndices[0] as number[])[1];
     }
 
     /**
@@ -58,7 +60,7 @@ export default class Match {
      *
      * @param {string} name
      */
-    getNamedCapture(name: string): string | null {
+    getNamedCapture(name: string): Capture {
         return this.namedCaptures[name] ?? null;
     }
 
@@ -67,8 +69,8 @@ export default class Match {
      *
      * @param {string} name
      */
-    getNamedCaptureEnd(name: string): number | null {
-        return this.namedCaptureIndices[name][1];
+    getNamedCaptureEnd(name: string): CaptureIndex {
+        return this.namedCaptureIndices[name]?.[1] ?? null;
     }
 
     /**
@@ -76,8 +78,8 @@ export default class Match {
      *
      * @param {string} name
      */
-    getNamedCaptureStart(name: string): number | null {
-        return this.namedCaptureIndices[name][0];
+    getNamedCaptureStart(name: string): CaptureIndex {
+        return this.namedCaptureIndices[name]?.[0] ?? null;
     }
 
     /**
@@ -104,7 +106,7 @@ export default class Match {
      *
      * @param {number} number
      */
-    getNumberedCapture(number: number): string | null {
+    getNumberedCapture(number: number): Capture {
         return this.numberedCaptures[number] ?? null;
     }
 
@@ -113,8 +115,8 @@ export default class Match {
      *
      * @param {number} number
      */
-    getNumberedCaptureEnd(number: number): number | null {
-        return this.numberedCaptureIndices[number][1];
+    getNumberedCaptureEnd(number: number): CaptureIndex {
+        return this.numberedCaptureIndices[number]?.[1] ?? null;
     }
 
     /**
@@ -122,8 +124,8 @@ export default class Match {
      *
      * @param {number} number
      */
-    getNumberedCaptureStart(number: number): number | null {
-        return this.numberedCaptureIndices[number][0];
+    getNumberedCaptureStart(number: number): CaptureIndex {
+        return this.numberedCaptureIndices[number]?.[0] ?? null;
     }
 
     /**
@@ -131,20 +133,20 @@ export default class Match {
      *
      * Presents as an array, note this differs from FragmentMatch.
      */
-    getNumberedCaptures(): string[] {
+    getNumberedCaptures(): Capture[] {
         // Build an array-like object from the captures to spread below.
         const capturesArray = {
             length: Object.keys(this.numberedCaptures).length,
             ...this.numberedCaptures,
         };
 
-        return [...(capturesArray as string[])];
+        return [...(capturesArray as Capture[])];
     }
 
     /**
      * Fetches the zero-based offset of the start of this match into the subject string.
      */
     getStart(): number {
-        return this.numberedCaptureIndices[0][0];
+        return (this.numberedCaptureIndices[0] as number[])[0];
     }
 }

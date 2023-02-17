@@ -92,7 +92,7 @@ class RegExpPolyfill extends RegExp {
                 } else {
                     // Nothing was captured (e.g. the original capturing group and this special one
                     // were part of an unmatched branch of an alternation) - so use -1 as the indices.
-                    indices.unshift([-1, -1]); // FIXME: Test this!
+                    indices.unshift(undefined);
                 }
 
                 match.splice(index, 1);

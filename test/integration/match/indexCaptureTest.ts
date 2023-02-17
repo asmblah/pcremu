@@ -57,6 +57,31 @@ describe('Match index capture integration', () => {
             expect(match?.getNamedCaptureStart('group2')).to.equal(13);
             expect(match?.getNamedCaptureEnd('group2')).to.equal(19);
         });
+
+        it('should be able to capture start and end indices for optional capturing groups', () => {
+            const matcher = emulator.compile(
+                'my (?<namedGroup>first)? and (second)? groups'
+            );
+
+            const match = matcher.matchOne('my  and  groups');
+
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(3);
+            expect(match?.getNumberedCaptures()).to.deep.equal([
+                'my  and  groups',
+                null,
+                null,
+            ]);
+            expect(match?.getNamedCaptures()).to.deep.equal({
+                'namedGroup': null,
+            });
+            expect(match?.getNamedCapture('group1')).to.be.null;
+            expect(match?.getNamedCaptureStart('group1')).to.be.null;
+            expect(match?.getNamedCaptureEnd('group1')).to.be.null;
+            expect(match?.getNamedCapture('group2')).to.be.null;
+            expect(match?.getNamedCaptureStart('group2')).to.be.null;
+            expect(match?.getNamedCaptureEnd('group2')).to.be.null;
+        });
     });
 
     describe('in unoptimised mode', () => {
@@ -109,6 +134,34 @@ describe('Match index capture integration', () => {
             expect(match?.getNamedCapture('group2')).to.equal('second');
             expect(match?.getNamedCaptureStart('group2')).to.equal(13);
             expect(match?.getNamedCaptureEnd('group2')).to.equal(19);
+        });
+
+        it('should be able to capture start and end indices for optional capturing groups', () => {
+            const matcher = emulator.compile(
+                'my (?<namedGroup>first)? and (second)? groups',
+                {
+                    optimise: false,
+                }
+            );
+
+            const match = matcher.matchOne('my  and  groups');
+
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(3);
+            expect(match?.getNumberedCaptures()).to.deep.equal([
+                'my  and  groups',
+                null,
+                null,
+            ]);
+            expect(match?.getNamedCaptures()).to.deep.equal({
+                'namedGroup': null,
+            });
+            expect(match?.getNamedCapture('group1')).to.be.null;
+            expect(match?.getNamedCaptureStart('group1')).to.be.null;
+            expect(match?.getNamedCaptureEnd('group1')).to.be.null;
+            expect(match?.getNamedCapture('group2')).to.be.null;
+            expect(match?.getNamedCaptureStart('group2')).to.be.null;
+            expect(match?.getNamedCaptureEnd('group2')).to.be.null;
         });
     });
 });

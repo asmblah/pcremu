@@ -54,7 +54,75 @@ describe('RegExpPolyfill indices capture', () => {
             });
         });
 
-        describe('for a simple regex with two nested numbered capturing groups and d flag', () => {
+        describe('for a regex with optional numbered capturing group and d flag', () => {
+            let regex: RegExpPolyfill;
+
+            beforeEach(() => {
+                regex = new RegExpPolyfill('(b)?c', 'd');
+            });
+
+            it('should correctly match when group matches', () => {
+                const match = regex.exec('xyabcxy');
+
+                expect(match).to.have.length(2);
+                expect(match).to.deep.equal(['bc', 'b']);
+                expect(match?.groups).to.be.undefined;
+                expect(match?.indices).to.have.length(2);
+                expect(match?.indices).to.deep.equal([
+                    [3, 5],
+                    [3, 4],
+                ]);
+                expect(match?.indices.groups).to.be.undefined;
+            });
+
+            it('should correctly match when group does not match', () => {
+                const match = regex.exec('xyacxy');
+
+                expect(match).to.have.length(2);
+                expect(match).to.deep.equal(['c', undefined]);
+                expect(match?.groups).to.be.undefined;
+                expect(match?.indices).to.have.length(2);
+                expect(match?.indices).to.deep.equal([[3, 4], undefined]);
+                expect(match?.indices.groups).to.be.undefined;
+            });
+
+            it('should correctly fail to match', () => {
+                const match = regex.exec('I will not matCh');
+
+                expect(match).to.be.null;
+            });
+        });
+
+        describe('for a regex with two numbered capturing groups, one immediately following a backreference and d flag', () => {
+            let regex: RegExpPolyfill;
+
+            beforeEach(() => {
+                regex = new RegExpPolyfill('(a)\\1(b)', 'd');
+            });
+
+            it('should correctly match', () => {
+                const match = regex.exec('xyaabxy');
+
+                expect(match).to.have.length(3);
+                expect(match).to.deep.equal(['aab', 'a', 'b']);
+                expect(match?.groups).to.be.undefined;
+                expect(match?.indices).to.have.length(3);
+                expect(match?.indices).to.deep.equal([
+                    [2, 5],
+                    [2, 3],
+                    [4, 5],
+                ]);
+                expect(match?.indices.groups).to.be.undefined;
+            });
+
+            it('should correctly fail to match', () => {
+                const match = regex.exec('I will not match');
+
+                expect(match).to.be.null;
+            });
+        });
+
+        describe('for a regex with two nested numbered capturing groups and d flag', () => {
             let regex: RegExpPolyfill;
 
             beforeEach(() => {

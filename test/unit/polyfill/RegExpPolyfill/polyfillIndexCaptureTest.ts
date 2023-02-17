@@ -181,4 +181,16 @@ describe('polyfillIndexCapture()', () => {
             yourGroup: 2,
         });
     });
+
+    it('should correctly not transform escaped groups and backreferences', () => {
+        const namedGroupsToIndices = {};
+
+        const result = polyfillIndexCapture(
+            'h\\(?<myGroup>e\\(l))lo \\\\2',
+            namedGroupsToIndices
+        );
+
+        expect(result).to.equal('h\\(?<myGroup>e\\(l))lo \\\\2');
+        expect(namedGroupsToIndices).to.deep.equal({});
+    });
 });

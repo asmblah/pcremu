@@ -13,10 +13,41 @@ import FragmentMatchInterface from '../FragmentMatchInterface';
 import {
     Flags,
     IndexCapturingRegExpExecArray,
-    RegExpMatchArrayIndices,
+    NativeNamedCaptureIndices,
+    NativeNamedCaptures,
 } from '../../declarations/types';
 
 import EffectiveRegExp from '../../polyfill/RegExp/EffectiveRegExp';
+import {
+    NamedCaptureIndices,
+    NamedCaptures,
+    NumberedCaptureIndices,
+} from '../../spec/types/match';
+
+// Convert native results with undefined to our API with null to indicate a missing capture or its indices.
+const nativeNamedCapturesToInternal = (
+    nativeCaptures: NativeNamedCaptures
+): NamedCaptures => {
+    const captures: NamedCaptures = {};
+
+    for (const name of Object.keys(nativeCaptures)) {
+        captures[name] = nativeCaptures[name] ?? null;
+    }
+
+    return captures;
+};
+
+const nativeNamedCaptureIndicesToInternal = (
+    nativeIndices: NativeNamedCaptureIndices
+): NamedCaptureIndices => {
+    const indices: NamedCaptureIndices = {};
+
+    for (const name of Object.keys(nativeIndices)) {
+        indices[name] = nativeIndices[name] ?? null;
+    }
+
+    return indices;
+};
 
 /**
  * Matches the subject string against a fragment of native JavaScript regex.
@@ -90,8 +121,7 @@ export default class NativeFragment implements FragmentInterface {
             }
 
             const numberedCaptures: string[] = [];
-            const numberedCaptureIndices: RegExpMatchArrayIndices =
-                [] as unknown as RegExpMatchArrayIndices;
+            const numberedCaptureIndices: NumberedCaptureIndices = {};
 
             // Map the numbered match captures from the emulated groups in the native regex to the original pattern.
             for (const patternIndexKey of Object.keys(
@@ -101,13 +131,17 @@ export default class NativeFragment implements FragmentInterface {
                 const emulatedIndex =
                     this.patternToEmulatedNumberedGroupIndex[patternIndex];
 
-                numberedCaptures[patternIndex] = match[emulatedIndex];
+                numberedCaptures[patternIndex] = match[emulatedIndex] ?? null;
                 numberedCaptureIndices[patternIndex] =
-                    match.indices[emulatedIndex];
+                    match.indices[emulatedIndex] ?? null;
             }
 
-            const namedCaptures = match.groups || {};
-            const namedCaptureIndices = match.indices.groups;
+            const namedCaptures = match.groups
+                ? nativeNamedCapturesToInternal(match.groups)
+                : {};
+            const namedCaptureIndices = match.indices.groups
+                ? nativeNamedCaptureIndicesToInternal(match.indices.groups)
+                : {};
 
             const capture = match[0];
 
