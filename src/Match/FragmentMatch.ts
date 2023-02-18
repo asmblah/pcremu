@@ -9,6 +9,7 @@
 
 import {
     Backtracker,
+    Capture,
     NamedCaptureIndices,
     NamedCaptures,
     NumberedCaptureIndices,
@@ -83,7 +84,7 @@ export default class FragmentMatch implements FragmentMatchInterface {
     /**
      * @inheritDoc
      */
-    getNumberedCapture(index: number): string | null {
+    getNumberedCapture(index: number): Capture {
         return this.numberedCaptures[index] ?? null;
     }
 

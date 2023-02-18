@@ -16,10 +16,18 @@ export type Flags = {
     optimise?: boolean;
 };
 
-export type RegExpMatchArrayIndices = [[number, number]] & {
-    groups: { [key: string]: [number, number] };
+export type RegExpMatchArrayIndices = ([number, number] | undefined)[] & {
+    groups?: { [key: string]: [number, number] };
 };
 
 export type IndexCapturingRegExpExecArray = RegExpExecArray & {
     indices: RegExpMatchArrayIndices;
+};
+
+export type NativeNamedCaptures = {
+    [key: string]: string;
+};
+
+export type NativeNamedCaptureIndices = {
+    [key: string]: [number, number] | undefined;
 };

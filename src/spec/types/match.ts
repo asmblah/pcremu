@@ -17,7 +17,10 @@ export type Backtracker = (
     previousMatch: FragmentMatchInterface
 ) => FragmentMatchInterface | null;
 
-export type NamedCaptures = { [key: string]: string | null };
-export type NamedCaptureIndices = { [key: string]: [number, number] };
-export type NumberedCaptures = { [key: number]: string | null };
-export type NumberedCaptureIndices = { [key: number]: [number, number] };
+export type Capture = string | null;
+export type CaptureIndex = number | null;
+export type CaptureIndexPair = [number, number] | null;
+export type NamedCaptures = { [key: string]: Capture };
+export type NamedCaptureIndices = { [key: string]: CaptureIndexPair };
+export type NumberedCaptures = { [key: number]: Capture };
+export type NumberedCaptureIndices = { [key: number]: CaptureIndexPair };
