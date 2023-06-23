@@ -23,6 +23,16 @@ describe('Non-capturing group match integration', () => {
                 'my one twoone two text'
             );
         });
+
+        it('should be able to backtrack into a non-capturing group', () => {
+            const matcher = emulator.compile('my (?:a+)aa text');
+
+            const match = matcher.matchOne('my aaaaaa text');
+
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(1);
+            expect(match?.getNumberedCapture(0)).to.equal('my aaaaaa text');
+        });
     });
 
     describe('in unoptimised mode', () => {
@@ -38,6 +48,18 @@ describe('Non-capturing group match integration', () => {
             expect(match?.getNumberedCapture(0)).to.equal(
                 'my one twoone two text'
             );
+        });
+
+        it('should be able to backtrack into a non-capturing group', () => {
+            const matcher = emulator.compile('my (?:a+)aa text', {
+                optimise: false,
+            });
+
+            const match = matcher.matchOne('my aaaaaa text');
+
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(1);
+            expect(match?.getNumberedCapture(0)).to.equal('my aaaaaa text');
         });
     });
 });

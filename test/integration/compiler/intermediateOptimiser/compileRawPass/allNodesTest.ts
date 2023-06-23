@@ -13,7 +13,7 @@ import emulator from '../../../../../src';
 import { SinonStubbedInstance } from 'sinon';
 import IntermediateOptimiser from '../../../../../src/IntermediateOptimiser';
 import IntermediateRepresentation from '../../../../../src/IntermediateRepresentation';
-import sinon = require('sinon');
+import sinon from 'ts-sinon';
 
 describe('IR optimiser compileRawPass compiler all nodes integration', () => {
     let optimiser: IntermediateOptimiser;

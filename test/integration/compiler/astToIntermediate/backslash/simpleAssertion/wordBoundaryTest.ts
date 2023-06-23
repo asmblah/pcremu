@@ -7,28 +7,30 @@
  * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
  */
 
-import emulator from '../../../../../src';
+import emulator from '../../../../../../src';
 import { expect } from 'chai';
-import AstToIntermediateCompiler from '../../../../../src/AstToIntermediateCompiler';
-import Ast from '../../../../../src/Ast';
+import AstToIntermediateCompiler from '../../../../../../src/AstToIntermediateCompiler';
+import Ast from '../../../../../../src/Ast';
 import { SinonStubbedInstance } from 'sinon';
-import sinon = require('sinon');
+import sinon from 'ts-sinon';
 
-describe('AST-to-IR compiler simple (anchor) assertion integration', () => {
+describe('AST-to-IR compiler simple assertion word boundary integration', () => {
     let compiler: AstToIntermediateCompiler;
 
     beforeEach(() => {
         compiler = emulator.createAstToIntermediateCompiler();
     });
 
-    it('should be able to compile an AST with anchor and two literals to IR', () => {
+    it('should be able to compile an AST with simple assertions and two literals to IR', () => {
         const ast = sinon.createStubInstance(Ast) as SinonStubbedInstance<Ast> &
             Ast;
         ast.getParsingAst.returns({
             'name': 'N_PATTERN',
             'components': [
                 { 'name': 'N_LITERAL', 'text': 'hello' },
-                { 'name': 'N_SIMPLE_ASSERTION', 'assertion': '^' },
+                { 'name': 'N_WORD_BOUNDARY_ASSERTION' },
+                { 'name': 'N_LITERAL', 'text': 'there' },
+                { 'name': 'N_NON_WORD_BOUNDARY_ASSERTION' },
                 { 'name': 'N_LITERAL', 'text': 'world' },
             ],
         });
@@ -55,7 +57,25 @@ describe('AST-to-IR compiler simple (anchor) assertion integration', () => {
                     'chunks': [
                         {
                             'name': 'I_RAW_CHARS',
-                            'chars': '^',
+                            'chars': '\\b',
+                        },
+                    ],
+                },
+                {
+                    'name': 'I_RAW_REGEX',
+                    'chunks': [
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': 'there',
+                        },
+                    ],
+                },
+                {
+                    'name': 'I_RAW_REGEX',
+                    'chunks': [
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': '\\B',
                         },
                     ],
                 },

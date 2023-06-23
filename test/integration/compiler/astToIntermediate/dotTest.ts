@@ -12,7 +12,7 @@ import emulator from '../../../../src';
 import AstToIntermediateCompiler from '../../../../src/AstToIntermediateCompiler';
 import Ast from '../../../../src/Ast';
 import { SinonStubbedInstance } from 'sinon';
-import sinon = require('sinon');
+import sinon from 'ts-sinon';
 
 describe('AST-to-IR compiler dot (all) integration', () => {
     let compiler: AstToIntermediateCompiler;

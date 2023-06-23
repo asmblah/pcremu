@@ -22,6 +22,20 @@ describe('Capturing group match integration', () => {
             expect(match?.getNumberedCapture(0)).to.equal('my captured text');
             expect(match?.getNumberedCapture(1)).to.equal('captured');
         });
+
+        it('should be able to backtrack into a capturing group', () => {
+            const matcher = emulator.compile('my (a+)aa text');
+
+            const match = matcher.matchOne('my aaaaaa text');
+
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(2);
+            expect(match?.getNumberedCapture(0)).to.equal('my aaaaaa text');
+            expect(match?.getNumberedCapture(1)).to.equal(
+                'aaaa',
+                'Only first 4 "a"s should be captured'
+            );
+        });
     });
 
     describe('in unoptimised mode', () => {
@@ -36,6 +50,22 @@ describe('Capturing group match integration', () => {
             expect(match?.getCaptureCount()).to.equal(2);
             expect(match?.getNumberedCapture(0)).to.equal('my captured text');
             expect(match?.getNumberedCapture(1)).to.equal('captured');
+        });
+
+        it('should be able to backtrack into a capturing group', () => {
+            const matcher = emulator.compile('my (a+)aa text', {
+                optimise: false,
+            });
+
+            const match = matcher.matchOne('my aaaaaa text');
+
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(2);
+            expect(match?.getNumberedCapture(0)).to.equal('my aaaaaa text');
+            expect(match?.getNumberedCapture(1)).to.equal(
+                'aaaa',
+                'Only first 4 "a"s should be captured'
+            );
         });
     });
 });

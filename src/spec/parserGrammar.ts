@@ -38,7 +38,25 @@ export default {
             ],
         },
         'N_BACKSLASH': {
-            components: { oneOf: ['N_GENERIC_CHAR', 'N_NON_PRINTING_CHAR'] },
+            components: {
+                oneOf: [
+                    'N_GENERIC_CHAR',
+                    'N_NON_PRINTING_CHAR',
+                    'N_BACKSLASH_SIMPLE_ASSERTION',
+                ],
+            },
+        },
+        'N_BACKSLASH_SIMPLE_ASSERTION': {
+            components: {
+                oneOf: [
+                    'N_WORD_BOUNDARY_ASSERTION',
+                    'N_NON_WORD_BOUNDARY_ASSERTION',
+                    'N_START_OF_STRING_ASSERTION',
+                    'N_END_OF_STRING_ASSERTION',
+                    'N_EXCLUSIVE_END_OF_STRING_ASSERTION',
+                    'N_MATCH_START_ASSERTION',
+                ],
+            },
         },
         'N_CAPTURING_GROUP': {
             components: [
@@ -251,6 +269,9 @@ export default {
         'N_DOT': {
             components: { allowMerge: false, what: /\./ },
         },
+        'N_END_OF_STRING_ASSERTION': {
+            components: { allowMerge: false, what: /\\Z/ },
+        },
         'N_ESCAPED_CHAR': {
             components: {
                 name: 'char',
@@ -261,6 +282,9 @@ export default {
                 what: /\\([^a-zA-Z\d])/,
                 captureIndex: 1,
             },
+        },
+        'N_EXCLUSIVE_END_OF_STRING_ASSERTION': {
+            components: { allowMerge: false, what: /\\z/ },
         },
         'N_GENERIC_CHAR': {
             components: {
@@ -339,6 +363,9 @@ export default {
                 },
             ],
         },
+        'N_MATCH_START_ASSERTION': {
+            components: { allowMerge: false, what: /\\G/ },
+        },
         'N_NAMED_CAPTURING_GROUP': {
             components: [
                 /\(\?</,
@@ -363,6 +390,9 @@ export default {
                     'N_NUMBERED_BACKREFERENCE_OR_OCTAL_CHAR',
                 ],
             },
+        },
+        'N_NON_WORD_BOUNDARY_ASSERTION': {
+            components: { allowMerge: false, what: /\\B/ },
         },
         'N_NUMBERED_BACKREFERENCE_OR_OCTAL_CHAR': {
             components: [
@@ -402,8 +432,14 @@ export default {
         'N_SIMPLE_ASSERTION': {
             components: { name: 'assertion', what: /[\^$]/ },
         },
+        'N_START_OF_STRING_ASSERTION': {
+            components: { allowMerge: false, what: /\\A/ },
+        },
         'N_WHITESPACE': {
             components: { name: 'chars', what: /\s+/ },
+        },
+        'N_WORD_BOUNDARY_ASSERTION': {
+            components: { allowMerge: false, what: /\\b/ },
         },
     },
     start: 'N_PATTERN',

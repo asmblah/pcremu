@@ -12,7 +12,7 @@ import { expect } from 'chai';
 import AstToIntermediateCompiler from '../../../../../../src/AstToIntermediateCompiler';
 import Ast from '../../../../../../src/Ast';
 import { SinonStubbedInstance } from 'sinon';
-import sinon = require('sinon');
+import sinon from 'ts-sinon';
 
 describe('AST-to-IR compiler control character escape integration', () => {
     let compiler: AstToIntermediateCompiler;

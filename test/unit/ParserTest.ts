@@ -10,7 +10,7 @@
 import { expect } from 'chai';
 import { Context } from '../../src/spec/types/parser';
 import Parser, { DEFAULT_FLAGS } from '../../src/Parser';
-import sinon = require('sinon');
+import sinon from 'ts-sinon';
 
 describe('Parser', () => {
     let parser: Parser;
@@ -32,6 +32,7 @@ describe('Parser', () => {
             expect(ast.getFlags()).to.deep.equal({
                 anchored: false,
                 caseless: false,
+                dollarEndOnly: false,
                 dotAll: false,
                 extended: false,
                 multiline: false,
@@ -46,6 +47,7 @@ describe('Parser', () => {
             expect(ast.getFlags()).to.deep.equal({
                 anchored: false,
                 caseless: false,
+                dollarEndOnly: false,
                 dotAll: false,
                 extended: true,
                 multiline: false,
@@ -60,6 +62,7 @@ describe('Parser', () => {
             expect(parsingContext.flags).to.deep.equal({
                 anchored: false,
                 caseless: false,
+                dollarEndOnly: false,
                 dotAll: false,
                 extended: true,
                 multiline: false,

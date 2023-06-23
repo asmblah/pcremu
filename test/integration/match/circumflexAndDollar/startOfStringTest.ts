@@ -7,10 +7,10 @@
  * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
  */
 
-import emulator from '../../../../../src';
+import emulator from '../../../../src';
 import { expect } from 'chai';
 
-describe('Start-of-string simple (anchor) assertion match integration', () => {
+describe('Start-of-string assertion (anchor) match integration', () => {
     describe('in optimised mode', () => {
         it('should be able to match the start of string', () => {
             const matcher = emulator.compile('^mytext');

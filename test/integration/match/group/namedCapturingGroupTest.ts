@@ -24,6 +24,25 @@ describe('Named capturing group match integration', () => {
             expect(match?.getNumberedCapture(1)).to.equal('captured');
             expect(match?.getNamedCapture('grabbed')).to.equal('captured');
         });
+
+        it('should be able to backtrack into a capturing group', () => {
+            const matcher = emulator.compile('my (?<grabbed>a+)aa text');
+
+            const match = matcher.matchOne('my aaaaaa text');
+
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(2);
+            // Named captures are also available by their index.
+            expect(match?.getNumberedCapture(0)).to.equal('my aaaaaa text');
+            expect(match?.getNumberedCapture(1)).to.equal(
+                'aaaa',
+                'Only first 4 "a"s should be captured'
+            );
+            expect(match?.getNamedCapture('grabbed')).to.equal(
+                'aaaa',
+                'Only first 4 "a"s should be captured'
+            );
+        });
     });
 
     describe('in unoptimised mode', () => {
@@ -40,6 +59,27 @@ describe('Named capturing group match integration', () => {
             expect(match?.getNumberedCapture(0)).to.equal('my captured text');
             expect(match?.getNumberedCapture(1)).to.equal('captured');
             expect(match?.getNamedCapture('grabbed')).to.equal('captured');
+        });
+
+        it('should be able to backtrack into a capturing group', () => {
+            const matcher = emulator.compile('my (?<grabbed>a+)aa text', {
+                optimise: false,
+            });
+
+            const match = matcher.matchOne('my aaaaaa text');
+
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(2);
+            // Named captures are also available by their index.
+            expect(match?.getNumberedCapture(0)).to.equal('my aaaaaa text');
+            expect(match?.getNumberedCapture(1)).to.equal(
+                'aaaa',
+                'Only first 4 "a"s should be captured'
+            );
+            expect(match?.getNamedCapture('grabbed')).to.equal(
+                'aaaa',
+                'Only first 4 "a"s should be captured'
+            );
         });
     });
 });

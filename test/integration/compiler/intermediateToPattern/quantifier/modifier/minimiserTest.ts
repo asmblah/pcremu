@@ -13,7 +13,7 @@ import { DEFAULT_FLAGS } from '../../../../../../src/Parser';
 import { SinonStubbedInstance } from 'sinon';
 import IntermediateToPatternCompiler from '../../../../../../src/IntermediateToPatternCompiler';
 import IntermediateRepresentation from '../../../../../../src/IntermediateRepresentation';
-import sinon = require('sinon');
+import sinon from 'ts-sinon';
 
 describe('IR-to-Pattern compiler (unoptimised) quantifier minimiser integration', () => {
     let compiler: IntermediateToPatternCompiler;

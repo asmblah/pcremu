@@ -14,6 +14,7 @@ import { Context } from './spec/types/parser';
 export const DEFAULT_FLAGS: Flags = {
     anchored: false,
     caseless: false,
+    dollarEndOnly: false,
     dotAll: false,
     extended: false,
     multiline: false,

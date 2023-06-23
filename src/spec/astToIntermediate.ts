@@ -178,6 +178,18 @@ export default {
                 ],
             };
         },
+        'N_END_OF_STRING_ASSERTION': (): I_RAW_REGEX => {
+            return {
+                'name': 'I_RAW_REGEX',
+                'chunks': [
+                    {
+                        'name': 'I_RAW_CHARS',
+                        // Also match before a newline at the end of the subject.
+                        'chars': '(?=\\n?(?![\\s\\S]))',
+                    },
+                ],
+            };
+        },
         'N_ESCAPED_CHAR': (node: N_ESCAPED_CHAR): I_RAW_REGEX => {
             return {
                 'name': 'I_RAW_REGEX',
@@ -185,6 +197,18 @@ export default {
                     {
                         'name': 'I_RAW_CHARS',
                         'chars': '\\' + node.char,
+                    },
+                ],
+            };
+        },
+        'N_EXCLUSIVE_END_OF_STRING_ASSERTION': (): I_RAW_REGEX => {
+            return {
+                'name': 'I_RAW_REGEX',
+                'chunks': [
+                    {
+                        'name': 'I_RAW_CHARS',
+                        // Note that unlike the non-exclusive variant, any newline is ignored.
+                        'chars': '(?![\\s\\S])',
                     },
                 ],
             };
@@ -269,6 +293,17 @@ export default {
                 'components': node.components.map((node: N_NODE) =>
                     interpret(node)
                 ),
+            };
+        },
+        'N_NON_WORD_BOUNDARY_ASSERTION': (): I_RAW_REGEX => {
+            return {
+                'name': 'I_RAW_REGEX',
+                'chunks': [
+                    {
+                        'name': 'I_RAW_CHARS',
+                        'chars': '\\B',
+                    },
+                ],
             };
         },
         'N_NUMBERED_BACKREFERENCE': (
@@ -362,13 +397,31 @@ export default {
                 'component': interpret(node.component),
             };
         },
-        'N_SIMPLE_ASSERTION': (node: N_SIMPLE_ASSERTION): I_RAW_REGEX => {
+        'N_SIMPLE_ASSERTION': (
+            node: N_SIMPLE_ASSERTION,
+            interpret: Interpret,
+            context: Context
+        ): I_RAW_REGEX => {
+            let assertion = node.assertion;
+
+            /*
+             * Dollar always matches before any trailing newline (and only the final one if so).
+             * Dollar-end-only mode disregards any trailing newline and only matches at the very end of the string,
+             * however if multiline mode is also enabled then dollar-end-only mode is ignored.
+             */
+            if (
+                assertion === '$' &&
+                (!context.flags.dollarEndOnly || context.flags.multiline)
+            ) {
+                assertion = '(?:$|(?=\\n$))';
+            }
+
             return {
                 'name': 'I_RAW_REGEX',
                 'chunks': [
                     {
                         'name': 'I_RAW_CHARS',
-                        'chars': node.assertion,
+                        'chars': assertion,
                     },
                 ],
             };
@@ -389,6 +442,17 @@ export default {
                     {
                         'name': 'I_RAW_CHARS',
                         'chars': node.chars,
+                    },
+                ],
+            };
+        },
+        'N_WORD_BOUNDARY_ASSERTION': (): I_RAW_REGEX => {
+            return {
+                'name': 'I_RAW_REGEX',
+                'chunks': [
+                    {
+                        'name': 'I_RAW_CHARS',
+                        'chars': '\\b',
                     },
                 ],
             };

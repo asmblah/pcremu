@@ -12,6 +12,7 @@ import RegExpPolyfill from './RegExpPolyfill';
 // Avoid minification of the test regex below.
 const RegExp = global.RegExp;
 
+// Check for native support of indices - if none then use our polyfill.
 const isRegExpIndicesFlagSupported = (() => {
     try {
         new RegExp('.', 'd');

@@ -10,6 +10,7 @@
 import FragmentInterface from './Fragment/FragmentInterface';
 import FragmentMatchInterface from './FragmentMatchInterface';
 import FragmentMatchTree from './FragmentMatchTree';
+import { Backtracker, Processor } from '../spec/types/match';
 
 /**
  * Helper class with methods used during matching.
@@ -24,13 +25,15 @@ export default class FragmentMatcher {
      * @param {boolean} isAnchored
      * @param {FragmentInterface[]} componentFragments
      * @param {FragmentMatchInterface} existingMatch
+     * @param {Processor=} processor Called for the initial match and any backtracked match.
      */
     matchComponents(
         subject: string,
         position: number,
         isAnchored: boolean,
         componentFragments: FragmentInterface[],
-        existingMatch: FragmentMatchInterface
+        existingMatch: FragmentMatchInterface,
+        processor: Processor = (match: FragmentMatchInterface) => match
     ): FragmentMatchInterface | null {
         const componentMatches: FragmentMatchInterface[] = [];
 
@@ -110,6 +113,26 @@ export default class FragmentMatcher {
             );
         };
 
-        return tryNextComponent();
+        const match = tryNextComponent();
+
+        const backtrackResult = (
+            previousMatch: FragmentMatchInterface,
+            previousBacktracker: Backtracker
+        ): FragmentMatchInterface | null => {
+            const backtrackedMatch = previousBacktracker(previousMatch);
+
+            if (!backtrackedMatch) {
+                return null;
+            }
+
+            return processMatch(backtrackedMatch);
+        };
+
+        const processMatch = (
+            match: FragmentMatchInterface
+        ): FragmentMatchInterface =>
+            processor(match).wrapBacktracker(backtrackResult);
+
+        return match ? processMatch(match) : null;
     }
 }

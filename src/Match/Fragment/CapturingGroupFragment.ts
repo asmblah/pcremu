@@ -30,19 +30,15 @@ export default class CapturingGroupFragment implements FragmentInterface {
         isAnchored: boolean,
         existingMatch: FragmentMatchInterface
     ): FragmentMatchInterface | null {
-        const match = this.fragmentMatcher.matchComponents(
+        return this.fragmentMatcher.matchComponents(
             subject,
             position,
             isAnchored,
             this.componentFragments,
-            existingMatch
+            existingMatch,
+            (match: FragmentMatchInterface) =>
+                match.withCaptureAs(this.groupIndex)
         );
-
-        if (!match) {
-            return null;
-        }
-
-        return match.withCaptureAs(this.groupIndex);
     }
 
     /**

@@ -14,7 +14,7 @@ import Pattern from '../../src/Pattern';
 import PatternFactory from '../../src/PatternFactory';
 import PatternFragment from '../../src/Match/Fragment/PatternFragment';
 import { SinonStub, SinonStubbedInstance } from 'sinon';
-import sinon = require('sinon');
+import sinon from 'ts-sinon';
 import { Flags } from '../../src/declarations/types';
 
 describe('IntermediateToPatternCompiler', () => {

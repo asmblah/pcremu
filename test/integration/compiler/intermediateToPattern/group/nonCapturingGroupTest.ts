@@ -9,7 +9,7 @@
 
 import emulator from '../../../../../src';
 import { expect } from 'chai';
-import sinon = require('sinon');
+import sinon from 'ts-sinon';
 import { DEFAULT_FLAGS } from '../../../../../src/Parser';
 import { SinonStubbedInstance } from 'sinon';
 import IntermediateToPatternCompiler from '../../../../../src/IntermediateToPatternCompiler';

@@ -17,6 +17,10 @@ export type Backtracker = (
     previousMatch: FragmentMatchInterface
 ) => FragmentMatchInterface | null;
 
+export type Processor = (
+    match: FragmentMatchInterface
+) => FragmentMatchInterface;
+
 export type Capture = string | null;
 export type CaptureIndex = number | null;
 export type CaptureIndexPair = [number, number] | null;
