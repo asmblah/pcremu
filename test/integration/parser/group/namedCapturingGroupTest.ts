@@ -18,10 +18,68 @@ describe('Parser named capturing group integration', () => {
         parser = emulator.createParser();
     });
 
-    it('should be able to parse a regex pattern containing a single capturing group', () => {
+    it('should be able to parse a regex pattern containing a single chevron-bracketed Perl named capturing group', () => {
         const ast = parser.parse('my (?<found>stuff inside) here');
 
         expect(ast.getPattern()).to.equal('my (?<found>stuff inside) here');
+        expect(ast.getParsingAst()).to.deep.equal({
+            'name': 'N_PATTERN',
+            'components': [
+                {
+                    'name': 'N_LITERAL',
+                    'text': 'my ',
+                },
+                {
+                    'name': 'N_NAMED_CAPTURING_GROUP',
+                    'groupName': 'found',
+                    'components': [
+                        {
+                            'name': 'N_LITERAL',
+                            'text': 'stuff inside',
+                        },
+                    ],
+                },
+                {
+                    'name': 'N_LITERAL',
+                    'text': ' here',
+                },
+            ],
+        });
+    });
+
+    it('should be able to parse a regex pattern containing a single-quoted Perl named capturing group', () => {
+        const ast = parser.parse("my (?'found'stuff inside) here");
+
+        expect(ast.getPattern()).to.equal("my (?'found'stuff inside) here");
+        expect(ast.getParsingAst()).to.deep.equal({
+            'name': 'N_PATTERN',
+            'components': [
+                {
+                    'name': 'N_LITERAL',
+                    'text': 'my ',
+                },
+                {
+                    'name': 'N_NAMED_CAPTURING_GROUP',
+                    'groupName': 'found',
+                    'components': [
+                        {
+                            'name': 'N_LITERAL',
+                            'text': 'stuff inside',
+                        },
+                    ],
+                },
+                {
+                    'name': 'N_LITERAL',
+                    'text': ' here',
+                },
+            ],
+        });
+    });
+
+    it('should be able to parse a regex pattern containing a single Python named capturing group', () => {
+        const ast = parser.parse('my (?P<found>stuff inside) here');
+
+        expect(ast.getPattern()).to.equal('my (?P<found>stuff inside) here');
         expect(ast.getParsingAst()).to.deep.equal({
             'name': 'N_PATTERN',
             'components': [

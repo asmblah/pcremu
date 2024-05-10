@@ -368,9 +368,14 @@ export default {
         },
         'N_NAMED_CAPTURING_GROUP': {
             components: [
-                /\(\?</,
-                { name: 'groupName', what: /[^>]+/ },
-                />/,
+                {
+                    oneOf: [
+                        // Chevron-bracketed Perl or Python named capturing group.
+                        [/\(\?P?</, { name: 'groupName', what: /[^>]+/ }, />/],
+                        // Quoted Perl named capturing group.
+                        [/\(\?'/, { name: 'groupName', what: /[^']+/ }, /'/],
+                    ],
+                },
                 { name: 'components', zeroOrMoreOf: 'N_COMPONENT' },
                 /\)/,
             ],
