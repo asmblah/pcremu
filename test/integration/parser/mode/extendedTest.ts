@@ -21,11 +21,11 @@ describe('Parser extended mode integration', () => {
     it('should ignore whitespace and comments except when escaped or inside character classes', () => {
         const ast = parser.parse(
             ' my ( text ) + +  # My comment to be ignored\n  [ ]+  (?<grabbed> after\\ end ) ',
-            { extended: true }
+            { extended: true },
         );
 
         expect(ast.getPattern()).to.equal(
-            ' my ( text ) + +  # My comment to be ignored\n  [ ]+  (?<grabbed> after\\ end ) '
+            ' my ( text ) + +  # My comment to be ignored\n  [ ]+  (?<grabbed> after\\ end ) ',
         );
         expect(ast.getParsingAst()).to.deep.equal({
             'name': 'N_PATTERN',

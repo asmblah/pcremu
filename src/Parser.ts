@@ -27,7 +27,7 @@ export const DEFAULT_FLAGS: Flags = {
 export default class Parser {
     constructor(
         private parsingParser: any,
-        private parsingContext: Context = { flags: DEFAULT_FLAGS }
+        private parsingContext: Context = { flags: DEFAULT_FLAGS },
     ) {}
 
     /**

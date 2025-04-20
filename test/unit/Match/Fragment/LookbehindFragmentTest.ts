@@ -28,7 +28,7 @@ describe('LookbehindFragment', () => {
         fragment = new LookbehindFragment(
             fragmentMatcher,
             [new LiteralFragment('my-'), new LiteralFragment('text')],
-            LookaroundBivalence.Positive
+            LookaroundBivalence.Positive,
         );
     });
 
@@ -41,7 +41,7 @@ describe('LookbehindFragment', () => {
             const fragment = new LookbehindFragment(
                 fragmentMatcher,
                 [new LiteralFragment('my-'), new NativeFragment('text*', null)],
-                LookaroundBivalence.Positive
+                LookaroundBivalence.Positive,
             );
 
             expect(fragment.getFixedLength(existingMatch)).to.be.null;
@@ -56,7 +56,7 @@ describe('LookbehindFragment', () => {
                         'here is my-text and more',
                         15,
                         false,
-                        existingMatch
+                        existingMatch,
                     );
 
                     expect(match).not.to.be.null;
@@ -70,8 +70,8 @@ describe('LookbehindFragment', () => {
                             'here is something else',
                             8,
                             false,
-                            existingMatch
-                        )
+                            existingMatch,
+                        ),
                     ).to.be.null;
                 });
 
@@ -80,7 +80,7 @@ describe('LookbehindFragment', () => {
                         'here is something else my-text and more',
                         10,
                         false,
-                        existingMatch
+                        existingMatch,
                     );
 
                     expect(match).not.to.be.null;
@@ -95,7 +95,7 @@ describe('LookbehindFragment', () => {
                         'here is my-text and more',
                         15,
                         true,
-                        existingMatch
+                        existingMatch,
                     );
 
                     expect(match).not.to.be.null;
@@ -109,8 +109,8 @@ describe('LookbehindFragment', () => {
                             'here is something else',
                             8,
                             true,
-                            existingMatch
-                        )
+                            existingMatch,
+                        ),
                     ).to.be.null;
                 });
 
@@ -120,8 +120,8 @@ describe('LookbehindFragment', () => {
                             'here is something else my-text',
                             8,
                             true,
-                            existingMatch
-                        )
+                            existingMatch,
+                        ),
                     ).to.be.null;
                 });
             });
@@ -132,7 +132,7 @@ describe('LookbehindFragment', () => {
                 fragment = new LookbehindFragment(
                     fragmentMatcher,
                     [new LiteralFragment('my-'), new LiteralFragment('text')],
-                    LookaroundBivalence.Negative
+                    LookaroundBivalence.Negative,
                 );
             });
 
@@ -142,7 +142,7 @@ describe('LookbehindFragment', () => {
                         'here is something else',
                         8,
                         false,
-                        existingMatch
+                        existingMatch,
                     );
 
                     expect(match).not.to.be.null;
@@ -156,8 +156,8 @@ describe('LookbehindFragment', () => {
                             'here is my-text and more',
                             15,
                             false,
-                            existingMatch
-                        )
+                            existingMatch,
+                        ),
                     ).to.be.null;
                 });
 
@@ -167,7 +167,7 @@ describe('LookbehindFragment', () => {
                         'here is my-text and something else',
                         30,
                         false,
-                        existingMatch
+                        existingMatch,
                     );
 
                     expect(match).not.to.be.null;
@@ -182,7 +182,7 @@ describe('LookbehindFragment', () => {
                         'here is something else',
                         8,
                         true,
-                        existingMatch
+                        existingMatch,
                     );
 
                     expect(match).not.to.be.null;
@@ -196,8 +196,8 @@ describe('LookbehindFragment', () => {
                             'here is my-text and more',
                             15,
                             true,
-                            existingMatch
-                        )
+                            existingMatch,
+                        ),
                     ).to.be.null;
                 });
 
@@ -206,7 +206,7 @@ describe('LookbehindFragment', () => {
                         'here is my-text and something else',
                         30,
                         true,
-                        existingMatch
+                        existingMatch,
                     );
 
                     expect(match).not.to.be.null;
@@ -226,7 +226,7 @@ describe('LookbehindFragment', () => {
             fragment = new LookbehindFragment(
                 fragmentMatcher,
                 [new LiteralFragment('my-'), new LiteralFragment('text')],
-                LookaroundBivalence.Negative
+                LookaroundBivalence.Negative,
             );
 
             expect(fragment.toString()).to.equal('(?<!my-text)');

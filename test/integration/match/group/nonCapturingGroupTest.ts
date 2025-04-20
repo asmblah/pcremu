@@ -20,7 +20,7 @@ describe('Non-capturing group match integration', () => {
             expect(match).not.to.be.null;
             expect(match?.getCaptureCount()).to.equal(1);
             expect(match?.getNumberedCapture(0)).to.equal(
-                'my one twoone two text'
+                'my one twoone two text',
             );
         });
 
@@ -46,7 +46,7 @@ describe('Non-capturing group match integration', () => {
             expect(match).not.to.be.null;
             expect(match?.getCaptureCount()).to.equal(1);
             expect(match?.getNumberedCapture(0)).to.equal(
-                'my one twoone two text'
+                'my one twoone two text',
             );
         });
 

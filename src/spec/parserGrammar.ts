@@ -99,7 +99,7 @@ export default {
                 node: N_CHARACTER_CLASS & {
                     literalClosingBracket?: string;
                     literalHyphen?: string;
-                }
+                },
             ) {
                 node.negated = Boolean(node.negated);
 
@@ -259,7 +259,7 @@ export default {
                     leadingEmptyAlternative?: string;
                     left: N_COMPONENT;
                     remaining?: N_COMPONENT[];
-                }
+                },
             ) {
                 if (!node.leadingEmptyAlternative && !node.alternatives) {
                     // This is not an alternation at all (left-recursion handling).
@@ -338,7 +338,7 @@ export default {
                 node: unknown,
                 parse: unknown,
                 abort: unknown,
-                context: Context
+                context: Context,
             ) {
                 // Only skip whitespace and comments in extended mode.
                 return context.flags.extended ? node : null;
@@ -384,7 +384,7 @@ export default {
                                 capture: string,
                                 parse: unknown,
                                 abort: unknown,
-                                context: Context
+                                context: Context,
                             ) {
                                 return context.flags.extended ? null : capture;
                             },

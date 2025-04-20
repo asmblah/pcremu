@@ -25,7 +25,7 @@ describe('Match index capture integration', () => {
                 'second',
             ]);
             expect(match?.getNumberedCapture(0)).to.equal(
-                'my first and second groups'
+                'my first and second groups',
             );
             expect(match?.getNumberedCaptureStart(0)).to.equal(0);
             expect(match?.getNumberedCaptureEnd(0)).to.equal(26);
@@ -39,7 +39,7 @@ describe('Match index capture integration', () => {
 
         it('should be able to capture start and end indices for named capturing groups', () => {
             const matcher = emulator.compile(
-                'my (?<group1>first) and (?<group2>second) groups'
+                'my (?<group1>first) and (?<group2>second) groups',
             );
 
             const match = matcher.matchOne('my first and second groups');
@@ -60,7 +60,7 @@ describe('Match index capture integration', () => {
 
         it('should be able to capture start and end indices for optional capturing groups', () => {
             const matcher = emulator.compile(
-                'my (?<namedGroup>first)? and (second)? groups'
+                'my (?<namedGroup>first)? and (second)? groups',
             );
 
             const match = matcher.matchOne('my  and  groups');
@@ -100,7 +100,7 @@ describe('Match index capture integration', () => {
                 'second',
             ]);
             expect(match?.getNumberedCapture(0)).to.equal(
-                'my first and second groups'
+                'my first and second groups',
             );
             expect(match?.getNumberedCaptureStart(0)).to.equal(0);
             expect(match?.getNumberedCaptureEnd(0)).to.equal(26);
@@ -117,7 +117,7 @@ describe('Match index capture integration', () => {
                 'my (?<group1>first) and (?<group2>second) groups',
                 {
                     optimise: false,
-                }
+                },
             );
 
             const match = matcher.matchOne('my first and second groups');
@@ -141,7 +141,7 @@ describe('Match index capture integration', () => {
                 'my (?<namedGroup>first)? and (second)? groups',
                 {
                     optimise: false,
-                }
+                },
             );
 
             const match = matcher.matchOne('my  and  groups');

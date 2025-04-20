@@ -44,7 +44,7 @@ describe('NumberedBackreferenceFragment', () => {
                     'here is my-literal',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -57,7 +57,7 @@ describe('NumberedBackreferenceFragment', () => {
                     'here is my-literal',
                     5,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -67,7 +67,7 @@ describe('NumberedBackreferenceFragment', () => {
 
             it('should return null when the literal does not appear in subject', () => {
                 expect(
-                    fragment.match('something-else', 0, false, existingMatch)
+                    fragment.match('something-else', 0, false, existingMatch),
                 ).to.be.null;
             });
 
@@ -77,8 +77,8 @@ describe('NumberedBackreferenceFragment', () => {
                         'here is my-literal',
                         9,
                         false,
-                        existingMatch
-                    )
+                        existingMatch,
+                    ),
                 ).to.be.null;
             });
 
@@ -90,8 +90,8 @@ describe('NumberedBackreferenceFragment', () => {
                         'here is my-literal',
                         8,
                         false,
-                        existingMatch
-                    )
+                        existingMatch,
+                    ),
                 ).to.be.null;
             });
         });
@@ -102,7 +102,7 @@ describe('NumberedBackreferenceFragment', () => {
                     'here is my-literal',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -115,7 +115,7 @@ describe('NumberedBackreferenceFragment', () => {
                     'here is my-literal',
                     5,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).to.be.null;
@@ -128,7 +128,12 @@ describe('NumberedBackreferenceFragment', () => {
 
             it('should return null when the literal appears before the start position', () => {
                 expect(
-                    fragment.match('here is my-literal', 9, true, existingMatch)
+                    fragment.match(
+                        'here is my-literal',
+                        9,
+                        true,
+                        existingMatch,
+                    ),
                 ).to.be.null;
             });
 
@@ -136,7 +141,12 @@ describe('NumberedBackreferenceFragment', () => {
                 existingMatch.getNumberedCapture.withArgs(21).returns(null);
 
                 expect(
-                    fragment.match('here is my-literal', 8, true, existingMatch)
+                    fragment.match(
+                        'here is my-literal',
+                        8,
+                        true,
+                        existingMatch,
+                    ),
                 ).to.be.null;
             });
         });

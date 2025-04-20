@@ -44,7 +44,7 @@ class RegExpPolyfill extends RegExp {
 
             pattern = polyfillIndexCapture(
                 pattern,
-                namedCapturingGroupsToIndices
+                namedCapturingGroupsToIndices,
             );
         }
 
@@ -108,7 +108,7 @@ class RegExpPolyfill extends RegExp {
         const groupIndices = Object.create(null);
 
         for (const groupName of Object.keys(
-            this.namedCapturingGroupsToIndices
+            this.namedCapturingGroupsToIndices,
         )) {
             const groupIndex = this.namedCapturingGroupsToIndices[groupName];
 

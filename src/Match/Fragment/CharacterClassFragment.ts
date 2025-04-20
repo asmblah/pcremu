@@ -17,7 +17,7 @@ import FragmentMatch from '../FragmentMatch';
 export default class CharacterClassFragment implements FragmentInterface {
     constructor(
         private componentFragments: FragmentInterface[],
-        private negated: boolean
+        private negated: boolean,
     ) {}
 
     /**
@@ -34,7 +34,7 @@ export default class CharacterClassFragment implements FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean,
-        existingMatch: FragmentMatchInterface
+        existingMatch: FragmentMatchInterface,
     ): FragmentMatchInterface | null {
         let match: FragmentMatchInterface | null = null;
 
@@ -44,7 +44,7 @@ export default class CharacterClassFragment implements FragmentInterface {
                 position,
                 isAnchored,
                 // No previous components (if there have been any) are part of the existing match.
-                existingMatch
+                existingMatch,
             );
 
             if (match) {
@@ -85,7 +85,7 @@ export default class CharacterClassFragment implements FragmentInterface {
             type: 'character-class',
             negated: this.negated,
             components: this.componentFragments.map((componentFragment) =>
-                componentFragment.toStructure()
+                componentFragment.toStructure(),
             ),
         };
     }

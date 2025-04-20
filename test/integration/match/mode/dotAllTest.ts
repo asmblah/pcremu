@@ -17,14 +17,14 @@ describe('Dot-all mode match integration', () => {
 
             const match = matcher.matchOne(
                 // Note we check use of both carriage-return and linefeed.
-                'start blah blah\nline 2\rline 3\nand end'
+                'start blah blah\nline 2\rline 3\nand end',
             );
 
             expect(match).not.to.be.null;
             expect(match?.getCaptureCount()).to.equal(1);
             expect(match?.getStart()).to.equal(0);
             expect(match?.getNumberedCapture(0)).to.equal(
-                'start blah blah\nline 2\rline 3\nand end'
+                'start blah blah\nline 2\rline 3\nand end',
             );
         });
     });
@@ -38,14 +38,14 @@ describe('Dot-all mode match integration', () => {
 
             const match = matcher.matchOne(
                 // Note we check use of both carriage-return and linefeed.
-                'start blah blah\nline 2\rline 3\nand end'
+                'start blah blah\nline 2\rline 3\nand end',
             );
 
             expect(match).not.to.be.null;
             expect(match?.getCaptureCount()).to.equal(1);
             expect(match?.getStart()).to.equal(0);
             expect(match?.getNumberedCapture(0)).to.equal(
-                'start blah blah\nline 2\rline 3\nand end'
+                'start blah blah\nline 2\rline 3\nand end',
             );
         });
     });

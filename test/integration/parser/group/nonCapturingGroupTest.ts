@@ -50,7 +50,7 @@ describe('Parser non-capturing group integration', () => {
         const ast = parser.parse('my (?<found>stuff (?:goes) inside) here');
 
         expect(ast.getPattern()).to.equal(
-            'my (?<found>stuff (?:goes) inside) here'
+            'my (?<found>stuff (?:goes) inside) here',
         );
         expect(ast.getParsingAst()).to.deep.equal({
             'name': 'N_PATTERN',

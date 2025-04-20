@@ -16,7 +16,7 @@ describe('Multiple match integration', () => {
             const matcher = emulator.compile('my literal');
 
             const matches = matcher.matchAll(
-                'my literal and then my literal again'
+                'my literal and then my literal again',
             );
 
             expect(matches).to.have.length(2);
@@ -37,7 +37,7 @@ describe('Multiple match integration', () => {
             const matcher = emulator.compile('my literal', { optimise: false });
 
             const matches = matcher.matchAll(
-                'my literal and then my literal again'
+                'my literal and then my literal again',
             );
 
             expect(matches).to.have.length(2);

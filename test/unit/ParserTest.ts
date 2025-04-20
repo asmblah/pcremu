@@ -21,7 +21,7 @@ describe('Parser', () => {
 
         parser = new Parser(
             { parse: sinon.stub().returns({}) },
-            parsingContext
+            parsingContext,
         );
     });
 

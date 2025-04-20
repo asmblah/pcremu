@@ -24,7 +24,7 @@ describe('IR-to-Pattern compiler (unoptimised) possessive quantifier integration
 
     it('should be able to compile an IR with one possessive quantifier node to Pattern', () => {
         const intermediateRepresentation = sinon.createStubInstance(
-            IntermediateRepresentation
+            IntermediateRepresentation,
         ) as SinonStubbedInstance<IntermediateRepresentation> &
             IntermediateRepresentation;
         intermediateRepresentation.getFlags.returns(DEFAULT_FLAGS);

@@ -16,7 +16,7 @@ export default class Ast {
     constructor(
         private parsingAst: any,
         private pattern: string,
-        private flags: Flags
+        private flags: Flags,
     ) {}
 
     /**

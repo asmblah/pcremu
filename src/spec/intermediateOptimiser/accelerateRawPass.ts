@@ -43,12 +43,12 @@ export default {
 
         'I_ALTERNATION': (
             node: I_ALTERNATION,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_ALTERNATION | I_RAW_REGEX => {
             // Apply optimisations to all alternatives.
             // Note this will combine any raw regex fragments within each alternative if possible.
             const optimisedAlternatives = node.alternatives.map(
-                (node: I_ALTERNATIVE) => interpret(node)
+                (node: I_ALTERNATIVE) => interpret(node),
             ) as I_ALTERNATIVE[];
 
             // Now combine any runs of alternatives into raw alternations "a|b|...".
@@ -87,7 +87,7 @@ export default {
                     (previousFixedLength, nextFixedLength) =>
                         nextFixedLength === previousFixedLength
                             ? previousFixedLength
-                            : null
+                            : null,
                 );
 
             if (
@@ -121,11 +121,11 @@ export default {
         },
         'I_ALTERNATIVE': (
             node: I_ALTERNATIVE,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_ALTERNATIVE => {
             // Apply optimisations to all components.
             const optimisedComponents = node.components.map(
-                (node: I_COMPONENT) => interpret(node)
+                (node: I_COMPONENT) => interpret(node),
             );
 
             // Now combine any runs of components together "ab...".
@@ -139,7 +139,7 @@ export default {
         },
         'I_CAPTURING_GROUP': (
             node: I_CAPTURING_GROUP,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_CAPTURING_GROUP | I_RAW_REGEX => {
             return optimiseComponents<I_CAPTURING_GROUP>(
                 node.components,
@@ -172,12 +172,12 @@ export default {
                         'groupIndex': node.groupIndex,
                         'components': concatenatedComponents,
                     };
-                }
+                },
             );
         },
         'I_CHARACTER_CLASS': (
             node: I_CHARACTER_CLASS,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_CHARACTER_CLASS | I_RAW_REGEX => {
             return optimiseComponents<I_CHARACTER_CLASS>(
                 node.components,
@@ -215,12 +215,12 @@ export default {
                      * Note that we could use a native alternation in future where applicable.
                      */
                     return node;
-                }
+                },
             );
         },
         'I_LOOKAROUND': (
             node: I_LOOKAROUND,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_LOOKAROUND | I_RAW_REGEX => {
             return optimiseComponents<I_LOOKAROUND>(
                 node.components,
@@ -268,12 +268,12 @@ export default {
                         'direction': node.direction,
                         'components': concatenatedComponents,
                     };
-                }
+                },
             );
         },
         'I_MAXIMISING_QUANTIFIER': (
             node: I_MAXIMISING_QUANTIFIER,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_MAXIMISING_QUANTIFIER | I_RAW_REGEX => {
             return optimiseComponent<I_MAXIMISING_QUANTIFIER>(
                 node.component,
@@ -311,12 +311,12 @@ export default {
                         'component': optimisedComponent,
                         'quantifier': node.quantifier,
                     };
-                }
+                },
             );
         },
         'I_MINIMISING_QUANTIFIER': (
             node: I_MINIMISING_QUANTIFIER,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_MINIMISING_QUANTIFIER | I_RAW_REGEX => {
             return optimiseComponent<I_MINIMISING_QUANTIFIER>(
                 node.component,
@@ -354,12 +354,12 @@ export default {
                         'component': optimisedComponent,
                         'quantifier': node.quantifier,
                     };
-                }
+                },
             );
         },
         'I_NAMED_CAPTURING_GROUP': (
             node: I_NAMED_CAPTURING_GROUP,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_NAMED_CAPTURING_GROUP | I_RAW_REGEX => {
             return optimiseComponents<I_NAMED_CAPTURING_GROUP>(
                 node.components,
@@ -394,12 +394,12 @@ export default {
                         'groupName': node.groupName,
                         'components': concatenatedComponents,
                     };
-                }
+                },
             );
         },
         'I_NON_CAPTURING_GROUP': (
             node: I_NON_CAPTURING_GROUP,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_NON_CAPTURING_GROUP | I_RAW_REGEX => {
             return optimiseComponents<I_NON_CAPTURING_GROUP>(
                 node.components,
@@ -430,7 +430,7 @@ export default {
                         'name': 'I_NON_CAPTURING_GROUP',
                         'components': concatenatedComponents,
                     };
-                }
+                },
             );
         },
         /*
@@ -439,7 +439,7 @@ export default {
         'I_PATTERN': (node: I_PATTERN, interpret: Interpret): I_PATTERN => {
             // Apply optimisations to all components.
             const optimisedComponents = node.components.map(
-                (node: I_COMPONENT) => interpret(node)
+                (node: I_COMPONENT) => interpret(node),
             );
 
             // Now combine any runs of components together "ab...".
@@ -456,7 +456,7 @@ export default {
         },
         'I_POSSESSIVE_QUANTIFIER': (
             node: I_POSSESSIVE_QUANTIFIER,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_POSSESSIVE_QUANTIFIER | I_RAW_REGEX => {
             return optimiseComponent<I_POSSESSIVE_QUANTIFIER>(
                 node.component,
@@ -515,7 +515,7 @@ export default {
                         'component': optimisedComponent,
                         'quantifier': node.quantifier,
                     };
-                }
+                },
             );
         },
     },

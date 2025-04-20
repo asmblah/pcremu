@@ -39,27 +39,27 @@ describe('IntermediateToPatternCompiler', () => {
     beforeEach(() => {
         flags = { extended: true, caseless: false };
         fragmentMatcher = sinon.createStubInstance(
-            FragmentMatcher
+            FragmentMatcher,
         ) as SinonStubbedInstance<FragmentMatcher> & FragmentMatcher;
         quantifierMatcher = sinon.createStubInstance(
-            QuantifierMatcher
+            QuantifierMatcher,
         ) as SinonStubbedInstance<QuantifierMatcher> & QuantifierMatcher;
         transpile = sinon.stub();
         intermediateToPatternTranspiler = {
             transpile,
         };
         ir = sinon.createStubInstance(
-            IntermediateRepresentation
+            IntermediateRepresentation,
         ) as SinonStubbedInstance<IntermediateRepresentation> &
             IntermediateRepresentation;
         pattern = sinon.createStubInstance(
-            Pattern
+            Pattern,
         ) as SinonStubbedInstance<Pattern> & Pattern;
         patternFactory = sinon.createStubInstance(
-            PatternFactory
+            PatternFactory,
         ) as SinonStubbedInstance<PatternFactory> & PatternFactory;
         patternFragment = sinon.createStubInstance(
-            PatternFragment
+            PatternFragment,
         ) as SinonStubbedInstance<PatternFragment> & PatternFragment;
         transpilerIr = {
             'name': 'I_PATTERN',
@@ -82,7 +82,7 @@ describe('IntermediateToPatternCompiler', () => {
             patternFactory,
             fragmentMatcher,
             quantifierMatcher,
-            intermediateToPatternTranspiler
+            intermediateToPatternTranspiler,
         );
     });
 
@@ -92,7 +92,7 @@ describe('IntermediateToPatternCompiler', () => {
             expect(patternFactory.createPattern).to.have.been.calledOnce;
             expect(patternFactory.createPattern).to.have.been.calledWith(
                 sinon.match.same(patternFragment),
-                flags
+                flags,
             );
         });
     });

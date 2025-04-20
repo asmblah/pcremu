@@ -14,11 +14,11 @@
 import FragmentMatchInterface from '../../Match/FragmentMatchInterface';
 
 export type Backtracker = (
-    previousMatch: FragmentMatchInterface
+    previousMatch: FragmentMatchInterface,
 ) => FragmentMatchInterface | null;
 
 export type Processor = (
-    match: FragmentMatchInterface
+    match: FragmentMatchInterface,
 ) => FragmentMatchInterface;
 
 export type Capture = string | null;

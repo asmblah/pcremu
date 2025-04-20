@@ -21,7 +21,7 @@ export default class LookaheadFragment implements FragmentInterface {
     constructor(
         private fragmentMatcher: FragmentMatcher,
         private componentFragments: FragmentInterface[],
-        private readonly bivalence: LookaroundBivalence
+        private readonly bivalence: LookaroundBivalence,
     ) {}
 
     /**
@@ -50,14 +50,14 @@ export default class LookaheadFragment implements FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean,
-        existingMatch: FragmentMatchInterface
+        existingMatch: FragmentMatchInterface,
     ): FragmentMatchInterface | null {
         const match = this.fragmentMatcher.matchComponents(
             subject,
             position,
             isAnchored,
             this.componentFragments,
-            existingMatch
+            existingMatch,
         );
 
         if (this.bivalence === LookaroundBivalence.Negative) {
@@ -77,7 +77,7 @@ export default class LookaheadFragment implements FragmentInterface {
             match.getNumberedCaptures(),
             match.getNamedCaptures(),
             match.getNumberedCaptureIndices(),
-            match.getNamedCaptureIndices()
+            match.getNamedCaptureIndices(),
         );
     }
 
@@ -102,7 +102,7 @@ export default class LookaheadFragment implements FragmentInterface {
             type: 'lookahead',
             bivalence: this.bivalence,
             components: this.componentFragments.map((componentFragment) =>
-                componentFragment.toStructure()
+                componentFragment.toStructure(),
             ),
         };
     }

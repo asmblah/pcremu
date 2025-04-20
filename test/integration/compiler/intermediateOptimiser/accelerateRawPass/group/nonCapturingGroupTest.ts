@@ -26,7 +26,7 @@ describe('IR optimiser accelerateRawPass compiler non-capturing group integratio
 
     it('should be able to optimise an IR with a non-capturing group', () => {
         const ir = sinon.createStubInstance(
-            IntermediateRepresentation
+            IntermediateRepresentation,
         ) as SinonStubbedInstance<IntermediateRepresentation> &
             IntermediateRepresentation;
         ir.getTranspilerRepresentation.returns({
@@ -76,7 +76,7 @@ describe('IR optimiser accelerateRawPass compiler non-capturing group integratio
         const intermediateRepresentation = optimiser.optimise(ir);
 
         expect(
-            intermediateRepresentation.getTranspilerRepresentation()
+            intermediateRepresentation.getTranspilerRepresentation(),
         ).to.deep.equal({
             'name': 'I_PATTERN',
             // Note that capturing group index "1" is _not_ included here as this group is non-capturing.

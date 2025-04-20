@@ -17,7 +17,7 @@ import QuantifierParser from './Quantifier/QuantifierParser';
 export default class AstToIntermediateCompiler {
     constructor(
         private astToIntermediateTranspiler: any,
-        private quantifierParser: QuantifierParser
+        private quantifierParser: QuantifierParser,
     ) {}
 
     /**
@@ -35,7 +35,7 @@ export default class AstToIntermediateCompiler {
         return new IntermediateRepresentation(
             transpilerRepresentation,
             ast.getPattern(),
-            ast.getFlags()
+            ast.getFlags(),
         );
     }
 }

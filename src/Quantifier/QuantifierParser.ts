@@ -36,12 +36,12 @@ export default class QuantifierParser {
                 min = 1;
                 max = Infinity;
                 break;
-            default:
+            default: {
                 const match = quantifier.match(/\{(\d+)?(,)?(\d+)?}/);
 
                 if (match === null) {
                     throw new Exception(
-                        `Unsupported quantifier "${quantifier}"`
+                        `Unsupported quantifier "${quantifier}"`,
                     );
                 }
 
@@ -56,6 +56,7 @@ export default class QuantifierParser {
                 } else {
                     max = min;
                 }
+            }
         }
 
         return { min, max, raw: quantifier };

@@ -42,7 +42,7 @@ describe('Zero-or-more quantifier match integration', () => {
             expect(match).not.to.be.null;
             expect(match?.getCaptureCount()).to.equal(2);
             expect(match?.getNumberedCapture(0)).to.equal(
-                'my possiblepossiblepossible text'
+                'my possiblepossiblepossible text',
             );
             // Note that only the last capture is kept.
             expect(match?.getNumberedCapture(1)).to.equal('possible');
@@ -98,7 +98,7 @@ describe('Zero-or-more quantifier match integration', () => {
             expect(match).not.to.be.null;
             expect(match?.getCaptureCount()).to.equal(2);
             expect(match?.getNumberedCapture(0)).to.equal(
-                'my possiblepossiblepossible text'
+                'my possiblepossiblepossible text',
             );
             // Note that only the last capture is kept.
             expect(match?.getNumberedCapture(1)).to.equal('possible');

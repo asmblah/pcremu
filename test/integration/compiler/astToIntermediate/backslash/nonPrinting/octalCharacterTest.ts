@@ -41,11 +41,11 @@ describe('AST-to-IR compiler octal character escape integration', () => {
         const intermediateRepresentation = compiler.compile(ast);
 
         expect(intermediateRepresentation.getPattern()).to.equal(
-            'hello\\10world'
+            'hello\\10world',
         );
         expect(intermediateRepresentation.getFlags()).to.deep.equal({});
         expect(
-            intermediateRepresentation.getTranspilerRepresentation()
+            intermediateRepresentation.getTranspilerRepresentation(),
         ).to.deep.equal({
             'name': 'I_PATTERN',
             'capturingGroups': [0],

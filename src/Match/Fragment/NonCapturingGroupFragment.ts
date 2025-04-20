@@ -17,7 +17,7 @@ import FragmentMatchInterface from '../FragmentMatchInterface';
 export default class NonCapturingGroupFragment implements FragmentInterface {
     constructor(
         private fragmentMatcher: FragmentMatcher,
-        private componentFragments: FragmentInterface[]
+        private componentFragments: FragmentInterface[],
     ) {}
 
     /**
@@ -46,14 +46,14 @@ export default class NonCapturingGroupFragment implements FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean,
-        existingMatch: FragmentMatchInterface
+        existingMatch: FragmentMatchInterface,
     ): FragmentMatchInterface | null {
         return this.fragmentMatcher.matchComponents(
             subject,
             position,
             isAnchored,
             this.componentFragments,
-            existingMatch
+            existingMatch,
         );
     }
 
@@ -75,7 +75,7 @@ export default class NonCapturingGroupFragment implements FragmentInterface {
         return {
             type: 'non-capturing-group',
             components: this.componentFragments.map((componentFragment) =>
-                componentFragment.toStructure()
+                componentFragment.toStructure(),
             ),
         };
     }

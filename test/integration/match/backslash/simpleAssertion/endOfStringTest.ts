@@ -20,10 +20,10 @@ describe('Simple assertion end-of-string match integration', () => {
             expect(match).not.to.be.null;
             expect(match?.getCaptureCount()).to.equal(2);
             expect(match?.getNumberedCapture(0)).to.equal(
-                'my text\nacross two lines'
+                'my text\nacross two lines',
             );
             expect(match?.getNumberedCapture(1)).to.equal(
-                ' text\nacross two lines'
+                ' text\nacross two lines',
             );
         });
 
@@ -36,10 +36,10 @@ describe('Simple assertion end-of-string match integration', () => {
             expect(match?.getCaptureCount()).to.equal(2);
             expect(match?.getNumberedCapture(0)).to.equal(
                 'my text\nacross three lines',
-                'Trailing newline should be ignored'
+                'Trailing newline should be ignored',
             );
             expect(match?.getNumberedCapture(1)).to.equal(
-                ' text\nacross three lines'
+                ' text\nacross three lines',
             );
         });
 
@@ -52,10 +52,10 @@ describe('Simple assertion end-of-string match integration', () => {
             expect(match?.getCaptureCount()).to.equal(2);
             expect(match?.getNumberedCapture(0)).to.equal(
                 'my text\nacross three lines\n\n',
-                'Only the final trailing newline should be ignored'
+                'Only the final trailing newline should be ignored',
             );
             expect(match?.getNumberedCapture(1)).to.equal(
-                ' text\nacross three lines\n\n'
+                ' text\nacross three lines\n\n',
             );
         });
 
@@ -79,10 +79,10 @@ describe('Simple assertion end-of-string match integration', () => {
             expect(match).not.to.be.null;
             expect(match?.getCaptureCount()).to.equal(2);
             expect(match?.getNumberedCapture(0)).to.equal(
-                'my text\nacross two lines'
+                'my text\nacross two lines',
             );
             expect(match?.getNumberedCapture(1)).to.equal(
-                ' text\nacross two lines'
+                ' text\nacross two lines',
             );
         });
 
@@ -97,10 +97,10 @@ describe('Simple assertion end-of-string match integration', () => {
             expect(match?.getCaptureCount()).to.equal(2);
             expect(match?.getNumberedCapture(0)).to.equal(
                 'my text\nacross three lines',
-                'Trailing newline should be ignored'
+                'Trailing newline should be ignored',
             );
             expect(match?.getNumberedCapture(1)).to.equal(
-                ' text\nacross three lines'
+                ' text\nacross three lines',
             );
         });
 
@@ -115,10 +115,10 @@ describe('Simple assertion end-of-string match integration', () => {
             expect(match?.getCaptureCount()).to.equal(2);
             expect(match?.getNumberedCapture(0)).to.equal(
                 'my text\nacross three lines\n\n',
-                'Only the final trailing newline should be ignored'
+                'Only the final trailing newline should be ignored',
             );
             expect(match?.getNumberedCapture(1)).to.equal(
-                ' text\nacross three lines\n\n'
+                ' text\nacross three lines\n\n',
             );
         });
 

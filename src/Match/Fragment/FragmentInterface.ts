@@ -28,7 +28,7 @@ export default interface FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean,
-        existingMatch: FragmentMatchInterface
+        existingMatch: FragmentMatchInterface,
     ): FragmentMatchInterface | null;
 
     /**

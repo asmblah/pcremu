@@ -32,7 +32,7 @@ describe('MaximisingQuantifierFragment', () => {
             quantifierMatcher,
             new LiteralFragment('my-text'),
             2,
-            4
+            4,
         );
     });
 
@@ -42,7 +42,7 @@ describe('MaximisingQuantifierFragment', () => {
                 quantifierMatcher,
                 new LiteralFragment('my-text'),
                 2,
-                2
+                2,
             );
 
             expect(fragment.getFixedLength(existingMatch)).to.equal(14);
@@ -57,7 +57,7 @@ describe('MaximisingQuantifierFragment', () => {
                 quantifierMatcher,
                 new LiteralFragment('my-text'),
                 2,
-                Infinity
+                Infinity,
             );
 
             expect(fragment.getFixedLength(existingMatch)).to.be.null;
@@ -71,7 +71,7 @@ describe('MaximisingQuantifierFragment', () => {
                     'here is my-text',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).to.be.null;
@@ -82,7 +82,7 @@ describe('MaximisingQuantifierFragment', () => {
                     'here is my-textmy-text',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -95,7 +95,7 @@ describe('MaximisingQuantifierFragment', () => {
                     'here is my-textmy-textmy-text',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -108,12 +108,12 @@ describe('MaximisingQuantifierFragment', () => {
                     'here is my-textmy-textmy-textmy-text',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
                 expect(match?.getCapture()).to.equal(
-                    'my-textmy-textmy-textmy-text'
+                    'my-textmy-textmy-textmy-text',
                 );
                 expect(match?.getStart()).to.equal(8);
             });
@@ -123,13 +123,13 @@ describe('MaximisingQuantifierFragment', () => {
                     'here is my-textmy-textmy-textmy-textmy-text',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
                 expect(match?.getCapture()).to.equal(
                     // Only the first four (up to maximumMatches) are matched.
-                    'my-textmy-textmy-textmy-text'
+                    'my-textmy-textmy-textmy-text',
                 );
                 expect(match?.getStart()).to.equal(8);
             });
@@ -139,7 +139,7 @@ describe('MaximisingQuantifierFragment', () => {
                     'here is my-textmy-text',
                     5,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -153,17 +153,17 @@ describe('MaximisingQuantifierFragment', () => {
                     new CapturingGroupFragment(
                         fragmentMatcher,
                         [new NativeFragment('my(?:-text)?', null)],
-                        12
+                        12,
                     ),
                     2,
-                    4
+                    4,
                 );
 
                 const match = fragment.match(
                     'here is my-textmy-text',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -177,13 +177,13 @@ describe('MaximisingQuantifierFragment', () => {
                     'here is my-textmy-textmy-text',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
                 const backtrackedMatch = match?.backtrack();
                 expect(backtrackedMatch?.getCapture()).to.equal(
-                    'my-textmy-text'
+                    'my-textmy-text',
                 );
             });
 
@@ -192,7 +192,7 @@ describe('MaximisingQuantifierFragment', () => {
                     'here is my-textmy-textmy-text',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -202,7 +202,7 @@ describe('MaximisingQuantifierFragment', () => {
 
             it('should return null when the component does not appear in the subject', () => {
                 expect(
-                    fragment.match('something-else', 0, false, existingMatch)
+                    fragment.match('something-else', 0, false, existingMatch),
                 ).to.be.null;
             });
 
@@ -212,8 +212,8 @@ describe('MaximisingQuantifierFragment', () => {
                         'here is my-textmy-text',
                         9,
                         false,
-                        existingMatch
-                    )
+                        existingMatch,
+                    ),
                 ).to.be.null;
             });
         });
@@ -224,7 +224,7 @@ describe('MaximisingQuantifierFragment', () => {
                     'here is my-text',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).to.be.null;
@@ -235,7 +235,7 @@ describe('MaximisingQuantifierFragment', () => {
                     'here is my-textmy-text',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -248,7 +248,7 @@ describe('MaximisingQuantifierFragment', () => {
                     'here is my-textmy-textmy-text',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -261,12 +261,12 @@ describe('MaximisingQuantifierFragment', () => {
                     'here is my-textmy-textmy-textmy-text',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
                 expect(match?.getCapture()).to.equal(
-                    'my-textmy-textmy-textmy-text'
+                    'my-textmy-textmy-textmy-text',
                 );
                 expect(match?.getStart()).to.equal(8);
             });
@@ -276,13 +276,13 @@ describe('MaximisingQuantifierFragment', () => {
                     'here is my-textmy-textmy-textmy-textmy-text',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
                 expect(match?.getCapture()).to.equal(
                     // Only the first four (up to maximumMatches) are matched.
-                    'my-textmy-textmy-textmy-text'
+                    'my-textmy-textmy-textmy-text',
                 );
                 expect(match?.getStart()).to.equal(8);
             });
@@ -292,7 +292,7 @@ describe('MaximisingQuantifierFragment', () => {
                     'here is my-textmy-text',
                     5,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).to.be.null;
@@ -304,17 +304,17 @@ describe('MaximisingQuantifierFragment', () => {
                     new CapturingGroupFragment(
                         fragmentMatcher,
                         [new NativeFragment('my(?:-text)?', null)],
-                        12
+                        12,
                     ),
                     2,
-                    4
+                    4,
                 );
 
                 const match = fragment.match(
                     'here is my-textmy-text',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -328,13 +328,13 @@ describe('MaximisingQuantifierFragment', () => {
                     'here is my-textmy-textmy-text',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
                 const backtrackedMatch = match?.backtrack();
                 expect(backtrackedMatch?.getCapture()).to.equal(
-                    'my-textmy-text'
+                    'my-textmy-text',
                 );
             });
 
@@ -343,7 +343,7 @@ describe('MaximisingQuantifierFragment', () => {
                     'here is my-textmy-textmy-text',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -362,8 +362,8 @@ describe('MaximisingQuantifierFragment', () => {
                         'here is my-textmy-text',
                         9,
                         true,
-                        existingMatch
-                    )
+                        existingMatch,
+                    ),
                 ).to.be.null;
             });
         });

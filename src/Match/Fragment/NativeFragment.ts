@@ -26,7 +26,7 @@ import {
 
 // Convert native results with undefined to our API with null to indicate a missing capture or its indices.
 const nativeNamedCapturesToInternal = (
-    nativeCaptures: NativeNamedCaptures
+    nativeCaptures: NativeNamedCaptures,
 ): NamedCaptures => {
     const captures: NamedCaptures = {};
 
@@ -38,7 +38,7 @@ const nativeNamedCapturesToInternal = (
 };
 
 const nativeNamedCaptureIndicesToInternal = (
-    nativeIndices: NativeNamedCaptureIndices
+    nativeIndices: NativeNamedCaptureIndices,
 ): NamedCaptureIndices => {
     const indices: NamedCaptureIndices = {};
 
@@ -60,7 +60,7 @@ export default class NativeFragment implements FragmentInterface {
         private patternToEmulatedNumberedGroupIndex: {
             [key: number]: number;
         } = {},
-        private flags: Flags = {}
+        private flags: Flags = {},
     ) {}
 
     /**
@@ -76,7 +76,7 @@ export default class NativeFragment implements FragmentInterface {
     match(
         subject: string,
         position: number,
-        isAnchored: boolean
+        isAnchored: boolean,
     ): FragmentMatchInterface | null {
         // Always include the "d" flag for capture indices/offsets and "g" to allow offset to be specified.
         let nativeFlags = 'dg';
@@ -111,18 +111,18 @@ export default class NativeFragment implements FragmentInterface {
              * match the end of a line.
              */
             this.chars + '(?![\\s\\S])',
-            nativeFlags
+            nativeFlags,
         );
 
         const match = (
             regex: RegExp,
-            subjectSlice: string
+            subjectSlice: string,
         ): FragmentMatchInterface | null => {
             // Note we always use the "g" flag to ensure matches can only start at or after the given start offset.
             regex.lastIndex = position;
 
             const match = regex.exec(
-                subjectSlice
+                subjectSlice,
             ) as IndexCapturingRegExpExecArray | null;
 
             if (!match) {
@@ -134,7 +134,7 @@ export default class NativeFragment implements FragmentInterface {
 
             // Map the numbered match captures from the emulated groups in the native regex to the original pattern.
             for (const patternIndexKey of Object.keys(
-                this.patternToEmulatedNumberedGroupIndex
+                this.patternToEmulatedNumberedGroupIndex,
             )) {
                 const patternIndex = Number(patternIndexKey);
                 const emulatedIndex =
@@ -161,7 +161,7 @@ export default class NativeFragment implements FragmentInterface {
                 namedCaptures,
                 numberedCaptureIndices,
                 namedCaptureIndices,
-                backtrack
+                backtrack,
             );
         };
 
@@ -179,7 +179,7 @@ export default class NativeFragment implements FragmentInterface {
          */
 
         const initialBacktrack = (
-            previousMatch: FragmentMatchInterface
+            previousMatch: FragmentMatchInterface,
         ): FragmentMatchInterface | null => {
             const backtrackMatch = forwardBacktrack(previousMatch);
 
@@ -198,7 +198,7 @@ export default class NativeFragment implements FragmentInterface {
         };
 
         const forwardBacktrack = (
-            previousMatch: FragmentMatchInterface
+            previousMatch: FragmentMatchInterface,
         ): FragmentMatchInterface | null => {
             if (previousMatch.getEnd() === subject.length) {
                 // Match is already at end of string: there are no more characters to go.
@@ -224,7 +224,7 @@ export default class NativeFragment implements FragmentInterface {
         };
 
         const backwardBacktrack = (
-            previousMatch: FragmentMatchInterface
+            previousMatch: FragmentMatchInterface,
         ): FragmentMatchInterface | null => {
             if (previousMatch.getEnd() === position) {
                 // Match is already back at start: there are no more characters to go.
@@ -252,7 +252,7 @@ export default class NativeFragment implements FragmentInterface {
         let currentBacktrack = initialBacktrack;
 
         const backtrack = (
-            previousMatch: FragmentMatchInterface
+            previousMatch: FragmentMatchInterface,
         ): FragmentMatchInterface | null => {
             return currentBacktrack(previousMatch);
         };

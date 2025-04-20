@@ -74,14 +74,14 @@ export default {
         'I_RAW_BACKREFERENCE': (
             node: I_RAW_BACKREFERENCE,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): string => {
             return '\\' + context.getCapturingGroupIndex(node.id);
         },
         'I_RAW_CAPTURE': (
             node: I_RAW_CAPTURE,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): string => {
             context.recordCapturingGroup(node.groupIndex, node.id);
 
@@ -98,7 +98,7 @@ export default {
         'I_RAW_GHOST_CAPTURE': (
             node: I_RAW_GHOST_CAPTURE,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): string => {
             context.recordGhostCapturingGroup(node.id);
 
@@ -113,7 +113,7 @@ export default {
         },
         'I_RAW_LOOKAROUND': (
             node: I_RAW_LOOKAROUND,
-            interpret: Interpret
+            interpret: Interpret,
         ): string => {
             const bivalenceChar = node.bivalence === 'positive' ? '=' : '!';
             const directionChar = node.direction === 'behind' ? '<' : '';
@@ -128,7 +128,7 @@ export default {
         'I_RAW_NAMED_CAPTURE': (
             node: I_RAW_NAMED_CAPTURE,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): string => {
             context.recordCapturingGroup(node.groupIndex, node.id);
 
@@ -154,7 +154,7 @@ export default {
         },
         'I_RAW_NON_CAPTURE': (
             node: I_RAW_NON_CAPTURE,
-            interpret: Interpret
+            interpret: Interpret,
         ): string => {
             return (
                 // Add a native non-capturing group around.
@@ -168,7 +168,7 @@ export default {
         },
         'I_RAW_REGEX': (
             node: I_RAW_REGEX,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_RAW_REGEX => {
             const capturingGroupIdToIndex: { [id: string]: number } = {};
             const patternToEmulatedNumberedGroupIndex: {
@@ -183,7 +183,7 @@ export default {
                 getCapturingGroupIndex(id: string): number {
                     if (!hasOwn.call(capturingGroupIdToIndex, id)) {
                         throw new Exception(
-                            `No capturing group defined with id ${id} for this I_RAW_REGEX`
+                            `No capturing group defined with id ${id} for this I_RAW_REGEX`,
                         );
                     }
 

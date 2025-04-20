@@ -26,7 +26,7 @@ describe('IR optimiser accelerateRawPass compiler named capturing group integrat
 
     it('should be able to optimise an IR with a named capturing group', () => {
         const ir = sinon.createStubInstance(
-            IntermediateRepresentation
+            IntermediateRepresentation,
         ) as SinonStubbedInstance<IntermediateRepresentation> &
             IntermediateRepresentation;
         ir.getTranspilerRepresentation.returns({
@@ -77,7 +77,7 @@ describe('IR optimiser accelerateRawPass compiler named capturing group integrat
         const intermediateRepresentation = optimiser.optimise(ir);
 
         expect(
-            intermediateRepresentation.getTranspilerRepresentation()
+            intermediateRepresentation.getTranspilerRepresentation(),
         ).to.deep.equal({
             'name': 'I_PATTERN',
             // Note that both capturing group name "myGroup" and its index 1 are included here.

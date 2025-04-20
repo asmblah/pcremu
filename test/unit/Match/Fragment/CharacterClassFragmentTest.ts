@@ -24,7 +24,7 @@ describe('CharacterClassFragment', () => {
         createFragment = (negated: boolean) => {
             fragment = new CharacterClassFragment(
                 [new NativeFragment('m', 1), new NativeFragment('t', 1)],
-                negated
+                negated,
             );
         };
         createFragment(false);
@@ -44,7 +44,7 @@ describe('CharacterClassFragment', () => {
         it('should return 1 for a negated character class', () => {
             fragment = new CharacterClassFragment(
                 [new NativeFragment('a', 1), new NativeFragment('b', 1)],
-                true
+                true,
             );
 
             expect(fragment.getFixedLength()).to.equal(1);
@@ -58,7 +58,7 @@ describe('CharacterClassFragment', () => {
                     'here is my-literal',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -71,7 +71,7 @@ describe('CharacterClassFragment', () => {
                     'here is my-literal',
                     5,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -90,8 +90,8 @@ describe('CharacterClassFragment', () => {
                         'here is my-literal',
                         14,
                         false,
-                        existingMatch
-                    )
+                        existingMatch,
+                    ),
                 ).to.be.null;
             });
         });
@@ -106,7 +106,7 @@ describe('CharacterClassFragment', () => {
                     'here is my-literal',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).to.be.null;
@@ -117,7 +117,7 @@ describe('CharacterClassFragment', () => {
                     'here is my-literal',
                     5,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).to.be.null;
@@ -136,7 +136,7 @@ describe('CharacterClassFragment', () => {
                     'here is my-literal',
                     14,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -151,7 +151,7 @@ describe('CharacterClassFragment', () => {
                     'here is my-literal',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -164,7 +164,7 @@ describe('CharacterClassFragment', () => {
                     'here is my-literal',
                     5,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).to.be.null;
@@ -177,7 +177,12 @@ describe('CharacterClassFragment', () => {
 
             it('should return null when all matching components appear before the start position', () => {
                 expect(
-                    fragment.match('here is my-literal', 9, true, existingMatch)
+                    fragment.match(
+                        'here is my-literal',
+                        9,
+                        true,
+                        existingMatch,
+                    ),
                 ).to.be.null;
             });
         });
@@ -192,7 +197,7 @@ describe('CharacterClassFragment', () => {
                     'here is my-literal',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).to.be.null;
@@ -203,7 +208,7 @@ describe('CharacterClassFragment', () => {
                     'here is my-literal',
                     5,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -216,7 +221,7 @@ describe('CharacterClassFragment', () => {
                     'something-else',
                     0,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -229,7 +234,7 @@ describe('CharacterClassFragment', () => {
                     'here is my-literal',
                     9,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;

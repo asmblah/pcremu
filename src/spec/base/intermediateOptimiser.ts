@@ -48,10 +48,10 @@ export const concatenateRawRegexNodes = <T extends I_COMPONENT>(
     repackItem = (node: I_RAW_REGEX): T => node as unknown as T,
     updateRunFixedLength = (
         previousFixedLength: number,
-        nextFixedLength: number
+        nextFixedLength: number,
     ): number | null => {
         return previousFixedLength + nextFixedLength;
-    }
+    },
 ) => {
     let currentRunFixedLength: number | null = -1;
     let currentRunChunks: I_RAW_CHUNK[] = [];
@@ -64,7 +64,7 @@ export const concatenateRawRegexNodes = <T extends I_COMPONENT>(
                 'chunks': currentRunChunks,
                 'fixedLength':
                     currentRunFixedLength === -1 ? 0 : currentRunFixedLength,
-            })
+            }),
         );
     };
 
@@ -88,7 +88,7 @@ export const concatenateRawRegexNodes = <T extends I_COMPONENT>(
                 } else {
                     currentRunFixedLength = updateRunFixedLength(
                         currentRunFixedLength,
-                        fixedLength
+                        fixedLength,
                     );
                 }
             }
@@ -127,7 +127,7 @@ export const optimiseComponent = <T extends I_COMPONENT>(
     component: I_COMPONENT,
     interpret: Interpret,
     buildOptimised: (rawRegexNode: I_RAW_REGEX) => I_RAW_REGEX,
-    buildUnoptimised: (optimisedComponent: I_COMPONENT) => T
+    buildUnoptimised: (optimisedComponent: I_COMPONENT) => T,
 ): T | I_RAW_REGEX => {
     // Apply optimisations to the component.
     const optimisedComponent = interpret(component);
@@ -160,11 +160,11 @@ export const optimiseComponents = <T extends I_COMPONENT>(
     // in the scenario where the internals are optimised as much as possible,
     // but the outer logic still needs to be emulated for some reason such as missing native support.
     buildOptimised: (rawRegexNode: I_RAW_REGEX) => I_RAW_REGEX | T,
-    buildUnoptimised: (concatenatedComponents: I_COMPONENT[]) => T
+    buildUnoptimised: (concatenatedComponents: I_COMPONENT[]) => T,
 ): T | I_RAW_REGEX => {
     // Apply optimisations to all components.
     const optimisedComponents = components.map((node: I_COMPONENT) =>
-        interpret(node)
+        interpret(node),
     );
 
     // Now combine any runs of components together "ab...".
@@ -195,47 +195,47 @@ export default {
     nodes: {
         'I_ALTERNATION': (
             node: I_ALTERNATION,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_ALTERNATION => {
             return {
                 'name': 'I_ALTERNATION',
                 'alternatives': node.alternatives.map((node: I_ALTERNATIVE) =>
-                    interpret(node)
+                    interpret(node),
                 ) as I_ALTERNATIVE[],
             };
         },
         'I_ALTERNATIVE': (
             node: I_ALTERNATIVE,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_ALTERNATIVE => {
             return {
                 'name': 'I_ALTERNATIVE',
                 'components': node.components.map((node: I_COMPONENT) =>
-                    interpret(node)
+                    interpret(node),
                 ),
             };
         },
         'I_CAPTURING_GROUP': (
             node: I_CAPTURING_GROUP,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_CAPTURING_GROUP => {
             return {
                 'name': 'I_CAPTURING_GROUP',
                 'groupIndex': node.groupIndex,
                 'components': node.components.map((node: I_COMPONENT) =>
-                    interpret(node)
+                    interpret(node),
                 ),
             };
         },
         'I_CHARACTER_CLASS': (
             node: I_CHARACTER_CLASS,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_CHARACTER_CLASS => {
             return {
                 'name': 'I_CHARACTER_CLASS',
                 'negated': node.negated,
                 'components': node.components.map((node: I_COMPONENT) =>
-                    interpret(node)
+                    interpret(node),
                 ),
             };
         },
@@ -260,20 +260,20 @@ export default {
         },
         'I_LOOKAROUND': (
             node: I_LOOKAROUND,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_LOOKAROUND => {
             return {
                 'name': 'I_LOOKAROUND',
                 'direction': node.direction,
                 'bivalence': node.bivalence,
                 'components': node.components.map((node: I_COMPONENT) =>
-                    interpret(node)
+                    interpret(node),
                 ),
             };
         },
         'I_MAXIMISING_QUANTIFIER': (
             node: I_MAXIMISING_QUANTIFIER,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_MAXIMISING_QUANTIFIER => {
             return {
                 'name': 'I_MAXIMISING_QUANTIFIER',
@@ -283,7 +283,7 @@ export default {
         },
         'I_MINIMISING_QUANTIFIER': (
             node: I_MINIMISING_QUANTIFIER,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_MINIMISING_QUANTIFIER => {
             return {
                 'name': 'I_MINIMISING_QUANTIFIER',
@@ -293,25 +293,25 @@ export default {
         },
         'I_NAMED_CAPTURING_GROUP': (
             node: I_NAMED_CAPTURING_GROUP,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_NAMED_CAPTURING_GROUP => {
             return {
                 'name': 'I_NAMED_CAPTURING_GROUP',
                 'groupIndex': node.groupIndex,
                 'groupName': node.groupName,
                 'components': node.components.map((node: I_COMPONENT) =>
-                    interpret(node)
+                    interpret(node),
                 ),
             };
         },
         'I_NON_CAPTURING_GROUP': (
             node: I_NON_CAPTURING_GROUP,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_NON_CAPTURING_GROUP => {
             return {
                 'name': 'I_NON_CAPTURING_GROUP',
                 'components': node.components.map((node: I_COMPONENT) =>
-                    interpret(node)
+                    interpret(node),
                 ),
             };
         },
@@ -319,7 +319,7 @@ export default {
             return node;
         },
         'I_NUMBERED_BACKREFERENCE': (
-            node: I_NUMBERED_BACKREFERENCE
+            node: I_NUMBERED_BACKREFERENCE,
         ): I_NUMBERED_BACKREFERENCE => {
             return node;
         },
@@ -328,13 +328,13 @@ export default {
                 'name': 'I_PATTERN',
                 'capturingGroups': node.capturingGroups,
                 'components': node.components.map((node: I_COMPONENT) =>
-                    interpret(node)
+                    interpret(node),
                 ),
             };
         },
         'I_POSSESSIVE_QUANTIFIER': (
             node: I_POSSESSIVE_QUANTIFIER,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_POSSESSIVE_QUANTIFIER => {
             return {
                 'name': 'I_POSSESSIVE_QUANTIFIER',

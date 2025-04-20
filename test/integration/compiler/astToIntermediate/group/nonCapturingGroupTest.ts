@@ -39,7 +39,7 @@ describe('AST-to-IR compiler non-capturing group integration', () => {
         const intermediateRepresentation = compiler.compile(ast);
 
         expect(
-            intermediateRepresentation.getTranspilerRepresentation()
+            intermediateRepresentation.getTranspilerRepresentation(),
         ).to.deep.equal({
             'name': 'I_PATTERN',
             // Note that capturing group index "1" is _not_ included here as this group is non-capturing.

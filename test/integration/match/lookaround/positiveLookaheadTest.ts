@@ -27,7 +27,7 @@ describe('Lookaround positive lookahead match integration', () => {
 
         it('should not backtrack into the (atomic) lookahead', () => {
             const matcher = emulator.compile(
-                'start(?:(?=(\\d+))\\1\\d|(\\d+)) end'
+                'start(?:(?=(\\d+))\\1\\d|(\\d+)) end',
             );
 
             const matches = matcher.matchAll('here is start12123 end');
@@ -68,7 +68,7 @@ describe('Lookaround positive lookahead match integration', () => {
         it('should not backtrack into the (atomic) lookahead', () => {
             const matcher = emulator.compile(
                 'start(?:(?=(\\d+))\\1\\d|(\\d+)) end',
-                { optimise: false }
+                { optimise: false },
             );
 
             const matches = matcher.matchAll('here is start12123 end');

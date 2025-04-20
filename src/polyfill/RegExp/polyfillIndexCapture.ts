@@ -18,7 +18,7 @@ import Exception from '../../Exception/Exception';
 
 export default (
     pattern: string,
-    namedCapturingGroupsToIndices: { [name: string]: number }
+    namedCapturingGroupsToIndices: { [name: string]: number },
 ): string => {
     let groupIndex = 0;
 
@@ -31,7 +31,7 @@ export default (
             characterClass,
             numberedCapturingGroupPrefix,
             namedCapturingGroupPrefix,
-            namedCapturingGroupName
+            namedCapturingGroupName,
         ) => {
             if (escaped) {
                 // Skip over any escaped characters.
@@ -69,7 +69,7 @@ export default (
             }
 
             throw new Exception('polyfillIndexCapture() :: Unexpected state');
-        }
+        },
     );
 
     return pattern;

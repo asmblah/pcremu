@@ -43,7 +43,7 @@ describe('polyfillIndexCapture()', () => {
 
         const result = polyfillIndexCapture(
             'h(e(l))l\\\\2o',
-            namedGroupsToIndices
+            namedGroupsToIndices,
         );
 
         expect(result).to.equal('h((?=([\\s\\S]*))e((?=([\\s\\S]*))l))l\\\\2o');
@@ -64,11 +64,11 @@ describe('polyfillIndexCapture()', () => {
 
         const result = polyfillIndexCapture(
             'h(el)(l)o\\1and\\2',
-            namedGroupsToIndices
+            namedGroupsToIndices,
         );
 
         expect(result).to.equal(
-            'h((?=([\\s\\S]*))el)((?=([\\s\\S]*))l)o\\1and\\3'
+            'h((?=([\\s\\S]*))el)((?=([\\s\\S]*))l)o\\1and\\3',
         );
         expect(namedGroupsToIndices).to.deep.equal({});
     });
@@ -78,7 +78,7 @@ describe('polyfillIndexCapture()', () => {
 
         const result = polyfillIndexCapture(
             'he(l)\\1(o)',
-            namedGroupsToIndices
+            namedGroupsToIndices,
         );
 
         expect(result).to.equal('he((?=([\\s\\S]*))l)\\1((?=([\\s\\S]*))o)');
@@ -90,11 +90,11 @@ describe('polyfillIndexCapture()', () => {
 
         const result = polyfillIndexCapture(
             'h(el)(l)(o)\\1and\\2then\\3',
-            namedGroupsToIndices
+            namedGroupsToIndices,
         );
 
         expect(result).to.equal(
-            'h((?=([\\s\\S]*))el)((?=([\\s\\S]*))l)((?=([\\s\\S]*))o)\\1and\\3then\\5'
+            'h((?=([\\s\\S]*))el)((?=([\\s\\S]*))l)((?=([\\s\\S]*))o)\\1and\\3then\\5',
         );
         expect(namedGroupsToIndices).to.deep.equal({});
     });
@@ -113,11 +113,11 @@ describe('polyfillIndexCapture()', () => {
 
         const result = polyfillIndexCapture(
             '(h)((e)l)lo \\1 and \\2 and \\3',
-            namedGroupsToIndices
+            namedGroupsToIndices,
         );
 
         expect(result).to.equal(
-            '((?=([\\s\\S]*))h)((?=([\\s\\S]*))((?=([\\s\\S]*))e)l)lo \\1 and \\3 and \\5'
+            '((?=([\\s\\S]*))h)((?=([\\s\\S]*))((?=([\\s\\S]*))e)l)lo \\1 and \\3 and \\5',
         );
         expect(namedGroupsToIndices).to.deep.equal({});
     });
@@ -127,11 +127,11 @@ describe('polyfillIndexCapture()', () => {
 
         const result = polyfillIndexCapture(
             '(h)(e(l))lo \\1 and \\2 and \\3',
-            namedGroupsToIndices
+            namedGroupsToIndices,
         );
 
         expect(result).to.equal(
-            '((?=([\\s\\S]*))h)((?=([\\s\\S]*))e((?=([\\s\\S]*))l))lo \\1 and \\3 and \\5'
+            '((?=([\\s\\S]*))h)((?=([\\s\\S]*))e((?=([\\s\\S]*))l))lo \\1 and \\3 and \\5',
         );
         expect(namedGroupsToIndices).to.deep.equal({});
     });
@@ -141,7 +141,7 @@ describe('polyfillIndexCapture()', () => {
 
         const result = polyfillIndexCapture(
             'h(?<myGroup>el)lo',
-            namedGroupsToIndices
+            namedGroupsToIndices,
         );
 
         expect(result).to.equal('h(?<myGroup>(?=([\\s\\S]*))el)lo');
@@ -153,11 +153,11 @@ describe('polyfillIndexCapture()', () => {
 
         const result = polyfillIndexCapture(
             'h(?<myGroup>el)(?<yourGroup>l)o',
-            namedGroupsToIndices
+            namedGroupsToIndices,
         );
 
         expect(result).to.equal(
-            'h(?<myGroup>(?=([\\s\\S]*))el)(?<yourGroup>(?=([\\s\\S]*))l)o'
+            'h(?<myGroup>(?=([\\s\\S]*))el)(?<yourGroup>(?=([\\s\\S]*))l)o',
         );
         expect(namedGroupsToIndices).to.deep.equal({
             myGroup: 1,
@@ -170,11 +170,11 @@ describe('polyfillIndexCapture()', () => {
 
         const result = polyfillIndexCapture(
             'h(?<myGroup>e(?<yourGroup>l))lo',
-            namedGroupsToIndices
+            namedGroupsToIndices,
         );
 
         expect(result).to.equal(
-            'h(?<myGroup>(?=([\\s\\S]*))e(?<yourGroup>(?=([\\s\\S]*))l))lo'
+            'h(?<myGroup>(?=([\\s\\S]*))e(?<yourGroup>(?=([\\s\\S]*))l))lo',
         );
         expect(namedGroupsToIndices).to.deep.equal({
             myGroup: 1,
@@ -187,7 +187,7 @@ describe('polyfillIndexCapture()', () => {
 
         const result = polyfillIndexCapture(
             'h\\(?<myGroup>e\\(l))lo \\\\2',
-            namedGroupsToIndices
+            namedGroupsToIndices,
         );
 
         expect(result).to.equal('h\\(?<myGroup>e\\(l))lo \\\\2');

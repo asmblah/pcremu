@@ -20,11 +20,11 @@ describe('Parser generic character types integration', () => {
 
     it('should be able to parse a regex pattern containing all generic character types', () => {
         const ast = parser.parse(
-            'before\\d\\D,\\h\\H,\\N\\s\\S,\\v\\V\\w\\Wafter'
+            'before\\d\\D,\\h\\H,\\N\\s\\S,\\v\\V\\w\\Wafter',
         );
 
         expect(ast.getPattern()).to.equal(
-            'before\\d\\D,\\h\\H,\\N\\s\\S,\\v\\V\\w\\Wafter'
+            'before\\d\\D,\\h\\H,\\N\\s\\S,\\v\\V\\w\\Wafter',
         );
         expect(ast.getParsingAst()).to.deep.equal({
             'name': 'N_PATTERN',

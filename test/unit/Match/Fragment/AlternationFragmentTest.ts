@@ -79,7 +79,7 @@ describe('AlternationFragment', () => {
                     'here is my-literal',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -92,7 +92,7 @@ describe('AlternationFragment', () => {
                     'here is your-literal',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -105,7 +105,7 @@ describe('AlternationFragment', () => {
                     'here is my-literal',
                     5,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -115,7 +115,7 @@ describe('AlternationFragment', () => {
 
             it('should return null when no alternative appears in the subject', () => {
                 expect(
-                    fragment.match('something-else', 0, false, existingMatch)
+                    fragment.match('something-else', 0, false, existingMatch),
                 ).to.be.null;
             });
 
@@ -125,8 +125,8 @@ describe('AlternationFragment', () => {
                         'here is my-literal',
                         9,
                         false,
-                        existingMatch
-                    )
+                        existingMatch,
+                    ),
                 ).to.be.null;
             });
         });
@@ -137,7 +137,7 @@ describe('AlternationFragment', () => {
                     'here is my-literal',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -150,7 +150,7 @@ describe('AlternationFragment', () => {
                     'here is your-literal',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -163,7 +163,7 @@ describe('AlternationFragment', () => {
                     'here is my-literal',
                     5,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).to.be.null;
@@ -176,7 +176,12 @@ describe('AlternationFragment', () => {
 
             it('should return null when the only matching alternative appears before the start position', () => {
                 expect(
-                    fragment.match('here is my-literal', 9, true, existingMatch)
+                    fragment.match(
+                        'here is my-literal',
+                        9,
+                        true,
+                        existingMatch,
+                    ),
                 ).to.be.null;
             });
         });

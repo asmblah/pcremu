@@ -109,7 +109,7 @@ describe('Parser named capturing group integration', () => {
         const ast = parser.parse('my (stuff (?<inner>goes) inside) here');
 
         expect(ast.getPattern()).to.equal(
-            'my (stuff (?<inner>goes) inside) here'
+            'my (stuff (?<inner>goes) inside) here',
         );
         expect(ast.getParsingAst()).to.deep.equal({
             'name': 'N_PATTERN',

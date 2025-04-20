@@ -16,7 +16,7 @@ export default class IntermediateRepresentation {
     constructor(
         private transpilerRepresentation: any,
         private pattern: string,
-        private flags: Flags
+        private flags: Flags,
     ) {}
 
     /**

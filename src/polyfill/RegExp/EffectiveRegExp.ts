@@ -16,6 +16,7 @@ const RegExp = global.RegExp;
 const isRegExpIndicesFlagSupported = (() => {
     try {
         new RegExp('.', 'd');
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
         return false;
     }

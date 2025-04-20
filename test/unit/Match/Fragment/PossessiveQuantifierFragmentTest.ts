@@ -32,7 +32,7 @@ describe('PossessiveQuantifierFragment', () => {
             quantifierMatcher,
             new LiteralFragment('my-text'),
             2,
-            4
+            4,
         );
     });
 
@@ -42,7 +42,7 @@ describe('PossessiveQuantifierFragment', () => {
                 quantifierMatcher,
                 new LiteralFragment('my-text'),
                 2,
-                2
+                2,
             );
 
             expect(fragment.getFixedLength(existingMatch)).to.equal(14);
@@ -57,7 +57,7 @@ describe('PossessiveQuantifierFragment', () => {
                 quantifierMatcher,
                 new LiteralFragment('my-text'),
                 2,
-                Infinity
+                Infinity,
             );
 
             expect(fragment.getFixedLength(existingMatch)).to.be.null;
@@ -71,7 +71,7 @@ describe('PossessiveQuantifierFragment', () => {
                     'here is my-text',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).to.be.null;
@@ -82,7 +82,7 @@ describe('PossessiveQuantifierFragment', () => {
                     'here is my-textmy-text',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -95,7 +95,7 @@ describe('PossessiveQuantifierFragment', () => {
                     'here is my-textmy-textmy-text',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -108,12 +108,12 @@ describe('PossessiveQuantifierFragment', () => {
                     'here is my-textmy-textmy-textmy-text',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
                 expect(match?.getCapture()).to.equal(
-                    'my-textmy-textmy-textmy-text'
+                    'my-textmy-textmy-textmy-text',
                 );
                 expect(match?.getStart()).to.equal(8);
             });
@@ -123,13 +123,13 @@ describe('PossessiveQuantifierFragment', () => {
                     'here is my-textmy-textmy-textmy-textmy-text',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
                 expect(match?.getCapture()).to.equal(
                     // Only the first four (up to maximumMatches) are matched.
-                    'my-textmy-textmy-textmy-text'
+                    'my-textmy-textmy-textmy-text',
                 );
                 expect(match?.getStart()).to.equal(8);
             });
@@ -139,7 +139,7 @@ describe('PossessiveQuantifierFragment', () => {
                     'here is my-textmy-text',
                     5,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -153,17 +153,17 @@ describe('PossessiveQuantifierFragment', () => {
                     new CapturingGroupFragment(
                         fragmentMatcher,
                         [new NativeFragment('my(?:-text)?', null)],
-                        12
+                        12,
                     ),
                     2,
-                    4
+                    4,
                 );
 
                 const match = fragment.match(
                     'here is my-textmy-text',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -177,7 +177,7 @@ describe('PossessiveQuantifierFragment', () => {
                     'here is my-textmy-textmy-text',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -187,7 +187,7 @@ describe('PossessiveQuantifierFragment', () => {
 
             it('should return null when the component does not appear in the subject', () => {
                 expect(
-                    fragment.match('something-else', 0, false, existingMatch)
+                    fragment.match('something-else', 0, false, existingMatch),
                 ).to.be.null;
             });
 
@@ -197,8 +197,8 @@ describe('PossessiveQuantifierFragment', () => {
                         'here is my-textmy-text',
                         9,
                         false,
-                        existingMatch
-                    )
+                        existingMatch,
+                    ),
                 ).to.be.null;
             });
         });
@@ -209,7 +209,7 @@ describe('PossessiveQuantifierFragment', () => {
                     'here is my-text',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).to.be.null;
@@ -220,7 +220,7 @@ describe('PossessiveQuantifierFragment', () => {
                     'here is my-textmy-text',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -233,7 +233,7 @@ describe('PossessiveQuantifierFragment', () => {
                     'here is my-textmy-textmy-text',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -246,12 +246,12 @@ describe('PossessiveQuantifierFragment', () => {
                     'here is my-textmy-textmy-textmy-text',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
                 expect(match?.getCapture()).to.equal(
-                    'my-textmy-textmy-textmy-text'
+                    'my-textmy-textmy-textmy-text',
                 );
                 expect(match?.getStart()).to.equal(8);
             });
@@ -261,13 +261,13 @@ describe('PossessiveQuantifierFragment', () => {
                     'here is my-textmy-textmy-textmy-textmy-text',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
                 expect(match?.getCapture()).to.equal(
                     // Only the first four (up to maximumMatches) are matched.
-                    'my-textmy-textmy-textmy-text'
+                    'my-textmy-textmy-textmy-text',
                 );
                 expect(match?.getStart()).to.equal(8);
             });
@@ -277,7 +277,7 @@ describe('PossessiveQuantifierFragment', () => {
                     'here is my-textmy-text',
                     5,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).to.be.null;
@@ -289,17 +289,17 @@ describe('PossessiveQuantifierFragment', () => {
                     new CapturingGroupFragment(
                         fragmentMatcher,
                         [new NativeFragment('my(?:-text)?', null)],
-                        12
+                        12,
                     ),
                     2,
-                    4
+                    4,
                 );
 
                 const match = fragment.match(
                     'here is my-textmy-text',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -313,7 +313,7 @@ describe('PossessiveQuantifierFragment', () => {
                     'here is my-textmy-textmy-text',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -332,8 +332,8 @@ describe('PossessiveQuantifierFragment', () => {
                         'here is my-textmy-text',
                         9,
                         true,
-                        existingMatch
-                    )
+                        existingMatch,
+                    ),
                 ).to.be.null;
             });
         });

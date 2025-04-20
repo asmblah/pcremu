@@ -22,21 +22,21 @@ export default class IntermediateOptimiser {
      * @param {IntermediateRepresentation} intermediateRepresentation
      */
     optimise(
-        intermediateRepresentation: IntermediateRepresentation
+        intermediateRepresentation: IntermediateRepresentation,
     ): IntermediateRepresentation {
         let optimisedTranspilerRepresentation =
             intermediateRepresentation.getTranspilerRepresentation();
 
         for (const passTranspiler of this.intermediatePassTranspilers) {
             optimisedTranspilerRepresentation = passTranspiler.transpile(
-                optimisedTranspilerRepresentation
+                optimisedTranspilerRepresentation,
             );
         }
 
         return new IntermediateRepresentation(
             optimisedTranspilerRepresentation,
             intermediateRepresentation.getPattern(),
-            intermediateRepresentation.getFlags()
+            intermediateRepresentation.getFlags(),
         );
     }
 }

@@ -47,7 +47,7 @@ export default class AlternationFragment implements FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean,
-        existingMatch: FragmentMatchInterface
+        existingMatch: FragmentMatchInterface,
     ): FragmentMatchInterface | null {
         let alternativeIndex = 0;
 
@@ -65,7 +65,7 @@ export default class AlternationFragment implements FragmentInterface {
                     position,
                     isAnchored,
                     // No previous alternatives (if there have been any) are part of the existing match.
-                    existingMatch
+                    existingMatch,
                 );
 
                 if (match) {
@@ -84,7 +84,7 @@ export default class AlternationFragment implements FragmentInterface {
                             alternativeIndex++;
 
                             return tryNextAlternative();
-                        }
+                        },
                     );
                 }
             }
@@ -111,7 +111,7 @@ export default class AlternationFragment implements FragmentInterface {
         return {
             type: 'alternation',
             alternatives: this.alternativeFragments.map((alternativeFragment) =>
-                alternativeFragment.toStructure()
+                alternativeFragment.toStructure(),
             ),
         };
     }

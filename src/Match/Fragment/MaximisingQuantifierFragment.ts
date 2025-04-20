@@ -20,7 +20,7 @@ export default class MaximisingQuantifierFragment implements FragmentInterface {
         private quantifierMatcher: QuantifierMatcher,
         private componentFragment: FragmentInterface,
         private minimumMatches: number,
-        private maximumMatches: number
+        private maximumMatches: number,
     ) {}
 
     /**
@@ -49,12 +49,12 @@ export default class MaximisingQuantifierFragment implements FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean,
-        existingMatch: FragmentMatchInterface
+        existingMatch: FragmentMatchInterface,
     ): FragmentMatchInterface | null {
         const initialPosition = position;
 
         const backtracker = (
-            matches: FragmentMatchInterface[]
+            matches: FragmentMatchInterface[],
         ): FragmentMatchInterface | null => {
             if (matches.length === 0) {
                 // We've got an empty match (therefore minimum must be zero)
@@ -94,7 +94,7 @@ export default class MaximisingQuantifierFragment implements FragmentInterface {
             position = backtrackedMatch.getEnd();
 
             return new FragmentMatchTree(initialPosition, matches, () =>
-                backtracker(matches)
+                backtracker(matches),
             );
         };
 
@@ -106,7 +106,7 @@ export default class MaximisingQuantifierFragment implements FragmentInterface {
             this.minimumMatches,
             this.maximumMatches,
             existingMatch,
-            backtracker
+            backtracker,
         );
     }
 

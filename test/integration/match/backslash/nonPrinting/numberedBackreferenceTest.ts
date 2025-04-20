@@ -14,7 +14,7 @@ describe('Numbered backreference match integration', () => {
     describe('in optimised mode', () => {
         it('should be able to match a string with a regex containing a numbered backreference backslash-escape sequence', () => {
             const matcher = emulator.compile(
-                'over (here) and then \\1 and done'
+                'over (here) and then \\1 and done',
             );
 
             const match = matcher.matchOne('over here and then here and done');
@@ -22,7 +22,7 @@ describe('Numbered backreference match integration', () => {
             expect(match).not.to.be.null;
             expect(match?.getCaptureCount()).to.equal(2);
             expect(match?.getNumberedCapture(0)).to.equal(
-                'over here and then here and done'
+                'over here and then here and done',
             );
             expect(match?.getNumberedCapture(1)).to.equal('here');
         });
@@ -46,7 +46,7 @@ describe('Numbered backreference match integration', () => {
                 'over (here) and then \\1 and done',
                 {
                     optimise: false,
-                }
+                },
             );
 
             const match = matcher.matchOne('over here and then here and done');
@@ -54,7 +54,7 @@ describe('Numbered backreference match integration', () => {
             expect(match).not.to.be.null;
             expect(match?.getCaptureCount()).to.equal(2);
             expect(match?.getNumberedCapture(0)).to.equal(
-                'over here and then here and done'
+                'over here and then here and done',
             );
             expect(match?.getNumberedCapture(1)).to.equal('here');
         });

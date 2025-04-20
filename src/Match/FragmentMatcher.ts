@@ -33,7 +33,7 @@ export default class FragmentMatcher {
         isAnchored: boolean,
         componentFragments: FragmentInterface[],
         existingMatch: FragmentMatchInterface,
-        processor: Processor = (match: FragmentMatchInterface) => match
+        processor: Processor = (match: FragmentMatchInterface) => match,
     ): FragmentMatchInterface | null {
         const componentMatches: FragmentMatchInterface[] = [];
 
@@ -81,7 +81,7 @@ export default class FragmentMatcher {
                     subject,
                     position,
                     isAnchored || componentMatches.length > 0,
-                    existingMatch.withSubsequentMatches(componentMatches)
+                    existingMatch.withSubsequentMatches(componentMatches),
                 );
 
                 if (match) {
@@ -109,7 +109,7 @@ export default class FragmentMatcher {
 
                     // Continue forward again from the place we've backtracked to.
                     return tryNextComponent();
-                }
+                },
             );
         };
 
@@ -117,7 +117,7 @@ export default class FragmentMatcher {
 
         const backtrackResult = (
             previousMatch: FragmentMatchInterface,
-            previousBacktracker: Backtracker
+            previousBacktracker: Backtracker,
         ): FragmentMatchInterface | null => {
             const backtrackedMatch = previousBacktracker(previousMatch);
 
@@ -129,7 +129,7 @@ export default class FragmentMatcher {
         };
 
         const processMatch = (
-            match: FragmentMatchInterface
+            match: FragmentMatchInterface,
         ): FragmentMatchInterface =>
             processor(match).wrapBacktracker(backtrackResult);
 

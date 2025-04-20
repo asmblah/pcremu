@@ -16,8 +16,8 @@ import astToIntermediateTranspilerSpec from './spec/astToIntermediate';
 import compileRawPassSpec from './spec/intermediateOptimiser/compileRawPass';
 import intermediateToPatternTranspilerSpec from './spec/intermediateToPattern';
 import parserGrammarSpec from './spec/parserGrammar';
-import parsing = require('parsing');
-import transpiler = require('transpiler');
+import parsing from 'parsing';
+import transpiler from 'transpiler';
 
 const emulator = new Emulator(
     parsing,
@@ -25,7 +25,7 @@ const emulator = new Emulator(
     parserGrammarSpec,
     astToIntermediateTranspilerSpec,
     [accelerateRawPassSpec, compileRawPassSpec],
-    intermediateToPatternTranspilerSpec
+    intermediateToPatternTranspilerSpec,
 );
 
 // Library entrypoint.

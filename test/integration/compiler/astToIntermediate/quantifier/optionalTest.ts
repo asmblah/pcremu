@@ -44,7 +44,7 @@ describe('AST-to-IR compiler optional quantifier integration', () => {
         const intermediateRepresentation = compiler.compile(ast);
 
         expect(
-            intermediateRepresentation.getTranspilerRepresentation()
+            intermediateRepresentation.getTranspilerRepresentation(),
         ).to.deep.equal({
             'name': 'I_PATTERN',
             'capturingGroups': [0],

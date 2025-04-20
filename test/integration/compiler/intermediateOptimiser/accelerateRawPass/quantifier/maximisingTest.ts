@@ -26,7 +26,7 @@ describe('IR optimiser accelerateRawPass compiler maximising quantifier integrat
 
     it('should be able to optimise an IR with two variable-length maximising quantifiers', () => {
         const ir = sinon.createStubInstance(
-            IntermediateRepresentation
+            IntermediateRepresentation,
         ) as SinonStubbedInstance<IntermediateRepresentation> &
             IntermediateRepresentation;
         ir.getTranspilerRepresentation.returns({
@@ -85,7 +85,7 @@ describe('IR optimiser accelerateRawPass compiler maximising quantifier integrat
         const intermediateRepresentation = optimiser.optimise(ir);
 
         expect(
-            intermediateRepresentation.getTranspilerRepresentation()
+            intermediateRepresentation.getTranspilerRepresentation(),
         ).to.deep.equal({
             'name': 'I_PATTERN',
             'capturingGroups': [0],
@@ -140,7 +140,7 @@ describe('IR optimiser accelerateRawPass compiler maximising quantifier integrat
 
     it('should be able to optimise an IR with one fixed-length maximising quantifier', () => {
         const ir = sinon.createStubInstance(
-            IntermediateRepresentation
+            IntermediateRepresentation,
         ) as SinonStubbedInstance<IntermediateRepresentation> &
             IntermediateRepresentation;
         ir.getTranspilerRepresentation.returns({
@@ -181,7 +181,7 @@ describe('IR optimiser accelerateRawPass compiler maximising quantifier integrat
         const intermediateRepresentation = optimiser.optimise(ir);
 
         expect(
-            intermediateRepresentation.getTranspilerRepresentation()
+            intermediateRepresentation.getTranspilerRepresentation(),
         ).to.deep.equal({
             'name': 'I_PATTERN',
             'capturingGroups': [0],

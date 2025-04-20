@@ -18,7 +18,7 @@ export default class CapturingGroupFragment implements FragmentInterface {
     constructor(
         private fragmentMatcher: FragmentMatcher,
         private componentFragments: FragmentInterface[],
-        private groupIndex: number
+        private groupIndex: number,
     ) {}
 
     /**
@@ -47,7 +47,7 @@ export default class CapturingGroupFragment implements FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean,
-        existingMatch: FragmentMatchInterface
+        existingMatch: FragmentMatchInterface,
     ): FragmentMatchInterface | null {
         return this.fragmentMatcher.matchComponents(
             subject,
@@ -56,7 +56,7 @@ export default class CapturingGroupFragment implements FragmentInterface {
             this.componentFragments,
             existingMatch,
             (match: FragmentMatchInterface) =>
-                match.withCaptureAs(this.groupIndex)
+                match.withCaptureAs(this.groupIndex),
         );
     }
 
@@ -81,7 +81,7 @@ export default class CapturingGroupFragment implements FragmentInterface {
             type: 'capturing-group',
             groupIndex: this.groupIndex,
             components: this.componentFragments.map((componentFragment) =>
-                componentFragment.toStructure()
+                componentFragment.toStructure(),
             ),
         };
     }

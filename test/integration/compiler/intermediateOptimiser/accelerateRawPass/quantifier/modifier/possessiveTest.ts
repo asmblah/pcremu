@@ -26,7 +26,7 @@ describe('IR optimiser accelerateRawPass compiler possessive quantifier integrat
 
     it('should be able to optimise an IR with two possessive quantifiers', () => {
         const ir = sinon.createStubInstance(
-            IntermediateRepresentation
+            IntermediateRepresentation,
         ) as SinonStubbedInstance<IntermediateRepresentation> &
             IntermediateRepresentation;
         ir.getTranspilerRepresentation.returns({
@@ -85,7 +85,7 @@ describe('IR optimiser accelerateRawPass compiler possessive quantifier integrat
         const intermediateRepresentation = optimiser.optimise(ir);
 
         expect(
-            intermediateRepresentation.getTranspilerRepresentation()
+            intermediateRepresentation.getTranspilerRepresentation(),
         ).to.deep.equal({
             'name': 'I_PATTERN',
             'capturingGroups': [0],
@@ -176,7 +176,7 @@ describe('IR optimiser accelerateRawPass compiler possessive quantifier integrat
 
     it('should be able to optimise an IR with one fixed-length possessive quantifier', () => {
         const ir = sinon.createStubInstance(
-            IntermediateRepresentation
+            IntermediateRepresentation,
         ) as SinonStubbedInstance<IntermediateRepresentation> &
             IntermediateRepresentation;
         ir.getTranspilerRepresentation.returns({
@@ -217,7 +217,7 @@ describe('IR optimiser accelerateRawPass compiler possessive quantifier integrat
         const intermediateRepresentation = optimiser.optimise(ir);
 
         expect(
-            intermediateRepresentation.getTranspilerRepresentation()
+            intermediateRepresentation.getTranspilerRepresentation(),
         ).to.deep.equal({
             'name': 'I_PATTERN',
             'capturingGroups': [0],

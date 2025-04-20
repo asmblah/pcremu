@@ -40,7 +40,7 @@ describe('AST-to-IR compiler named capturing group integration', () => {
         const intermediateRepresentation = compiler.compile(ast);
 
         expect(
-            intermediateRepresentation.getTranspilerRepresentation()
+            intermediateRepresentation.getTranspilerRepresentation(),
         ).to.deep.equal({
             'name': 'I_PATTERN',
             // Note that both capturing group name "myGroup" and its index 1 are included here.

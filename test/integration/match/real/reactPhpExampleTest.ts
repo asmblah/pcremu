@@ -25,7 +25,7 @@ describe('ReactPHP real example match integration', () => {
                 const matcher = emulator.compile(pattern);
 
                 const match = matcher.matchOne(
-                    'OPTIONS /path/to/my_resource.shtml HTTP/1.1'
+                    'OPTIONS /path/to/my_resource.shtml HTTP/1.1',
                 );
 
                 expect(match).not.to.be.null;
@@ -46,7 +46,7 @@ describe('ReactPHP real example match integration', () => {
                 });
 
                 const match = matcher.matchOne(
-                    'OPTIONS /path/to/my_resource.shtml HTTP/1.1'
+                    'OPTIONS /path/to/my_resource.shtml HTTP/1.1',
                 );
 
                 expect(match).not.to.be.null;

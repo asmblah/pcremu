@@ -22,7 +22,7 @@ export default class IntermediateToPatternCompiler {
         private patternFactory: PatternFactory,
         private fragmentMatcher: FragmentMatcher,
         private quantifierMatcher: QuantifierMatcher,
-        private intermediateToPatternTranspiler: any
+        private intermediateToPatternTranspiler: any,
     ) {}
 
     /**
@@ -39,7 +39,7 @@ export default class IntermediateToPatternCompiler {
         };
         const patternFragment = this.intermediateToPatternTranspiler.transpile(
             intermediateRepresentation.getTranspilerRepresentation(),
-            context
+            context,
         ) as PatternFragment;
 
         return this.patternFactory.createPattern(patternFragment, flags);

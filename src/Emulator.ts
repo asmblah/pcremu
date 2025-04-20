@@ -30,7 +30,7 @@ export default class Emulator {
         private parserGrammarSpec: any,
         private astToIntermediateTranspilerSpec: any,
         private intermediateOptimiserSpecs: any[],
-        private intermediateToPatternTranspilerSpec: any
+        private intermediateToPatternTranspilerSpec: any,
     ) {}
 
     /**
@@ -51,12 +51,12 @@ export default class Emulator {
      */
     createAstToIntermediateCompiler(): AstToIntermediateCompiler {
         const transpiler = this.transpiler.create(
-            this.astToIntermediateTranspilerSpec
+            this.astToIntermediateTranspilerSpec,
         );
 
         return new AstToIntermediateCompiler(
             transpiler,
-            new QuantifierParser()
+            new QuantifierParser(),
         );
     }
 
@@ -67,7 +67,7 @@ export default class Emulator {
         return new Compiler(
             this.createAstToIntermediateCompiler(),
             this.createIntermediateOptimiser(),
-            this.createIntermediateToPatternCompiler()
+            this.createIntermediateToPatternCompiler(),
         );
     }
 
@@ -77,8 +77,8 @@ export default class Emulator {
     createIntermediateOptimiser(): IntermediateOptimiser {
         return new IntermediateOptimiser(
             this.intermediateOptimiserSpecs.map((spec) =>
-                this.transpiler.create(spec)
-            )
+                this.transpiler.create(spec),
+            ),
         );
     }
 
@@ -87,14 +87,14 @@ export default class Emulator {
      */
     createIntermediateToPatternCompiler(): IntermediateToPatternCompiler {
         const transpiler = this.transpiler.create(
-            this.intermediateToPatternTranspilerSpec
+            this.intermediateToPatternTranspilerSpec,
         );
 
         return new IntermediateToPatternCompiler(
             new PatternFactory(),
             new FragmentMatcher(),
             new QuantifierMatcher(),
-            transpiler
+            transpiler,
         );
     }
 
@@ -106,7 +106,7 @@ export default class Emulator {
         const parsingParser = this.parsing.create(
             this.parserGrammarSpec,
             null,
-            { context: parsingContext }
+            { context: parsingContext },
         );
 
         return new Parser(parsingParser, parsingContext);
@@ -118,12 +118,12 @@ export default class Emulator {
      * @param {Object[]} intermediateOptimiserSpecs
      */
     createPartialIntermediateOptimiser(
-        intermediateOptimiserSpecs: any[]
+        intermediateOptimiserSpecs: any[],
     ): IntermediateOptimiser {
         return new IntermediateOptimiser(
             intermediateOptimiserSpecs.map((spec) =>
-                this.transpiler.create(spec)
-            )
+                this.transpiler.create(spec),
+            ),
         );
     }
 }

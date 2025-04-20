@@ -137,7 +137,7 @@ describe('Base spec intermediateOptimiser', () => {
                 null,
                 undefined,
                 undefined,
-                customUpdateRunFixedLength
+                customUpdateRunFixedLength,
             );
 
             expect(result).to.deep.equal([

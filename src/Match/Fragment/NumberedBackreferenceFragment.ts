@@ -35,7 +35,7 @@ export default class NumberedBackreferenceFragment
         subject: string,
         position: number,
         isAnchored: boolean,
-        existingMatch: FragmentMatchInterface
+        existingMatch: FragmentMatchInterface,
     ): FragmentMatchInterface | null {
         const capture = existingMatch.getNumberedCapture(this.groupIndex);
 

@@ -27,7 +27,7 @@ describe('PatternFragment', () => {
         fragment = new PatternFragment(
             fragmentMatcher,
             [new LiteralFragment('my-'), new LiteralFragment('text')],
-            [0, 1, 'myGroup', 2]
+            [0, 1, 'myGroup', 2],
         );
     });
 
@@ -40,7 +40,7 @@ describe('PatternFragment', () => {
             const fragment = new PatternFragment(
                 fragmentMatcher,
                 [new LiteralFragment('my-'), new NativeFragment('.*', null)],
-                []
+                [],
             );
 
             expect(fragment.getFixedLength(existingMatch)).to.be.null;
@@ -54,7 +54,7 @@ describe('PatternFragment', () => {
                     'here is my-text',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -67,7 +67,7 @@ describe('PatternFragment', () => {
                     'here is my-prefix followed by my-text',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -80,7 +80,7 @@ describe('PatternFragment', () => {
                     'here is my-text',
                     5,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -90,13 +90,13 @@ describe('PatternFragment', () => {
 
             it('should return null when the pattern does not appear in the subject', () => {
                 expect(
-                    fragment.match('something-else', 0, false, existingMatch)
+                    fragment.match('something-else', 0, false, existingMatch),
                 ).to.be.null;
             });
 
             it('should return null when the only match appears before the start position', () => {
                 expect(
-                    fragment.match('here is my-text', 9, false, existingMatch)
+                    fragment.match('here is my-text', 9, false, existingMatch),
                 ).to.be.null;
             });
         });
@@ -107,7 +107,7 @@ describe('PatternFragment', () => {
                     'here is my-text',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -120,7 +120,7 @@ describe('PatternFragment', () => {
                     'here is my-prefix followed by my-text',
                     30,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -133,7 +133,7 @@ describe('PatternFragment', () => {
                     'here is my-text',
                     5,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).to.be.null;
@@ -146,7 +146,7 @@ describe('PatternFragment', () => {
 
             it('should return null when the only match appears before the start position', () => {
                 expect(
-                    fragment.match('here is my-text', 9, true, existingMatch)
+                    fragment.match('here is my-text', 9, true, existingMatch),
                 ).to.be.null;
             });
         });

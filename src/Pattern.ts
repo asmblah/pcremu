@@ -21,7 +21,7 @@ import FragmentMatchTree from './Match/FragmentMatchTree';
 export default class Pattern {
     constructor(
         private patternFragment: PatternFragment,
-        private flags: Flags
+        private flags: Flags,
     ) {}
 
     /**
@@ -45,7 +45,7 @@ export default class Pattern {
             subject,
             start,
             Boolean(this.flags.anchored),
-            new FragmentMatchTree(start)
+            new FragmentMatchTree(start),
         );
 
         if (!fragmentMatch) {
@@ -70,7 +70,7 @@ export default class Pattern {
             numberedCaptures,
             namedCaptures,
             numberedCaptureIndices,
-            namedCaptureIndices
+            namedCaptureIndices,
         );
     }
 

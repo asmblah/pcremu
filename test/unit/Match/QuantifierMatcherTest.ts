@@ -50,7 +50,7 @@ describe('QuantifierMatcher', () => {
                 1,
                 3,
                 existingMatch,
-                backtracker
+                backtracker,
             );
 
             expect(result).to.be.instanceOf(FragmentMatchTree);
@@ -74,7 +74,7 @@ describe('QuantifierMatcher', () => {
                 2,
                 3,
                 existingMatch,
-                backtracker
+                backtracker,
             );
 
             expect(result).to.be.null;
@@ -97,7 +97,7 @@ describe('QuantifierMatcher', () => {
                 0,
                 3,
                 existingMatch,
-                backtracker
+                backtracker,
             );
 
             expect(result).to.be.instanceOf(FragmentMatchTree);
@@ -120,7 +120,7 @@ describe('QuantifierMatcher', () => {
                 2,
                 3,
                 existingMatch,
-                backtracker
+                backtracker,
             );
 
             expect(result).to.be.instanceOf(FragmentMatchTree);
@@ -145,7 +145,7 @@ describe('QuantifierMatcher', () => {
                 2,
                 3,
                 existingMatch,
-                backtracker
+                backtracker,
             );
 
             expect(result).to.be.null;

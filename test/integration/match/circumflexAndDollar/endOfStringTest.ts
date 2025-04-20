@@ -32,7 +32,7 @@ describe('End-of-string assertion (anchor) match integration', () => {
             expect(match?.getCaptureCount()).to.equal(1);
             expect(match?.getNumberedCapture(0)).to.equal(
                 'mytext',
-                'Trailing newline should be ignored'
+                'Trailing newline should be ignored',
             );
         });
 
@@ -45,7 +45,7 @@ describe('End-of-string assertion (anchor) match integration', () => {
             expect(match?.getCaptureCount()).to.equal(1);
             expect(match?.getNumberedCapture(0)).to.equal(
                 'mytext\n\n',
-                'Only the final trailing newline should be ignored'
+                'Only the final trailing newline should be ignored',
             );
         });
 
@@ -79,7 +79,7 @@ describe('End-of-string assertion (anchor) match integration', () => {
             expect(match?.getCaptureCount()).to.equal(1);
             expect(match?.getNumberedCapture(0)).to.equal(
                 'mytext',
-                'Trailing newline should be ignored'
+                'Trailing newline should be ignored',
             );
         });
 
@@ -94,7 +94,7 @@ describe('End-of-string assertion (anchor) match integration', () => {
             expect(match?.getCaptureCount()).to.equal(1);
             expect(match?.getNumberedCapture(0)).to.equal(
                 'mytext\n\n',
-                'Only the final trailing newline should be ignored'
+                'Only the final trailing newline should be ignored',
             );
         });
 

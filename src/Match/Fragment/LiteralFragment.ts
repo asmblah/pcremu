@@ -30,7 +30,7 @@ export default class LiteralFragment implements FragmentInterface {
     match(
         subject: string,
         position: number,
-        isAnchored: boolean
+        isAnchored: boolean,
     ): FragmentMatchInterface | null {
         const matchPosition = subject.indexOf(this.chars, position);
 

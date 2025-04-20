@@ -20,7 +20,7 @@ export default class Compiler {
     constructor(
         private astToIntermediateCompiler: AstToIntermediateCompiler,
         private intermediateOptimiser: IntermediateOptimiser,
-        private intermediateToPatternCompiler: IntermediateToPatternCompiler
+        private intermediateToPatternCompiler: IntermediateToPatternCompiler,
     ) {}
 
     /**
@@ -36,7 +36,7 @@ export default class Compiler {
             ? this.intermediateOptimiser.optimise(intermediateRepresentation)
             : intermediateRepresentation;
         const pattern = this.intermediateToPatternCompiler.compile(
-            optimisedRepresentation
+            optimisedRepresentation,
         );
 
         return new Matcher(pattern);

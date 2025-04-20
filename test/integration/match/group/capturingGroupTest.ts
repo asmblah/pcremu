@@ -33,7 +33,7 @@ describe('Capturing group match integration', () => {
             expect(match?.getNumberedCapture(0)).to.equal('my aaaaaa text');
             expect(match?.getNumberedCapture(1)).to.equal(
                 'aaaa',
-                'Only first 4 "a"s should be captured'
+                'Only first 4 "a"s should be captured',
             );
         });
     });
@@ -64,7 +64,7 @@ describe('Capturing group match integration', () => {
             expect(match?.getNumberedCapture(0)).to.equal('my aaaaaa text');
             expect(match?.getNumberedCapture(1)).to.equal(
                 'aaaa',
-                'Only first 4 "a"s should be captured'
+                'Only first 4 "a"s should be captured',
             );
         });
     });

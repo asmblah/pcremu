@@ -24,7 +24,7 @@ export default class Match {
         private numberedCaptures: NumberedCaptures,
         private namedCaptures: NamedCaptures,
         private numberedCaptureIndices: NumberedCaptureIndices,
-        private namedCaptureIndices: NamedCaptureIndices
+        private namedCaptureIndices: NamedCaptureIndices,
     ) {}
 
     /**

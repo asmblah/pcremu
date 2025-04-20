@@ -20,7 +20,7 @@ export default class PossessiveQuantifierFragment implements FragmentInterface {
         private quantifierMatcher: QuantifierMatcher,
         private componentFragment: FragmentInterface,
         private minimumMatches: number,
-        private maximumMatches: number
+        private maximumMatches: number,
     ) {}
 
     /**
@@ -49,7 +49,7 @@ export default class PossessiveQuantifierFragment implements FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean,
-        existingMatch: FragmentMatchInterface
+        existingMatch: FragmentMatchInterface,
     ): FragmentMatchInterface | null {
         return this.quantifierMatcher.matchMaximising(
             subject,
@@ -60,7 +60,7 @@ export default class PossessiveQuantifierFragment implements FragmentInterface {
             this.maximumMatches,
             existingMatch,
             // Possessive matches cannot backtrack.
-            () => null
+            () => null,
         );
     }
 

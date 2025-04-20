@@ -40,7 +40,7 @@ describe('NativeFragment', () => {
                 const match = fragment.match(
                     'here is my-literal-text',
                     5,
-                    false
+                    false,
                 );
 
                 expect(match).not.to.be.null;
@@ -60,7 +60,7 @@ describe('NativeFragment', () => {
                 const match = fragment.match(
                     'here is my-literal-text',
                     3,
-                    false
+                    false,
                 );
 
                 expect(match).not.to.be.null;
@@ -79,12 +79,12 @@ describe('NativeFragment', () => {
                 const match = fragment.match(
                     'here is my-literal-with-text-then-text',
                     3,
-                    false
+                    false,
                 );
 
                 expect(match).not.to.be.null;
                 expect(match?.getCapture()).to.equal(
-                    'is my-literal-with-text-then-text'
+                    'is my-literal-with-text-then-text',
                 );
                 expect(match?.getStart()).to.equal(5);
                 expect(match?.getNamedCaptures()).to.deep.equal({
@@ -96,7 +96,7 @@ describe('NativeFragment', () => {
                 });
                 const backtrackedMatch = match?.backtrack();
                 expect(backtrackedMatch?.getCapture()).to.equal(
-                    'is my-literal-with-text'
+                    'is my-literal-with-text',
                 );
                 expect(backtrackedMatch?.getStart()).to.equal(5);
                 expect(backtrackedMatch?.getNamedCaptures()).to.deep.equal({
@@ -116,12 +116,12 @@ describe('NativeFragment', () => {
                     {
                         7: 1,
                         12: 2,
-                    }
+                    },
                 );
                 const match = fragment.match(
                     'here is my-literal-with-text-then-text',
                     3,
-                    false
+                    false,
                 );
 
                 expect(match).not.to.be.null;
@@ -136,7 +136,7 @@ describe('NativeFragment', () => {
                 });
                 const backtrackedMatch = match?.backtrack();
                 expect(backtrackedMatch?.getCapture()).to.equal(
-                    'is my-literal-with-text-then-text'
+                    'is my-literal-with-text-then-text',
                 );
                 expect(backtrackedMatch?.getStart()).to.equal(5);
                 expect(backtrackedMatch?.getNamedCaptures()).to.deep.equal({
@@ -164,7 +164,7 @@ describe('NativeFragment', () => {
                 const match = fragment.match(
                     'here is my-literal-text',
                     5,
-                    true
+                    true,
                 );
 
                 expect(match).not.to.be.null;
@@ -184,7 +184,7 @@ describe('NativeFragment', () => {
                 const match = fragment.match(
                     'here is my-literal-text',
                     3,
-                    true
+                    true,
                 );
 
                 expect(match).to.be.null;
@@ -194,12 +194,12 @@ describe('NativeFragment', () => {
                 const match = fragment.match(
                     'here is my-literal-with-text-then-text',
                     5,
-                    true
+                    true,
                 );
 
                 expect(match).not.to.be.null;
                 expect(match?.getCapture()).to.equal(
-                    'is my-literal-with-text-then-text'
+                    'is my-literal-with-text-then-text',
                 );
                 expect(match?.getStart()).to.equal(5);
                 expect(match?.getNamedCaptures()).to.deep.equal({
@@ -211,7 +211,7 @@ describe('NativeFragment', () => {
                 });
                 const backtrackedMatch = match?.backtrack();
                 expect(backtrackedMatch?.getCapture()).to.equal(
-                    'is my-literal-with-text'
+                    'is my-literal-with-text',
                 );
                 expect(backtrackedMatch?.getStart()).to.equal(5);
                 expect(backtrackedMatch?.getNamedCaptures()).to.deep.equal({
@@ -231,12 +231,12 @@ describe('NativeFragment', () => {
                     {
                         7: 1,
                         12: 2,
-                    }
+                    },
                 );
                 const match = fragment.match(
                     'here is my-literal-with-text-then-text',
                     5,
-                    true
+                    true,
                 );
 
                 expect(match).not.to.be.null;
@@ -251,7 +251,7 @@ describe('NativeFragment', () => {
                 });
                 const backtrackedMatch = match?.backtrack();
                 expect(backtrackedMatch?.getCapture()).to.equal(
-                    'is my-literal-with-text-then-text'
+                    'is my-literal-with-text-then-text',
                 );
                 expect(backtrackedMatch?.getStart()).to.equal(5);
                 expect(backtrackedMatch?.getNamedCaptures()).to.deep.equal({
@@ -288,13 +288,13 @@ describe('NativeFragment', () => {
                         7: 1,
                         12: 2,
                     },
-                    { caseless: true }
+                    { caseless: true },
                 );
 
                 const match = fragment.match(
                     'here is MY-literal-text',
                     0,
-                    false
+                    false,
                 );
 
                 expect(match).not.to.be.null;
@@ -311,13 +311,13 @@ describe('NativeFragment', () => {
                     {
                         9: 1,
                     },
-                    { multiline: false }
+                    { multiline: false },
                 );
 
                 const match = fragment.match(
                     'here is\nmy multiline text\nthe end',
                     0,
-                    false
+                    false,
                 );
 
                 expect(match).to.be.null;
@@ -331,7 +331,7 @@ describe('NativeFragment', () => {
                         {
                             9: 1,
                         },
-                        { multiline: true }
+                        { multiline: true },
                     );
                 });
 
@@ -339,7 +339,7 @@ describe('NativeFragment', () => {
                     const match = fragment.match(
                         'here is\nmy multiline text\nthe end',
                         0,
-                        false
+                        false,
                     );
 
                     expect(match).not.to.be.null;
@@ -355,12 +355,12 @@ describe('NativeFragment', () => {
                     const match = fragment.match(
                         'here is\nmy multiline text\nand more text\nthe end',
                         0,
-                        false
+                        false,
                     );
 
                     expect(match).not.to.be.null;
                     expect(match?.getCapture()).to.equal(
-                        'my multiline text\nand more text'
+                        'my multiline text\nand more text',
                     );
                     expect(match?.getStart()).to.equal(8);
                     expect(match?.getNamedCaptures()).to.deep.equal({});
@@ -369,14 +369,14 @@ describe('NativeFragment', () => {
                     });
                     const backtrackedMatch = match?.backtrack();
                     expect(backtrackedMatch?.getCapture()).to.equal(
-                        'my multiline text'
+                        'my multiline text',
                     );
                     expect(backtrackedMatch?.getStart()).to.equal(8);
                     expect(backtrackedMatch?.getNamedCaptures()).to.deep.equal(
-                        {}
+                        {},
                     );
                     expect(
-                        backtrackedMatch?.getNumberedCaptures()
+                        backtrackedMatch?.getNumberedCaptures(),
                     ).to.deep.equal({
                         9: ' multiline ',
                     });
@@ -395,7 +395,7 @@ describe('NativeFragment', () => {
                     },
                     {
                         dotAll: false,
-                    }
+                    },
                 );
 
                 expect(fragment.match('here is my-lit\neral-text', 0, false)).to
@@ -413,18 +413,18 @@ describe('NativeFragment', () => {
                         },
                         {
                             dotAll: true,
-                        }
+                        },
                     );
 
                     const match = fragment.match(
                         'this is my-lit\neral-text in here',
                         0,
-                        false
+                        false,
                     );
 
                     expect(match).not.to.be.null;
                     expect(match?.getCapture()).to.equal(
-                        'is my-lit\neral-text'
+                        'is my-lit\neral-text',
                     );
                     expect(match?.getStart()).to.equal(5);
                     expect(match?.getNamedCaptures()).to.deep.equal({

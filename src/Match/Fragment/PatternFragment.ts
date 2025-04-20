@@ -20,7 +20,7 @@ export default class PatternFragment implements FragmentInterface {
     constructor(
         private fragmentMatcher: FragmentMatcher,
         private componentFragments: FragmentInterface[],
-        private capturingGroupNames: Array<number | string>
+        private capturingGroupNames: Array<number | string>,
     ) {}
 
     /**
@@ -59,7 +59,7 @@ export default class PatternFragment implements FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean,
-        existingMatch: FragmentMatchInterface
+        existingMatch: FragmentMatchInterface,
     ): FragmentMatchInterface | null {
         do {
             const match = this.fragmentMatcher.matchComponents(
@@ -67,12 +67,12 @@ export default class PatternFragment implements FragmentInterface {
                 position,
                 isAnchored,
                 this.componentFragments,
-                existingMatch
+                existingMatch,
             );
 
             if (match) {
                 return match.withMissingCapturesBackfilled(
-                    this.capturingGroupNames
+                    this.capturingGroupNames,
                 );
             }
 
@@ -101,7 +101,7 @@ export default class PatternFragment implements FragmentInterface {
             type: 'pattern',
             capturingGroups: this.capturingGroupNames,
             components: this.componentFragments.map((componentFragment) =>
-                componentFragment.toStructure()
+                componentFragment.toStructure(),
             ),
         };
     }

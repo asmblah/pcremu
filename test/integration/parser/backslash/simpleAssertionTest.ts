@@ -22,7 +22,7 @@ describe('Parser simple assertion integration', () => {
         const ast = parser.parse('before \\b,\\B,\\A,\\Z,\\z,\\G after');
 
         expect(ast.getPattern()).to.equal(
-            'before \\b,\\B,\\A,\\Z,\\z,\\G after'
+            'before \\b,\\B,\\A,\\Z,\\z,\\G after',
         );
         expect(ast.getParsingAst()).to.deep.equal({
             'name': 'N_PATTERN',

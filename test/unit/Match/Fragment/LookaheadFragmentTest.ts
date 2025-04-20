@@ -28,7 +28,7 @@ describe('LookaheadFragment', () => {
         fragment = new LookaheadFragment(
             fragmentMatcher,
             [new LiteralFragment('my-'), new LiteralFragment('text')],
-            LookaroundBivalence.Positive
+            LookaroundBivalence.Positive,
         );
     });
 
@@ -41,7 +41,7 @@ describe('LookaheadFragment', () => {
             fragment = new LookaheadFragment(
                 fragmentMatcher,
                 [new LiteralFragment('my-'), new NativeFragment('text*', null)],
-                LookaroundBivalence.Positive
+                LookaroundBivalence.Positive,
             );
 
             expect(fragment.getFixedLength(existingMatch)).to.be.null;
@@ -56,7 +56,7 @@ describe('LookaheadFragment', () => {
                         'here is my-text and more',
                         8,
                         false,
-                        existingMatch
+                        existingMatch,
                     );
 
                     expect(match).not.to.be.null;
@@ -70,8 +70,8 @@ describe('LookaheadFragment', () => {
                             'here is something else',
                             8,
                             false,
-                            existingMatch
-                        )
+                            existingMatch,
+                        ),
                     ).to.be.null;
                 });
 
@@ -80,7 +80,7 @@ describe('LookaheadFragment', () => {
                         'here is something else and my-text',
                         8,
                         false,
-                        existingMatch
+                        existingMatch,
                     );
 
                     expect(match).not.to.be.null;
@@ -94,8 +94,8 @@ describe('LookaheadFragment', () => {
                             'my-text is here',
                             7,
                             false,
-                            existingMatch
-                        )
+                            existingMatch,
+                        ),
                     ).to.be.null;
                 });
 
@@ -105,8 +105,8 @@ describe('LookaheadFragment', () => {
                             'my-text is here',
                             12,
                             false,
-                            existingMatch
-                        )
+                            existingMatch,
+                        ),
                     ).to.be.null;
                 });
             });
@@ -117,7 +117,7 @@ describe('LookaheadFragment', () => {
                         'here is my-text and more',
                         8,
                         true,
-                        existingMatch
+                        existingMatch,
                     );
 
                     expect(match).not.to.be.null;
@@ -131,8 +131,8 @@ describe('LookaheadFragment', () => {
                             'here is something else',
                             8,
                             true,
-                            existingMatch
-                        )
+                            existingMatch,
+                        ),
                     ).to.be.null;
                 });
 
@@ -142,8 +142,8 @@ describe('LookaheadFragment', () => {
                             'here is something else and my-text',
                             8,
                             true,
-                            existingMatch
-                        )
+                            existingMatch,
+                        ),
                     ).to.be.null;
                 });
 
@@ -153,8 +153,8 @@ describe('LookaheadFragment', () => {
                             'my-text is here',
                             7,
                             true,
-                            existingMatch
-                        )
+                            existingMatch,
+                        ),
                     ).to.be.null;
                 });
 
@@ -164,8 +164,8 @@ describe('LookaheadFragment', () => {
                             'my-text is here',
                             12,
                             true,
-                            existingMatch
-                        )
+                            existingMatch,
+                        ),
                     ).to.be.null;
                 });
             });
@@ -176,7 +176,7 @@ describe('LookaheadFragment', () => {
                 fragment = new LookaheadFragment(
                     fragmentMatcher,
                     [new LiteralFragment('my-'), new LiteralFragment('text')],
-                    LookaroundBivalence.Negative
+                    LookaroundBivalence.Negative,
                 );
             });
 
@@ -186,7 +186,7 @@ describe('LookaheadFragment', () => {
                         'here is something else',
                         8,
                         false,
-                        existingMatch
+                        existingMatch,
                     );
 
                     expect(match).not.to.be.null;
@@ -200,8 +200,8 @@ describe('LookaheadFragment', () => {
                             'here is my-text and more',
                             8,
                             false,
-                            existingMatch
-                        )
+                            existingMatch,
+                        ),
                     ).to.be.null;
                 });
 
@@ -212,8 +212,8 @@ describe('LookaheadFragment', () => {
                             'here is something else and my-text',
                             8,
                             false,
-                            existingMatch
-                        )
+                            existingMatch,
+                        ),
                     ).to.be.null;
                 });
 
@@ -222,7 +222,7 @@ describe('LookaheadFragment', () => {
                         'here is my-text and more',
                         15,
                         false,
-                        existingMatch
+                        existingMatch,
                     );
 
                     expect(match).not.to.be.null;
@@ -235,7 +235,7 @@ describe('LookaheadFragment', () => {
                         'here is my-text and more',
                         20,
                         false,
-                        existingMatch
+                        existingMatch,
                     );
 
                     expect(match).not.to.be.null;
@@ -250,7 +250,7 @@ describe('LookaheadFragment', () => {
                         'here is something else',
                         8,
                         true,
-                        existingMatch
+                        existingMatch,
                     );
 
                     expect(match).not.to.be.null;
@@ -264,8 +264,8 @@ describe('LookaheadFragment', () => {
                             'here is my-text and more',
                             8,
                             true,
-                            existingMatch
-                        )
+                            existingMatch,
+                        ),
                     ).to.be.null;
                 });
 
@@ -274,7 +274,7 @@ describe('LookaheadFragment', () => {
                         'here is something else and my-text',
                         8,
                         true,
-                        existingMatch
+                        existingMatch,
                     );
 
                     expect(match).not.to.be.null;
@@ -287,7 +287,7 @@ describe('LookaheadFragment', () => {
                         'here is my-text and more',
                         15,
                         true,
-                        existingMatch
+                        existingMatch,
                     );
 
                     expect(match).not.to.be.null;
@@ -300,7 +300,7 @@ describe('LookaheadFragment', () => {
                         'here is my-text and more',
                         20,
                         true,
-                        existingMatch
+                        existingMatch,
                     );
 
                     expect(match).not.to.be.null;
@@ -320,7 +320,7 @@ describe('LookaheadFragment', () => {
             fragment = new LookaheadFragment(
                 fragmentMatcher,
                 [new LiteralFragment('my-'), new LiteralFragment('text')],
-                LookaroundBivalence.Negative
+                LookaroundBivalence.Negative,
             );
 
             expect(fragment.toString()).to.equal('(?!my-text)');

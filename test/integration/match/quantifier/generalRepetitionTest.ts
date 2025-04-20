@@ -31,7 +31,7 @@ describe('General repetition quantifier match integration', () => {
             expect(match).not.to.be.null;
             expect(match?.getCaptureCount()).to.equal(2);
             expect(match?.getNumberedCapture(0)).to.equal(
-                'my possiblepossiblepossible text'
+                'my possiblepossiblepossible text',
             );
             // Note that only the last capture is kept.
             expect(match?.getNumberedCapture(1)).to.equal('possible');
@@ -45,7 +45,7 @@ describe('General repetition quantifier match integration', () => {
             expect(match).not.to.be.null;
             expect(match?.getCaptureCount()).to.equal(2);
             expect(match?.getNumberedCapture(0)).to.equal(
-                'my possiblepossible text'
+                'my possiblepossible text',
             );
             // Note that only the last capture is kept.
             expect(match?.getNumberedCapture(1)).to.equal('possible');
@@ -79,7 +79,7 @@ describe('General repetition quantifier match integration', () => {
             const matcher = emulator.compile('my (possible){2,3} text');
 
             const match = matcher.matchOne(
-                'my possiblepossiblepossiblepossible text'
+                'my possiblepossiblepossiblepossible text',
             );
 
             expect(match).to.be.null;
@@ -193,7 +193,7 @@ describe('General repetition quantifier match integration', () => {
             expect(match).not.to.be.null;
             expect(match?.getCaptureCount()).to.equal(2);
             expect(match?.getNumberedCapture(0)).to.equal(
-                'my possiblepossiblepossible text'
+                'my possiblepossiblepossible text',
             );
             // Note that only the last capture is kept.
             expect(match?.getNumberedCapture(1)).to.equal('possible');
@@ -209,7 +209,7 @@ describe('General repetition quantifier match integration', () => {
             expect(match).not.to.be.null;
             expect(match?.getCaptureCount()).to.equal(2);
             expect(match?.getNumberedCapture(0)).to.equal(
-                'my possiblepossible text'
+                'my possiblepossible text',
             );
             // Note that only the last capture is kept.
             expect(match?.getNumberedCapture(1)).to.equal('possible');
@@ -251,7 +251,7 @@ describe('General repetition quantifier match integration', () => {
             });
 
             const match = matcher.matchOne(
-                'my possiblepossiblepossiblepossible text'
+                'my possiblepossiblepossiblepossible text',
             );
 
             expect(match).to.be.null;

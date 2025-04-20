@@ -50,11 +50,11 @@ describe('Parser literal integration', () => {
 
     it('should be able to parse a regex pattern containing a literal with all metacharacters escaped', () => {
         const ast = parser.parse(
-            'my \\\\ \\^\\$\\.\\[\\|\\(\\)\\*\\+\\?\\{ literal'
+            'my \\\\ \\^\\$\\.\\[\\|\\(\\)\\*\\+\\?\\{ literal',
         );
 
         expect(ast.getPattern()).to.equal(
-            'my \\\\ \\^\\$\\.\\[\\|\\(\\)\\*\\+\\?\\{ literal'
+            'my \\\\ \\^\\$\\.\\[\\|\\(\\)\\*\\+\\?\\{ literal',
         );
         expect(ast.getParsingAst()).to.deep.equal({
             'name': 'N_PATTERN',

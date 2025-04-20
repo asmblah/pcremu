@@ -35,11 +35,11 @@ describe('FragmentMatcher', () => {
                     'this is my text inside here',
                     0,
                     false,
-                    sinon.match.any
+                    sinon.match.any,
                 )
                 .callsFake(
                     (): FragmentMatchInterface | null =>
-                        new FragmentMatch(8, 'my text')
+                        new FragmentMatch(8, 'my text'),
                 );
 
             const match = fragmentMatcher.matchComponents(
@@ -47,7 +47,7 @@ describe('FragmentMatcher', () => {
                 0,
                 false,
                 [componentFragment],
-                existingMatch
+                existingMatch,
             );
 
             expect(match).not.to.be.null;
@@ -64,14 +64,14 @@ describe('FragmentMatcher', () => {
                     'this is my text inside here',
                     0,
                     false,
-                    sinon.match.any
+                    sinon.match.any,
                 )
                 .callsFake(
                     (): FragmentMatchInterface | null =>
                         new FragmentMatch(8, 'my text', {
                             4: 'my text',
                             5: 'tex',
-                        })
+                        }),
                 );
             const componentFragment2: SinonStubbedInstance<FragmentInterface> =
                 stubInterface<FragmentInterface>();
@@ -81,14 +81,14 @@ describe('FragmentMatcher', () => {
                     15,
                     // Subsequent matches are forced to be anchored.
                     true,
-                    sinon.match.any
+                    sinon.match.any,
                 )
                 .callsFake(
                     (): FragmentMatchInterface | null =>
                         new FragmentMatch(15, ' inside', {
                             6: 'ins',
                             7: 'id',
-                        })
+                        }),
                 );
 
             const match = fragmentMatcher.matchComponents(
@@ -96,7 +96,7 @@ describe('FragmentMatcher', () => {
                 0,
                 false,
                 [componentFragment1, componentFragment2],
-                existingMatch
+                existingMatch,
             );
 
             expect(match).not.to.be.null;
@@ -119,7 +119,7 @@ describe('FragmentMatcher', () => {
                     'this is my text inside here',
                     0,
                     false,
-                    sinon.match.any
+                    sinon.match.any,
                 )
                 .callsFake(
                     (): FragmentMatchInterface | null =>
@@ -137,8 +137,8 @@ describe('FragmentMatcher', () => {
                                 new FragmentMatch(15, 'my text', {
                                     4: 'm',
                                     5: 't',
-                                })
-                        )
+                                }),
+                        ),
                 );
             const componentFragment2: SinonStubbedInstance<FragmentInterface> =
                 stubInterface<FragmentInterface>();
@@ -148,14 +148,14 @@ describe('FragmentMatcher', () => {
                     sinon.match.any,
                     // Subsequent matches are forced to be anchored.
                     true,
-                    sinon.match.any
+                    sinon.match.any,
                 )
                 .callsFake(
                     (
                         subject,
                         position,
                         isAnchored,
-                        existingMatch
+                        existingMatch,
                     ): FragmentMatchInterface | null => {
                         if (existingMatch.getStart() === 8) {
                             // Fail to match initially, causing the previous fragment match to backtrack.
@@ -170,7 +170,7 @@ describe('FragmentMatcher', () => {
                         }
 
                         throw new Error('Unexpected existing match');
-                    }
+                    },
                 );
 
             const match = fragmentMatcher.matchComponents(
@@ -178,7 +178,7 @@ describe('FragmentMatcher', () => {
                 0,
                 false,
                 [componentFragment1, componentFragment2],
-                existingMatch
+                existingMatch,
             );
 
             expect(match).not.to.be.null;
@@ -201,11 +201,11 @@ describe('FragmentMatcher', () => {
                     'this is my text inside here',
                     0,
                     false,
-                    sinon.match.any
+                    sinon.match.any,
                 )
                 .callsFake(
                     (): FragmentMatchInterface | null =>
-                        new FragmentMatch(8, 'my text')
+                        new FragmentMatch(8, 'my text'),
                 );
 
             const match = fragmentMatcher.matchComponents(
@@ -216,7 +216,7 @@ describe('FragmentMatcher', () => {
                 existingMatch,
                 (match: FragmentMatchInterface): FragmentMatchInterface => {
                     return match.withCaptureAs(21);
-                }
+                },
             );
 
             expect(match).not.to.be.null;
@@ -233,7 +233,7 @@ describe('FragmentMatcher', () => {
                     'this is my text inside here',
                     0,
                     false,
-                    sinon.match.any
+                    sinon.match.any,
                 )
                 .callsFake(
                     (): FragmentMatchInterface | null =>
@@ -251,8 +251,8 @@ describe('FragmentMatcher', () => {
                                 new FragmentMatch(15, 'my text', {
                                     4: 'm',
                                     5: 't',
-                                })
-                        )
+                                }),
+                        ),
                 );
             const componentFragment2: SinonStubbedInstance<FragmentInterface> =
                 stubInterface<FragmentInterface>();
@@ -262,14 +262,14 @@ describe('FragmentMatcher', () => {
                     sinon.match.any,
                     // Subsequent matches are forced to be anchored.
                     true,
-                    sinon.match.any
+                    sinon.match.any,
                 )
                 .callsFake(
                     (
                         subject,
                         position,
                         isAnchored,
-                        existingMatch
+                        existingMatch,
                     ): FragmentMatchInterface | null => {
                         if (existingMatch.getStart() === 8) {
                             // Fail to match initially, causing the previous fragment match to backtrack.
@@ -284,7 +284,7 @@ describe('FragmentMatcher', () => {
                         }
 
                         throw new Error('Unexpected existing match');
-                    }
+                    },
                 );
 
             const match = fragmentMatcher.matchComponents(
@@ -295,7 +295,7 @@ describe('FragmentMatcher', () => {
                 existingMatch,
                 (match: FragmentMatchInterface): FragmentMatchInterface => {
                     return match.withCaptureAs(21);
-                }
+                },
             );
 
             expect(match).not.to.be.null;

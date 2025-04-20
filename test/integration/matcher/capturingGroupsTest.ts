@@ -13,7 +13,7 @@ import { expect } from 'chai';
 describe('Matcher capturing groups integration', () => {
     it('should be able to fetch all numbered and named capturing groups in order', () => {
         const matcher = emulator.compile(
-            'my (unnamed) (and) (?<named>groups) (over) (?<alsoNamed>here)'
+            'my (unnamed) (and) (?<named>groups) (over) (?<alsoNamed>here)',
         );
 
         expect(matcher.getCapturingGroupNames()).to.deep.equal([

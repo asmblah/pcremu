@@ -29,7 +29,7 @@ describe('CapturingGroupFragment', () => {
         fragment = new CapturingGroupFragment(
             fragmentMatcher,
             [new LiteralFragment('my-'), new LiteralFragment('text')],
-            7
+            7,
         );
     });
 
@@ -47,10 +47,10 @@ describe('CapturingGroupFragment', () => {
                         stubInterface<QuantifierMatcher>(),
                         new LiteralFragment('text'),
                         1,
-                        Infinity
+                        Infinity,
                     ),
                 ],
-                7
+                7,
             );
 
             expect(fragment.getFixedLength(existingMatch)).to.be.null;
@@ -64,7 +64,7 @@ describe('CapturingGroupFragment', () => {
                     'here is my-text',
                     8,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -85,7 +85,7 @@ describe('CapturingGroupFragment', () => {
                     'here is my-text',
                     5,
                     false,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -103,13 +103,13 @@ describe('CapturingGroupFragment', () => {
 
             it('should return null when the group does not appear in the subject', () => {
                 expect(
-                    fragment.match('something-else', 0, false, existingMatch)
+                    fragment.match('something-else', 0, false, existingMatch),
                 ).to.be.null;
             });
 
             it('should return null when the only match appears before the start position', () => {
                 expect(
-                    fragment.match('here is my-text', 9, false, existingMatch)
+                    fragment.match('here is my-text', 9, false, existingMatch),
                 ).to.be.null;
             });
         });
@@ -120,7 +120,7 @@ describe('CapturingGroupFragment', () => {
                     'here is my-text',
                     8,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).not.to.be.null;
@@ -141,7 +141,7 @@ describe('CapturingGroupFragment', () => {
                     'here is my-text',
                     5,
                     true,
-                    existingMatch
+                    existingMatch,
                 );
 
                 expect(match).to.be.null;
@@ -154,7 +154,7 @@ describe('CapturingGroupFragment', () => {
 
             it('should return null when the only match appears before the start position', () => {
                 expect(
-                    fragment.match('here is my-text', 9, true, existingMatch)
+                    fragment.match('here is my-text', 9, true, existingMatch),
                 ).to.be.null;
             });
         });

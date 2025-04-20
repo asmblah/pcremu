@@ -26,7 +26,7 @@ describe('IR optimiser compileRawPass compiler all nodes integration', () => {
 
     it('should be able to optimise an IR with all raw nodes', () => {
         const ir = sinon.createStubInstance(
-            IntermediateRepresentation
+            IntermediateRepresentation,
         ) as SinonStubbedInstance<IntermediateRepresentation> &
             IntermediateRepresentation;
         ir.getTranspilerRepresentation.returns({
@@ -215,7 +215,7 @@ describe('IR optimiser compileRawPass compiler all nodes integration', () => {
         const intermediateRepresentation = optimiser.optimise(ir);
 
         expect(
-            intermediateRepresentation.getTranspilerRepresentation()
+            intermediateRepresentation.getTranspilerRepresentation(),
         ).to.deep.equal({
             'name': 'I_PATTERN',
             'capturingGroups': [0, 1, 'myGroup', 3],

@@ -36,8 +36,8 @@ export default class QuantifierMatcher {
         maximumMatches: number,
         existingMatch: FragmentMatchInterface,
         backtracker: (
-            matches: FragmentMatchInterface[]
-        ) => FragmentMatchInterface | null
+            matches: FragmentMatchInterface[],
+        ) => FragmentMatchInterface | null,
     ): FragmentMatchInterface | null {
         const initialPosition = position;
         let match: FragmentMatchInterface | null;
@@ -48,7 +48,7 @@ export default class QuantifierMatcher {
                 subject,
                 position,
                 matches.length === 0 ? isAnchored : true,
-                existingMatch.withSubsequentMatches(matches)
+                existingMatch.withSubsequentMatches(matches),
             ))
         ) {
             if (matches.length >= maximumMatches) {
@@ -73,7 +73,7 @@ export default class QuantifierMatcher {
         }
 
         return new FragmentMatchTree(initialPosition, matches, () =>
-            backtracker(matches)
+            backtracker(matches),
         );
     }
 
@@ -98,8 +98,8 @@ export default class QuantifierMatcher {
         maximumMatches: number,
         existingMatch: FragmentMatchInterface,
         backtracker: (
-            matches: FragmentMatchInterface[]
-        ) => FragmentMatchInterface | null
+            matches: FragmentMatchInterface[],
+        ) => FragmentMatchInterface | null,
     ): FragmentMatchInterface | null {
         const initialPosition = position;
         const matches: FragmentMatchInterface[] = [];
@@ -107,7 +107,7 @@ export default class QuantifierMatcher {
         if (minimumMatches === 0) {
             // Fast case: if minimum matches is 0, return an empty match immediately.
             return new FragmentMatchTree(initialPosition, [], () =>
-                backtracker([])
+                backtracker([]),
             );
         }
 
@@ -116,7 +116,7 @@ export default class QuantifierMatcher {
                 subject,
                 position,
                 matchIndex === 0 ? isAnchored : true,
-                existingMatch.withSubsequentMatches(matches)
+                existingMatch.withSubsequentMatches(matches),
             );
 
             if (!match) {
@@ -131,7 +131,7 @@ export default class QuantifierMatcher {
         }
 
         return new FragmentMatchTree(initialPosition, matches, () =>
-            backtracker(matches)
+            backtracker(matches),
         );
     }
 }

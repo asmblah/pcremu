@@ -62,10 +62,10 @@ export default {
     nodes: {
         'I_ALTERNATION': (
             node: I_ALTERNATION,
-            interpret: Interpret
+            interpret: Interpret,
         ): AlternationFragment => {
             const alternativeFragments = node.alternatives.map(
-                (node: I_ALTERNATIVE) => interpret(node) as AlternativeFragment
+                (node: I_ALTERNATIVE) => interpret(node) as AlternativeFragment,
             );
 
             return new AlternationFragment(alternativeFragments);
@@ -73,38 +73,38 @@ export default {
         'I_ALTERNATIVE': (
             node: I_ALTERNATIVE,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): AlternativeFragment => {
             const componentFragments = node.components.map((node) =>
-                interpret(node)
+                interpret(node),
             );
 
             return new AlternativeFragment(
                 context.fragmentMatcher,
-                componentFragments
+                componentFragments,
             );
         },
         'I_CAPTURING_GROUP': (
             node: I_CAPTURING_GROUP,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): CapturingGroupFragment => {
             const componentFragments = node.components.map((node) =>
-                interpret(node)
+                interpret(node),
             );
 
             return new CapturingGroupFragment(
                 context.fragmentMatcher,
                 componentFragments,
-                node.groupIndex
+                node.groupIndex,
             );
         },
         'I_CHARACTER_CLASS': (
             node: I_CHARACTER_CLASS,
-            interpret: Interpret
+            interpret: Interpret,
         ): CharacterClassFragment => {
             const componentFragments = node.components.map((node) =>
-                interpret(node)
+                interpret(node),
             );
 
             return new CharacterClassFragment(componentFragments, node.negated);
@@ -120,28 +120,28 @@ export default {
         'I_LOOKAROUND': (
             node: I_LOOKAROUND,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): FragmentInterface => {
             const componentFragments = node.components.map((node) =>
-                interpret(node)
+                interpret(node),
             );
 
             return node.direction === LookaroundDirection.Ahead
                 ? new LookaheadFragment(
                       context.fragmentMatcher,
                       componentFragments,
-                      node.bivalence
+                      node.bivalence,
                   )
                 : new LookbehindFragment(
                       context.fragmentMatcher,
                       componentFragments,
-                      node.bivalence
+                      node.bivalence,
                   );
         },
         'I_MAXIMISING_QUANTIFIER': (
             node: I_MAXIMISING_QUANTIFIER,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): MaximisingQuantifierFragment => {
             const componentFragment = interpret(node.component);
 
@@ -149,13 +149,13 @@ export default {
                 context.quantifierMatcher,
                 componentFragment,
                 node.quantifier.min,
-                node.quantifier.max
+                node.quantifier.max,
             );
         },
         'I_MINIMISING_QUANTIFIER': (
             node: I_MINIMISING_QUANTIFIER,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): MinimisingQuantifierFragment => {
             const componentFragment = interpret(node.component);
 
@@ -163,66 +163,66 @@ export default {
                 context.quantifierMatcher,
                 componentFragment,
                 node.quantifier.min,
-                node.quantifier.max
+                node.quantifier.max,
             );
         },
         'I_NAMED_CAPTURING_GROUP': (
             node: I_NAMED_CAPTURING_GROUP,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): NamedCapturingGroupFragment => {
             const componentFragments = node.components.map((node) =>
-                interpret(node)
+                interpret(node),
             );
 
             return new NamedCapturingGroupFragment(
                 context.fragmentMatcher,
                 componentFragments,
                 node.groupIndex,
-                node.groupName
+                node.groupName,
             );
         },
         'I_NON_CAPTURING_GROUP': (
             node: I_NON_CAPTURING_GROUP,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): NonCapturingGroupFragment => {
             const componentFragments = node.components.map((node) =>
-                interpret(node)
+                interpret(node),
             );
 
             return new NonCapturingGroupFragment(
                 context.fragmentMatcher,
-                componentFragments
+                componentFragments,
             );
         },
         'I_NOOP': (): NoopFragment => {
             return new NoopFragment();
         },
         'I_NUMBERED_BACKREFERENCE': (
-            node: I_NUMBERED_BACKREFERENCE
+            node: I_NUMBERED_BACKREFERENCE,
         ): NumberedBackreferenceFragment => {
             return new NumberedBackreferenceFragment(node.number);
         },
         'I_PATTERN': (
             node: I_PATTERN,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): PatternFragment => {
             const componentFragments = node.components.map((node) =>
-                interpret(node, context)
+                interpret(node, context),
             );
 
             return new PatternFragment(
                 context.fragmentMatcher,
                 componentFragments,
-                node.capturingGroups
+                node.capturingGroups,
             );
         },
         'I_POSSESSIVE_QUANTIFIER': (
             node: I_POSSESSIVE_QUANTIFIER,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): PossessiveQuantifierFragment => {
             const componentFragment = interpret(node.component);
 
@@ -230,17 +230,17 @@ export default {
                 context.quantifierMatcher,
                 componentFragment,
                 node.quantifier.min,
-                node.quantifier.max
+                node.quantifier.max,
             );
         },
         'I_RAW_REGEX': (
             node: I_RAW_REGEX,
             _interpret: Interpret,
-            context: Context
+            context: Context,
         ): NativeFragment => {
             if (node.chunks.length !== 1) {
                 throw new Exception(
-                    'Only a single I_RAW_CHARS or I_RAW_OPTIMISED I_RAW_CHUNK is expected at this point'
+                    'Only a single I_RAW_CHARS or I_RAW_OPTIMISED I_RAW_CHUNK is expected at this point',
                 );
             }
 
@@ -253,7 +253,7 @@ export default {
                     optimisedNode.chars,
                     node.fixedLength,
                     {},
-                    context.flags
+                    context.flags,
                 );
             }
 
@@ -262,7 +262,7 @@ export default {
                     optimisedNode.chars,
                     node.fixedLength,
                     optimisedNode.patternToEmulatedNumberedGroupIndex,
-                    context.flags
+                    context.flags,
                 );
             }
 
@@ -270,7 +270,7 @@ export default {
             // to a single I_RAW_OPTIMISED chunk.
             throw new Exception(
                 'Only plain I_RAW_CHARS or I_RAW_OPTIMISED are expected at this point - ' +
-                    'did you forget to run compileRawPass?'
+                    'did you forget to run compileRawPass?',
             );
         },
     },

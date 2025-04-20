@@ -35,7 +35,7 @@ export default class FragmentMatch implements FragmentMatchInterface {
         private numberedCaptureIndices: NumberedCaptureIndices = {},
         private namedCaptureIndices: NamedCaptureIndices = {},
         // Default backtracker will always return null (ie. will always fail).
-        private backtracker: Backtracker = () => null
+        private backtracker: Backtracker = () => null,
     ) {}
 
     /**
@@ -135,7 +135,7 @@ export default class FragmentMatch implements FragmentMatchInterface {
             namedCaptures,
             numberedCaptureIndices,
             namedCaptureIndices,
-            this.backtracker
+            this.backtracker,
         );
     }
 
@@ -143,7 +143,7 @@ export default class FragmentMatch implements FragmentMatchInterface {
      * @inheritDoc
      */
     withMissingCapturesBackfilled(
-        capturingGroupNames: (number | string)[]
+        capturingGroupNames: (number | string)[],
     ): FragmentMatchInterface {
         const numberedCaptures = this.getNumberedCaptures();
         const namedCaptures = this.getNamedCaptures();
@@ -174,7 +174,7 @@ export default class FragmentMatch implements FragmentMatchInterface {
             namedCaptures,
             numberedCaptureIndices,
             namedCaptureIndices,
-            this.backtracker
+            this.backtracker,
         );
     }
 
@@ -182,13 +182,13 @@ export default class FragmentMatch implements FragmentMatchInterface {
      * @inheritDoc
      */
     withSubsequentMatches(
-        subsequentMatchFragments: FragmentMatchInterface[]
+        subsequentMatchFragments: FragmentMatchInterface[],
     ): FragmentMatchInterface {
         const fragmentMatches = [this, ...subsequentMatchFragments];
         const lastMatch = fragmentMatches[fragmentMatches.length - 1];
 
         return new FragmentMatchTree(this.position, fragmentMatches, () =>
-            lastMatch.backtrack()
+            lastMatch.backtrack(),
         );
     }
 
@@ -198,8 +198,8 @@ export default class FragmentMatch implements FragmentMatchInterface {
     wrapBacktracker(
         backtracker: (
             previousMatch: FragmentMatchInterface,
-            previousBacktracker: () => FragmentMatchInterface | null
-        ) => FragmentMatchInterface | null
+            previousBacktracker: () => FragmentMatchInterface | null,
+        ) => FragmentMatchInterface | null,
     ): FragmentMatchInterface {
         return new FragmentMatch(
             this.position,
@@ -208,7 +208,7 @@ export default class FragmentMatch implements FragmentMatchInterface {
             this.namedCaptures,
             this.numberedCaptureIndices,
             this.namedCaptureIndices,
-            () => backtracker(this, () => this.backtrack())
+            () => backtracker(this, () => this.backtrack()),
         );
     }
 }

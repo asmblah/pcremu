@@ -52,7 +52,7 @@ import {
     N_SIMPLE_ASSERTION,
     N_WHITESPACE,
 } from './types/ast';
-import escapeStringRegexp = require('escape-string-regexp');
+import escapeStringRegexp from 'escape-string-regexp';
 import QuantifierParser from '../Quantifier/QuantifierParser';
 
 export interface TrackingContext {
@@ -92,30 +92,30 @@ export default {
     nodes: {
         'N_ALTERNATION': (
             node: N_ALTERNATION,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_ALTERNATION => {
             return {
                 'name': 'I_ALTERNATION',
                 'alternatives': node.alternatives.map(
-                    (node: N_ALTERNATIVE) => interpret(node) as I_ALTERNATIVE
+                    (node: N_ALTERNATIVE) => interpret(node) as I_ALTERNATIVE,
                 ),
             };
         },
         'N_ALTERNATIVE': (
             node: N_ALTERNATIVE,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_ALTERNATIVE => {
             return {
                 'name': 'I_ALTERNATIVE',
                 'components': node.components.map((node: N_COMPONENT) =>
-                    interpret(node)
+                    interpret(node),
                 ),
             };
         },
         'N_CAPTURING_GROUP': (
             node: N_CAPTURING_GROUP,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): I_CAPTURING_GROUP => {
             const groupIndex = context.addNumberedCapturingGroup();
 
@@ -123,7 +123,7 @@ export default {
                 'name': 'I_CAPTURING_GROUP',
                 'groupIndex': groupIndex,
                 'components': node.components.map((node: N_NODE) =>
-                    interpret(node)
+                    interpret(node),
                 ),
             };
         },
@@ -141,19 +141,19 @@ export default {
         },
         'N_CHARACTER_CLASS': (
             node: N_CHARACTER_CLASS,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_CHARACTER_CLASS => {
             return {
                 'name': 'I_CHARACTER_CLASS',
                 'negated': node.negated,
                 'components': node.components.map((node: N_NODE) =>
-                    interpret(node)
+                    interpret(node),
                 ),
             };
         },
         'N_CHARACTER_RANGE': (
             node: N_CHARACTER_RANGE,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_CHARACTER_RANGE => {
             return {
                 'name': 'I_CHARACTER_RANGE',
@@ -264,10 +264,10 @@ export default {
         'N_MAXIMISING_QUANTIFIER': (
             node: N_MAXIMISING_QUANTIFIER,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): I_MAXIMISING_QUANTIFIER => {
             const quantifier = context.quantifierParser.parseQuantifier(
-                node.quantifier
+                node.quantifier,
             );
 
             return {
@@ -279,10 +279,10 @@ export default {
         'N_MINIMISING_QUANTIFIER': (
             node: N_MINIMISING_QUANTIFIER,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): I_MINIMISING_QUANTIFIER => {
             const quantifier = context.quantifierParser.parseQuantifier(
-                node.quantifier
+                node.quantifier,
             );
 
             return {
@@ -294,7 +294,7 @@ export default {
         'N_NAMED_CAPTURING_GROUP': (
             node: N_NAMED_CAPTURING_GROUP,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): I_NAMED_CAPTURING_GROUP => {
             const groupIndex = context.addNamedCapturingGroup(node.groupName);
 
@@ -303,18 +303,18 @@ export default {
                 'groupName': node.groupName,
                 'groupIndex': groupIndex,
                 'components': node.components.map((node: N_NODE) =>
-                    interpret(node)
+                    interpret(node),
                 ),
             };
         },
         'N_NON_CAPTURING_GROUP': (
             node: N_NON_CAPTURING_GROUP,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_NON_CAPTURING_GROUP => {
             return {
                 'name': 'I_NON_CAPTURING_GROUP',
                 'components': node.components.map((node: N_NODE) =>
-                    interpret(node)
+                    interpret(node),
                 ),
             };
         },
@@ -331,7 +331,7 @@ export default {
             };
         },
         'N_NUMBERED_BACKREFERENCE': (
-            node: N_NUMBERED_BACKREFERENCE
+            node: N_NUMBERED_BACKREFERENCE,
         ): I_NUMBERED_BACKREFERENCE => {
             return {
                 'name': 'I_NUMBERED_BACKREFERENCE',
@@ -341,7 +341,7 @@ export default {
         'N_NUMBERED_BACKREFERENCE_OR_OCTAL_CHAR': (
             node: N_NUMBERED_BACKREFERENCE_OR_OCTAL_CHAR,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): I_NUMBERED_BACKREFERENCE | I_RAW_REGEX => {
             const octalAsNumber: number = parseInt(node.digits, 8);
 
@@ -408,30 +408,30 @@ export default {
                 'name': 'I_PATTERN',
                 'capturingGroups': capturingGroupNames,
                 'components': node.components.map((node: N_NODE) =>
-                    interpret(node, context)
+                    interpret(node, context),
                 ),
             };
         },
         'N_LOOKAROUND': (
             node: N_LOOKAROUND,
-            interpret: Interpret
+            interpret: Interpret,
         ): I_LOOKAROUND => {
             return {
                 'name': 'I_LOOKAROUND',
                 'bivalence': node.bivalence,
                 'direction': node.direction,
                 'components': node.components.map((node: N_NODE) =>
-                    interpret(node)
+                    interpret(node),
                 ),
             };
         },
         'N_POSSESSIVE_QUANTIFIER': (
             node: N_POSSESSIVE_QUANTIFIER,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): I_POSSESSIVE_QUANTIFIER => {
             const quantifier = context.quantifierParser.parseQuantifier(
-                node.quantifier
+                node.quantifier,
             );
 
             return {
@@ -443,7 +443,7 @@ export default {
         'N_SIMPLE_ASSERTION': (
             node: N_SIMPLE_ASSERTION,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): I_RAW_REGEX => {
             let assertion = node.assertion;
 
@@ -473,7 +473,7 @@ export default {
         'N_WHITESPACE': (
             node: N_WHITESPACE,
             interpret: Interpret,
-            context: Context
+            context: Context,
         ): I_NOOP | I_RAW_REGEX => {
             if (context.flags.extended) {
                 // In extended mode, whitespace is ignored (except in character classes).

@@ -19,7 +19,7 @@ import FragmentMatchInterface from '../FragmentMatchInterface';
 export default class AlternativeFragment implements FragmentInterface {
     constructor(
         private fragmentMatcher: FragmentMatcher,
-        private componentFragments: FragmentInterface[]
+        private componentFragments: FragmentInterface[],
     ) {}
 
     /**
@@ -48,14 +48,14 @@ export default class AlternativeFragment implements FragmentInterface {
         subject: string,
         position: number,
         isAnchored: boolean,
-        existingMatch: FragmentMatchInterface
+        existingMatch: FragmentMatchInterface,
     ): FragmentMatchInterface | null {
         return this.fragmentMatcher.matchComponents(
             subject,
             position,
             isAnchored,
             this.componentFragments,
-            existingMatch
+            existingMatch,
         );
     }
 
@@ -75,7 +75,7 @@ export default class AlternativeFragment implements FragmentInterface {
         return {
             type: 'alternative',
             components: this.componentFragments.map((componentFragment) =>
-                componentFragment.toStructure()
+                componentFragment.toStructure(),
             ),
         };
     }

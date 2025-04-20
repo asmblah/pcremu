@@ -89,7 +89,7 @@ export default interface FragmentMatchInterface {
      * @param {Array<number, string>} capturingGroupNames
      */
     withMissingCapturesBackfilled(
-        capturingGroupNames: (number | string)[]
+        capturingGroupNames: (number | string)[],
     ): FragmentMatchInterface;
 
     /**
@@ -98,7 +98,7 @@ export default interface FragmentMatchInterface {
      * @param {FragmentMatchInterface[]} subsequentMatchFragments
      */
     withSubsequentMatches(
-        subsequentMatchFragments: FragmentMatchInterface[]
+        subsequentMatchFragments: FragmentMatchInterface[],
     ): FragmentMatchInterface;
 
     /**
@@ -109,7 +109,7 @@ export default interface FragmentMatchInterface {
     wrapBacktracker(
         backtracker: (
             previousMatch: FragmentMatchInterface,
-            previousBacktracker: () => FragmentMatchInterface | null
-        ) => FragmentMatchInterface | null
+            previousBacktracker: () => FragmentMatchInterface | null,
+        ) => FragmentMatchInterface | null,
     ): FragmentMatchInterface;
 }
