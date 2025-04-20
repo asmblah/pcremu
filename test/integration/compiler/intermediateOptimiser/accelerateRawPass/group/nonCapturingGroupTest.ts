@@ -42,6 +42,7 @@ describe('IR optimiser accelerateRawPass compiler non-capturing group integratio
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_NON_CAPTURING_GROUP',
@@ -55,6 +56,7 @@ describe('IR optimiser accelerateRawPass compiler non-capturing group integratio
                                     'chars': 'inner',
                                 },
                             ],
+                            'fixedLength': 5,
                         },
                     ],
                 },
@@ -66,6 +68,7 @@ describe('IR optimiser accelerateRawPass compiler non-capturing group integratio
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 5,
                 },
             ],
         });
@@ -99,6 +102,7 @@ describe('IR optimiser accelerateRawPass compiler non-capturing group integratio
                                                 'chars': 'inner',
                                             },
                                         ],
+                                        'fixedLength': 5,
                                     },
                                 },
                             ],
@@ -108,6 +112,7 @@ describe('IR optimiser accelerateRawPass compiler non-capturing group integratio
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 15,
                 },
             ],
         });

@@ -13,6 +13,7 @@ import {
     I_CAPTURING_GROUP,
     I_CHARACTER_CLASS,
     I_CHARACTER_RANGE,
+    I_LOOKAROUND,
     I_MAXIMISING_QUANTIFIER,
     I_MINIMISING_QUANTIFIER,
     I_NAMED_CAPTURING_GROUP,
@@ -32,6 +33,9 @@ import Exception from '../Exception/Exception';
 import { Flags } from '../declarations/types';
 import FragmentInterface from '../Match/Fragment/FragmentInterface';
 import FragmentMatcher from '../Match/FragmentMatcher';
+import LookaheadFragment from '../Match/Fragment/LookaheadFragment';
+import LookbehindFragment from '../Match/Fragment/LookbehindFragment';
+import { LookaroundDirection } from '../Pattern/LookaroundDirection';
 import MaximisingQuantifierFragment from '../Match/Fragment/MaximisingQuantifierFragment';
 import MinimisingQuantifierFragment from '../Match/Fragment/MinimisingQuantifierFragment';
 import NamedCapturingGroupFragment from '../Match/Fragment/NamedCapturingGroupFragment';
@@ -111,7 +115,28 @@ export default {
             const to = ((node.to as I_RAW_REGEX).chunks[0] as I_RAW_CHARS)
                 .chars;
 
-            return new NativeFragment(`[${from}-${to}]`);
+            return new NativeFragment(`[${from}-${to}]`, 1);
+        },
+        'I_LOOKAROUND': (
+            node: I_LOOKAROUND,
+            interpret: Interpret,
+            context: Context
+        ): FragmentInterface => {
+            const componentFragments = node.components.map((node) =>
+                interpret(node)
+            );
+
+            return node.direction === LookaroundDirection.Ahead
+                ? new LookaheadFragment(
+                      context.fragmentMatcher,
+                      componentFragments,
+                      node.bivalence
+                  )
+                : new LookbehindFragment(
+                      context.fragmentMatcher,
+                      componentFragments,
+                      node.bivalence
+                  );
         },
         'I_MAXIMISING_QUANTIFIER': (
             node: I_MAXIMISING_QUANTIFIER,
@@ -119,14 +144,12 @@ export default {
             context: Context
         ): MaximisingQuantifierFragment => {
             const componentFragment = interpret(node.component);
-            const { minimumMatches, maximumMatches } =
-                context.quantifierMatcher.parseQuantifier(node.quantifier);
 
             return new MaximisingQuantifierFragment(
                 context.quantifierMatcher,
                 componentFragment,
-                minimumMatches,
-                maximumMatches
+                node.quantifier.min,
+                node.quantifier.max
             );
         },
         'I_MINIMISING_QUANTIFIER': (
@@ -135,14 +158,12 @@ export default {
             context: Context
         ): MinimisingQuantifierFragment => {
             const componentFragment = interpret(node.component);
-            const { minimumMatches, maximumMatches } =
-                context.quantifierMatcher.parseQuantifier(node.quantifier);
 
             return new MinimisingQuantifierFragment(
                 context.quantifierMatcher,
                 componentFragment,
-                minimumMatches,
-                maximumMatches
+                node.quantifier.min,
+                node.quantifier.max
             );
         },
         'I_NAMED_CAPTURING_GROUP': (
@@ -185,18 +206,15 @@ export default {
         },
         'I_PATTERN': (
             node: I_PATTERN,
-            interpret: Interpret
+            interpret: Interpret,
+            context: Context
         ): PatternFragment => {
-            const fragmentMatcher = new FragmentMatcher();
-            const quantifierMatcher = new QuantifierMatcher();
-            const context = { fragmentMatcher, quantifierMatcher };
-
             const componentFragments = node.components.map((node) =>
                 interpret(node, context)
             );
 
             return new PatternFragment(
-                fragmentMatcher,
+                context.fragmentMatcher,
                 componentFragments,
                 node.capturingGroups
             );
@@ -207,19 +225,17 @@ export default {
             context: Context
         ): PossessiveQuantifierFragment => {
             const componentFragment = interpret(node.component);
-            const { minimumMatches, maximumMatches } =
-                context.quantifierMatcher.parseQuantifier(node.quantifier);
 
             return new PossessiveQuantifierFragment(
                 context.quantifierMatcher,
                 componentFragment,
-                minimumMatches,
-                maximumMatches
+                node.quantifier.min,
+                node.quantifier.max
             );
         },
         'I_RAW_REGEX': (
             node: I_RAW_REGEX,
-            interpret: Interpret,
+            _interpret: Interpret,
             context: Context
         ): NativeFragment => {
             if (node.chunks.length !== 1) {
@@ -235,6 +251,7 @@ export default {
                 // as no native capturing groups should have been output that would require mapping.
                 return new NativeFragment(
                     optimisedNode.chars,
+                    node.fixedLength,
                     {},
                     context.flags
                 );
@@ -243,6 +260,7 @@ export default {
             if (optimisedNode.name === 'I_RAW_OPTIMISED') {
                 return new NativeFragment(
                     optimisedNode.chars,
+                    node.fixedLength,
                     optimisedNode.patternToEmulatedNumberedGroupIndex,
                     context.flags
                 );

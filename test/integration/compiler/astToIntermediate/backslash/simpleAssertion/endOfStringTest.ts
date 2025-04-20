@@ -48,15 +48,18 @@ describe('AST-to-IR compiler simple assertion end-of-string integration', () => 
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_RAW_REGEX',
                     'chunks': [
                         {
                             'name': 'I_RAW_CHARS',
+                            // Also match before a newline at the end of the subject.
                             'chars': '(?=\\n?(?![\\s\\S]))',
                         },
                     ],
+                    'fixedLength': 0,
                 },
             ],
         });

@@ -7,8 +7,8 @@
  * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
  */
 
-import emulator from '../../../../../src';
 import { expect } from 'chai';
+import emulator from '../../../../../src';
 
 describe('Possessive quantifier match integration', () => {
     describe('in optimised mode', () => {

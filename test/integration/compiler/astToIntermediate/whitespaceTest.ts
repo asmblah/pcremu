@@ -50,6 +50,7 @@ describe('AST-to-IR compiler whitespace integration', () => {
                             'chars': '    ',
                         },
                     ],
+                    'fixedLength': 4,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -59,6 +60,7 @@ describe('AST-to-IR compiler whitespace integration', () => {
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -68,6 +70,7 @@ describe('AST-to-IR compiler whitespace integration', () => {
                             'chars': '  \t ',
                         },
                     ],
+                    'fixedLength': 4,
                 },
             ],
         });
@@ -106,6 +109,7 @@ describe('AST-to-IR compiler whitespace integration', () => {
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     // As above.

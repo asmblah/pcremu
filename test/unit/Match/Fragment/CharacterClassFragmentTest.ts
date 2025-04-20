@@ -23,11 +23,32 @@ describe('CharacterClassFragment', () => {
 
         createFragment = (negated: boolean) => {
             fragment = new CharacterClassFragment(
-                [new NativeFragment('m'), new NativeFragment('t')],
+                [new NativeFragment('m', 1), new NativeFragment('t', 1)],
                 negated
             );
         };
         createFragment(false);
+    });
+
+    describe('getFixedLength()', () => {
+        it('should return 1 for a non-empty character class', () => {
+            expect(fragment.getFixedLength()).to.equal(1);
+        });
+
+        it('should return 1 for an empty character class', () => {
+            fragment = new CharacterClassFragment([], false);
+
+            expect(fragment.getFixedLength()).to.equal(1);
+        });
+
+        it('should return 1 for a negated character class', () => {
+            fragment = new CharacterClassFragment(
+                [new NativeFragment('a', 1), new NativeFragment('b', 1)],
+                true
+            );
+
+            expect(fragment.getFixedLength()).to.equal(1);
+        });
     });
 
     describe('match()', () => {

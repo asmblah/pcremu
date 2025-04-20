@@ -51,6 +51,7 @@ describe('AST-to-IR compiler simple assertion word boundary integration', () => 
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -60,6 +61,7 @@ describe('AST-to-IR compiler simple assertion word boundary integration', () => 
                             'chars': '\\b',
                         },
                     ],
+                    'fixedLength': 0,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -69,6 +71,7 @@ describe('AST-to-IR compiler simple assertion word boundary integration', () => 
                             'chars': 'there',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -78,6 +81,7 @@ describe('AST-to-IR compiler simple assertion word boundary integration', () => 
                             'chars': '\\B',
                         },
                     ],
+                    'fixedLength': 0,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -87,6 +91,7 @@ describe('AST-to-IR compiler simple assertion word boundary integration', () => 
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 5,
                 },
             ],
         });

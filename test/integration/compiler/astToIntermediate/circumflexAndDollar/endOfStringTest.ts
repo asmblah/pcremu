@@ -50,6 +50,7 @@ describe('AST-to-IR compiler end-of-string assertion (anchor) integration', () =
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -59,6 +60,7 @@ describe('AST-to-IR compiler end-of-string assertion (anchor) integration', () =
                             'chars': '(?:$|(?=\\n$))',
                         },
                     ],
+                    'fixedLength': 0,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -68,6 +70,7 @@ describe('AST-to-IR compiler end-of-string assertion (anchor) integration', () =
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 5,
                 },
             ],
         });
@@ -102,6 +105,7 @@ describe('AST-to-IR compiler end-of-string assertion (anchor) integration', () =
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -111,6 +115,7 @@ describe('AST-to-IR compiler end-of-string assertion (anchor) integration', () =
                             'chars': '(?:$|(?=\\n$))',
                         },
                     ],
+                    'fixedLength': 0,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -120,6 +125,7 @@ describe('AST-to-IR compiler end-of-string assertion (anchor) integration', () =
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 5,
                 },
             ],
         });
@@ -154,6 +160,7 @@ describe('AST-to-IR compiler end-of-string assertion (anchor) integration', () =
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -163,6 +170,7 @@ describe('AST-to-IR compiler end-of-string assertion (anchor) integration', () =
                             'chars': '$',
                         },
                     ],
+                    'fixedLength': 0,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -172,6 +180,7 @@ describe('AST-to-IR compiler end-of-string assertion (anchor) integration', () =
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 5,
                 },
             ],
         });

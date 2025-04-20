@@ -32,3 +32,9 @@ export type NativeNamedCaptures = {
 export type NativeNamedCaptureIndices = {
     [key: string]: [number, number] | undefined;
 };
+
+export type Quantifier = {
+    min: number;
+    max: number; // Use Infinity for unbounded matches.
+    raw: string; // The original quantifier string.
+};

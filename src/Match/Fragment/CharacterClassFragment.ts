@@ -23,6 +23,13 @@ export default class CharacterClassFragment implements FragmentInterface {
     /**
      * @inheritDoc
      */
+    getFixedLength(): number | null {
+        return 1; // Character classes always match exactly one character.
+    }
+
+    /**
+     * @inheritDoc
+     */
     match(
         subject: string,
         position: number,

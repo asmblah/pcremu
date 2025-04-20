@@ -54,6 +54,7 @@ describe('AST-to-IR compiler named capturing group integration', () => {
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_NAMED_CAPTURING_GROUP',
@@ -68,6 +69,7 @@ describe('AST-to-IR compiler named capturing group integration', () => {
                                     'chars': 'inner',
                                 },
                             ],
+                            'fixedLength': 5,
                         },
                     ],
                 },
@@ -79,6 +81,7 @@ describe('AST-to-IR compiler named capturing group integration', () => {
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 5,
                 },
             ],
         });

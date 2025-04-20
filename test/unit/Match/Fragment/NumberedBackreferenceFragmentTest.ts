@@ -24,6 +24,19 @@ describe('NumberedBackreferenceFragment', () => {
         fragment = new NumberedBackreferenceFragment(21);
     });
 
+    describe('getFixedLength()', () => {
+        it('should return the length of the referenced capture when it exists', () => {
+            expect(fragment.getFixedLength(existingMatch)).to.equal(10);
+        });
+
+        it('should return null when the referenced capture does not exist', () => {
+            const fragment = new NumberedBackreferenceFragment(2);
+            existingMatch.getNumberedCapture.withArgs(2).returns(null);
+
+            expect(fragment.getFixedLength(existingMatch)).to.be.null;
+        });
+    });
+
     describe('match()', () => {
         describe('when un-anchored', () => {
             it('should match when the literal appears at the start position', () => {

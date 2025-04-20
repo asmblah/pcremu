@@ -24,7 +24,7 @@ describe('IR optimiser accelerateRawPass compiler maximising quantifier integrat
         ]);
     });
 
-    it('should be able to optimise an IR with two maximising quantifiers', () => {
+    it('should be able to optimise an IR with two variable-length maximising quantifiers', () => {
         const ir = sinon.createStubInstance(
             IntermediateRepresentation
         ) as SinonStubbedInstance<IntermediateRepresentation> &
@@ -41,10 +41,15 @@ describe('IR optimiser accelerateRawPass compiler maximising quantifier integrat
                             'chars': 'a',
                         },
                     ],
+                    'fixedLength': 1,
                 },
                 {
                     'name': 'I_MAXIMISING_QUANTIFIER',
-                    'quantifier': '*',
+                    'quantifier': {
+                        min: 0,
+                        max: Infinity,
+                        raw: '*',
+                    },
                     'component': {
                         'name': 'I_RAW_REGEX',
                         'chunks': [
@@ -53,11 +58,16 @@ describe('IR optimiser accelerateRawPass compiler maximising quantifier integrat
                                 'chars': 'b',
                             },
                         ],
+                        'fixedLength': 1,
                     },
                 },
                 {
                     'name': 'I_MAXIMISING_QUANTIFIER',
-                    'quantifier': '+',
+                    'quantifier': {
+                        min: 1,
+                        max: Infinity,
+                        raw: '+',
+                    },
                     'component': {
                         'name': 'I_RAW_REGEX',
                         'chunks': [
@@ -66,6 +76,7 @@ describe('IR optimiser accelerateRawPass compiler maximising quantifier integrat
                                 'chars': 'c',
                             },
                         ],
+                        'fixedLength': 1,
                     },
                 },
             ],
@@ -96,6 +107,7 @@ describe('IR optimiser accelerateRawPass compiler maximising quantifier integrat
                                         'chars': 'b',
                                     },
                                 ],
+                                'fixedLength': 1,
                             },
                         },
                         {
@@ -112,6 +124,7 @@ describe('IR optimiser accelerateRawPass compiler maximising quantifier integrat
                                         'chars': 'c',
                                     },
                                 ],
+                                'fixedLength': 1,
                             },
                         },
                         {
@@ -119,6 +132,86 @@ describe('IR optimiser accelerateRawPass compiler maximising quantifier integrat
                             'chars': '+',
                         },
                     ],
+                    'fixedLength': null, // Variable-length quantifiers.
+                },
+            ],
+        });
+    });
+
+    it('should be able to optimise an IR with one fixed-length maximising quantifier', () => {
+        const ir = sinon.createStubInstance(
+            IntermediateRepresentation
+        ) as SinonStubbedInstance<IntermediateRepresentation> &
+            IntermediateRepresentation;
+        ir.getTranspilerRepresentation.returns({
+            'name': 'I_PATTERN',
+            'capturingGroups': [0],
+            'components': [
+                {
+                    'name': 'I_RAW_REGEX',
+                    'chunks': [
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': 'a',
+                        },
+                    ],
+                    'fixedLength': 1,
+                },
+                {
+                    'name': 'I_MAXIMISING_QUANTIFIER',
+                    'quantifier': {
+                        min: 2,
+                        max: 2,
+                        raw: '{2}',
+                    },
+                    'component': {
+                        'name': 'I_RAW_REGEX',
+                        'chunks': [
+                            {
+                                'name': 'I_RAW_CHARS',
+                                'chars': 'bcd',
+                            },
+                        ],
+                        'fixedLength': 3,
+                    },
+                },
+            ],
+        });
+
+        const intermediateRepresentation = optimiser.optimise(ir);
+
+        expect(
+            intermediateRepresentation.getTranspilerRepresentation()
+        ).to.deep.equal({
+            'name': 'I_PATTERN',
+            'capturingGroups': [0],
+            'components': [
+                {
+                    'name': 'I_RAW_REGEX',
+                    'chunks': [
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': 'a',
+                        },
+                        {
+                            'name': 'I_RAW_NESTED',
+                            'node': {
+                                'name': 'I_RAW_REGEX',
+                                'chunks': [
+                                    {
+                                        'name': 'I_RAW_CHARS',
+                                        'chars': 'bcd',
+                                    },
+                                ],
+                                'fixedLength': 3,
+                            },
+                        },
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': '{2}',
+                        },
+                    ],
+                    'fixedLength': 7, // Fixed length: 1 (a) + 6 (bcd{2}).
                 },
             ],
         });

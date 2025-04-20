@@ -55,11 +55,20 @@ const nativeNamedCaptureIndicesToInternal = (
 export default class NativeFragment implements FragmentInterface {
     constructor(
         private chars: string,
+        // Inferring fixed length is non-trivial, so we must store the length at creation time.
+        private fixedLength: number | null,
         private patternToEmulatedNumberedGroupIndex: {
             [key: number]: number;
         } = {},
         private flags: Flags = {}
     ) {}
+
+    /**
+     * @inheritDoc
+     */
+    getFixedLength(): number | null {
+        return this.fixedLength;
+    }
 
     /**
      * @inheritDoc

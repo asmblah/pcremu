@@ -36,6 +36,34 @@ describe('MinimisingQuantifierFragment', () => {
         );
     });
 
+    describe('getFixedLength()', () => {
+        it('should return the fixed length of the quantifier when minimum and maximum matches are identical', () => {
+            fragment = new MinimisingQuantifierFragment(
+                quantifierMatcher,
+                new LiteralFragment('my-text'),
+                2,
+                2
+            );
+
+            expect(fragment.getFixedLength(existingMatch)).to.equal(14);
+        });
+
+        it('should return null if the fragment has variable length', () => {
+            expect(fragment.getFixedLength(existingMatch)).to.be.null;
+        });
+
+        it('should return null if the fragment has no upper bound', () => {
+            fragment = new MinimisingQuantifierFragment(
+                quantifierMatcher,
+                new LiteralFragment('my-text'),
+                2,
+                Infinity
+            );
+
+            expect(fragment.getFixedLength(existingMatch)).to.be.null;
+        });
+    });
+
     describe('match()', () => {
         describe('when un-anchored', () => {
             it('should not match when the component appears at the start position once', () => {
@@ -96,7 +124,7 @@ describe('MinimisingQuantifierFragment', () => {
                     quantifierMatcher,
                     new CapturingGroupFragment(
                         fragmentMatcher,
-                        [new NativeFragment('my(?:-text)?')],
+                        [new NativeFragment('my(?:-text)?', null)],
                         12
                     ),
                     2,
@@ -222,7 +250,7 @@ describe('MinimisingQuantifierFragment', () => {
                     quantifierMatcher,
                     new CapturingGroupFragment(
                         fragmentMatcher,
-                        [new NativeFragment('my(?:-text)?')],
+                        [new NativeFragment('my(?:-text)?', null)],
                         12
                     ),
                     2,

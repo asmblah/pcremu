@@ -34,7 +34,11 @@ describe('IR-to-Pattern compiler (unoptimised) possessive quantifier integration
             'components': [
                 {
                     'name': 'I_POSSESSIVE_QUANTIFIER',
-                    'quantifier': '*',
+                    'quantifier': {
+                        'min': 0,
+                        'max': Infinity,
+                        'raw': '*',
+                    },
                     'component': {
                         'name': 'I_RAW_REGEX',
                         'chunks': [{ 'name': 'I_RAW_CHARS', chars: 'X' }],
@@ -52,7 +56,7 @@ describe('IR-to-Pattern compiler (unoptimised) possessive quantifier integration
                 {
                     type: 'possessive-quantifier',
                     minimumMatches: 0,
-                    maximumMatches: null,
+                    maximumMatches: Infinity,
                     component: {
                         type: 'native',
                         chars: 'X',

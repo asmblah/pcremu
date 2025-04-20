@@ -76,4 +76,31 @@ describe('Parser possessive quantifier integration', () => {
             ],
         });
     });
+
+    it('should be able to parse a regex pattern containing a possessive modifier of a general repetition quantifier', () => {
+        const ast = parser.parse('before a{2,3}+ after');
+
+        expect(ast.getPattern()).to.equal('before a{2,3}+ after');
+        expect(ast.getParsingAst()).to.deep.equal({
+            'name': 'N_PATTERN',
+            'components': [
+                {
+                    'name': 'N_LITERAL',
+                    'text': 'before ',
+                },
+                {
+                    'name': 'N_POSSESSIVE_QUANTIFIER',
+                    'quantifier': '{2,3}',
+                    'component': {
+                        'name': 'N_LITERAL',
+                        'text': 'a',
+                    },
+                },
+                {
+                    'name': 'N_LITERAL',
+                    'text': ' after',
+                },
+            ],
+        });
+    });
 });

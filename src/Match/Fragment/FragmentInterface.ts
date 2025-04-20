@@ -11,6 +11,12 @@ import FragmentMatchInterface from '../FragmentMatchInterface';
 
 export default interface FragmentInterface {
     /**
+     * Returns the fixed length of this fragment if it has one, or null if it is variable length.
+     * For composite fragments, returns null if any sub-fragment is variable length.
+     */
+    getFixedLength(existingMatch: FragmentMatchInterface): number | null;
+
+    /**
      * Attempts to match this fragment against the given subject string.
      *
      * @param {string} subject

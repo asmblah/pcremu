@@ -26,6 +26,18 @@ describe('Numbered backreference match integration', () => {
             );
             expect(match?.getNumberedCapture(1)).to.equal('here');
         });
+
+        it('should support use of backreferences inside lookbehind', () => {
+            const matcher = emulator.compile('h(ell)o(?<=h\\1o) you');
+
+            const match = matcher.matchOne('hello me and hello you and done');
+
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(2);
+            expect(match?.getStart()).to.equal(13);
+            expect(match?.getNumberedCapture(0)).to.equal('hello you');
+            expect(match?.getNumberedCapture(1)).to.equal('ell');
+        });
     });
 
     describe('in unoptimised mode', () => {
@@ -45,6 +57,20 @@ describe('Numbered backreference match integration', () => {
                 'over here and then here and done'
             );
             expect(match?.getNumberedCapture(1)).to.equal('here');
+        });
+
+        it('should support use of backreferences inside lookbehind', () => {
+            const matcher = emulator.compile('h(ell)o(?<=h\\1o) you', {
+                optimise: false,
+            });
+
+            const match = matcher.matchOne('hello me and hello you and done');
+
+            expect(match).not.to.be.null;
+            expect(match?.getCaptureCount()).to.equal(2);
+            expect(match?.getStart()).to.equal(13);
+            expect(match?.getNumberedCapture(0)).to.equal('hello you');
+            expect(match?.getNumberedCapture(1)).to.equal('ell');
         });
     });
 });

@@ -13,6 +13,7 @@ import {
     I_RAW_CAPTURE,
     I_RAW_CHARS,
     I_RAW_GHOST_CAPTURE,
+    I_RAW_LOOKAROUND,
     I_RAW_NAMED_CAPTURE,
     I_RAW_NESTED,
     I_RAW_NON_CAPTURE,
@@ -107,6 +108,20 @@ export default {
                 // it just doesn't relate to a capturing group in the original PCRE pattern.
                 '(' +
                 node.chunks.map((chunk) => interpret(chunk, context)).join('') +
+                ')'
+            );
+        },
+        'I_RAW_LOOKAROUND': (
+            node: I_RAW_LOOKAROUND,
+            interpret: Interpret
+        ): string => {
+            const bivalenceChar = node.bivalence === 'positive' ? '=' : '!';
+            const directionChar = node.direction === 'behind' ? '<' : '';
+
+            return (
+                // Surround with a native lookaround group.
+                `(?${directionChar}${bivalenceChar}` +
+                node.chunks.map((chunk) => interpret(chunk)).join('') +
                 ')'
             );
         },
@@ -212,6 +227,7 @@ export default {
                             patternToEmulatedNumberedGroupIndex,
                     },
                 ],
+                'fixedLength': node.fixedLength,
             };
         },
     },

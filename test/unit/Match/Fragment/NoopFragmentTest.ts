@@ -17,6 +17,12 @@ describe('NoopFragment', () => {
         fragment = new NoopFragment();
     });
 
+    describe('getFixedLength()', () => {
+        it('should return 0', () => {
+            expect(fragment.getFixedLength()).to.equal(0);
+        });
+    });
+
     describe('match()', () => {
         it('should return an empty match', () => {
             const match = fragment.match('here is my-text', 6);

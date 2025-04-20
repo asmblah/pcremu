@@ -12,6 +12,7 @@ import FragmentMatcher from '../../../../src/Match/FragmentMatcher';
 import FragmentMatchInterface from '../../../../src/Match/FragmentMatchInterface';
 import FragmentMatchTree from '../../../../src/Match/FragmentMatchTree';
 import LiteralFragment from '../../../../src/Match/Fragment/LiteralFragment';
+import NativeFragment from '../../../../src/Match/Fragment/NativeFragment';
 import PatternFragment from '../../../../src/Match/Fragment/PatternFragment';
 
 describe('PatternFragment', () => {
@@ -28,6 +29,22 @@ describe('PatternFragment', () => {
             [new LiteralFragment('my-'), new LiteralFragment('text')],
             [0, 1, 'myGroup', 2]
         );
+    });
+
+    describe('getFixedLength()', () => {
+        it('should return the sum of fixed lengths of component fragments when all have fixed lengths', () => {
+            expect(fragment.getFixedLength(existingMatch)).to.equal(7);
+        });
+
+        it('should return null when any component fragment has no fixed length', () => {
+            const fragment = new PatternFragment(
+                fragmentMatcher,
+                [new LiteralFragment('my-'), new NativeFragment('.*', null)],
+                []
+            );
+
+            expect(fragment.getFixedLength(existingMatch)).to.be.null;
+        });
     });
 
     describe('match()', () => {

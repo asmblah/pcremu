@@ -8,18 +8,22 @@
  */
 
 import { expect } from 'chai';
+import sinon from 'ts-sinon';
+import { Flags } from '../../src/declarations/types';
+import FragmentMatcher from '../../src/Match/FragmentMatcher';
 import IntermediateRepresentation from '../../src/IntermediateRepresentation';
 import IntermediateToPatternCompiler from '../../src/IntermediateToPatternCompiler';
 import Pattern from '../../src/Pattern';
 import PatternFactory from '../../src/PatternFactory';
 import PatternFragment from '../../src/Match/Fragment/PatternFragment';
+import QuantifierMatcher from '../../src/Match/QuantifierMatcher';
 import { SinonStub, SinonStubbedInstance } from 'sinon';
-import sinon from 'ts-sinon';
-import { Flags } from '../../src/declarations/types';
 
 describe('IntermediateToPatternCompiler', () => {
     let compiler: IntermediateToPatternCompiler;
     let flags: Flags;
+    let fragmentMatcher: SinonStubbedInstance<FragmentMatcher> &
+        FragmentMatcher;
     let intermediateToPatternTranspiler: any;
     let ir: SinonStubbedInstance<IntermediateRepresentation> &
         IntermediateRepresentation;
@@ -27,11 +31,19 @@ describe('IntermediateToPatternCompiler', () => {
     let patternFactory: SinonStubbedInstance<PatternFactory> & PatternFactory;
     let patternFragment: SinonStubbedInstance<PatternFragment> &
         PatternFragment;
+    let quantifierMatcher: SinonStubbedInstance<QuantifierMatcher> &
+        QuantifierMatcher;
     let transpile: SinonStub;
     let transpilerIr: object;
 
     beforeEach(() => {
         flags = { extended: true, caseless: false };
+        fragmentMatcher = sinon.createStubInstance(
+            FragmentMatcher
+        ) as SinonStubbedInstance<FragmentMatcher> & FragmentMatcher;
+        quantifierMatcher = sinon.createStubInstance(
+            QuantifierMatcher
+        ) as SinonStubbedInstance<QuantifierMatcher> & QuantifierMatcher;
         transpile = sinon.stub();
         intermediateToPatternTranspiler = {
             transpile,
@@ -61,11 +73,15 @@ describe('IntermediateToPatternCompiler', () => {
         transpile
             .withArgs(transpilerIr, {
                 flags,
+                fragmentMatcher: sinon.match.same(fragmentMatcher),
+                quantifierMatcher: sinon.match.same(quantifierMatcher),
             })
             .returns(patternFragment);
 
         compiler = new IntermediateToPatternCompiler(
             patternFactory,
+            fragmentMatcher,
+            quantifierMatcher,
             intermediateToPatternTranspiler
         );
     });

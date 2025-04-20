@@ -24,6 +24,25 @@ export default class PatternFragment implements FragmentInterface {
     ) {}
 
     /**
+     * @inheritDoc
+     */
+    getFixedLength(existingMatch: FragmentMatchInterface): number | null {
+        let totalLength = 0;
+
+        for (const componentFragment of this.componentFragments) {
+            const length = componentFragment.getFixedLength(existingMatch);
+
+            if (length === null) {
+                return null;
+            }
+
+            totalLength += length;
+        }
+
+        return totalLength;
+    }
+
+    /**
      * Fetches all numbered and named capturing group names for the pattern,
      * in the order they are defined.
      *

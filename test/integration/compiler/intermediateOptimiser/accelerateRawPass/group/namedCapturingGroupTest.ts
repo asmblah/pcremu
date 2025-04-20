@@ -42,6 +42,7 @@ describe('IR optimiser accelerateRawPass compiler named capturing group integrat
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_NAMED_CAPTURING_GROUP',
@@ -56,6 +57,7 @@ describe('IR optimiser accelerateRawPass compiler named capturing group integrat
                                     'chars': 'inner',
                                 },
                             ],
+                            'fixedLength': 5,
                         },
                     ],
                 },
@@ -67,6 +69,7 @@ describe('IR optimiser accelerateRawPass compiler named capturing group integrat
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 5,
                 },
             ],
         });
@@ -102,6 +105,7 @@ describe('IR optimiser accelerateRawPass compiler named capturing group integrat
                                                 'chars': 'inner',
                                             },
                                         ],
+                                        'fixedLength': 5,
                                     },
                                 },
                             ],
@@ -111,6 +115,7 @@ describe('IR optimiser accelerateRawPass compiler named capturing group integrat
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 15,
                 },
             ],
         });

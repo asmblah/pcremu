@@ -18,6 +18,13 @@ export default class NoopFragment implements FragmentInterface {
     /**
      * @inheritDoc
      */
+    getFixedLength(): number | null {
+        return 0;
+    }
+
+    /**
+     * @inheritDoc
+     */
     match(subject: string, position: number): FragmentMatchInterface | null {
         return new FragmentMatch(position);
     }

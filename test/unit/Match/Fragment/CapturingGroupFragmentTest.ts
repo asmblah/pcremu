@@ -8,11 +8,14 @@
  */
 
 import { expect } from 'chai';
+import { stubInterface } from 'ts-sinon';
 import CapturingGroupFragment from '../../../../src/Match/Fragment/CapturingGroupFragment';
 import FragmentMatcher from '../../../../src/Match/FragmentMatcher';
 import FragmentMatchInterface from '../../../../src/Match/FragmentMatchInterface';
 import FragmentMatchTree from '../../../../src/Match/FragmentMatchTree';
 import LiteralFragment from '../../../../src/Match/Fragment/LiteralFragment';
+import MaximisingQuantifierFragment from '../../../../src/Match/Fragment/MaximisingQuantifierFragment';
+import QuantifierMatcher from '../../../../src/Match/QuantifierMatcher';
 
 describe('CapturingGroupFragment', () => {
     let existingMatch: FragmentMatchInterface;
@@ -28,6 +31,30 @@ describe('CapturingGroupFragment', () => {
             [new LiteralFragment('my-'), new LiteralFragment('text')],
             7
         );
+    });
+
+    describe('getFixedLength()', () => {
+        it('should return the fixed length of the group', () => {
+            expect(fragment.getFixedLength(existingMatch)).to.equal(7);
+        });
+
+        it('should return null if the group has variable length', () => {
+            const fragment = new CapturingGroupFragment(
+                fragmentMatcher,
+                [
+                    new LiteralFragment('my-'),
+                    new MaximisingQuantifierFragment(
+                        stubInterface<QuantifierMatcher>(),
+                        new LiteralFragment('text'),
+                        1,
+                        Infinity
+                    ),
+                ],
+                7
+            );
+
+            expect(fragment.getFixedLength(existingMatch)).to.be.null;
+        });
     });
 
     describe('match()', () => {

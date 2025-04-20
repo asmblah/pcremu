@@ -71,6 +71,7 @@ describe('AST-to-IR compiler alternation integration', () => {
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_ALTERNATION',
@@ -86,6 +87,7 @@ describe('AST-to-IR compiler alternation integration', () => {
                                             'chars': 'to',
                                         },
                                     ],
+                                    'fixedLength': 2,
                                 },
                             ],
                         },
@@ -100,6 +102,7 @@ describe('AST-to-IR compiler alternation integration', () => {
                                             'chars': 'you',
                                         },
                                     ],
+                                    'fixedLength': 3,
                                 },
                             ],
                         },
@@ -113,6 +116,7 @@ describe('AST-to-IR compiler alternation integration', () => {
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 5,
                 },
             ],
         });

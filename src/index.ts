@@ -7,6 +7,9 @@
  * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
  */
 
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference path="declarations/modules.d.ts" />
+
 import Emulator from './Emulator';
 import accelerateRawPassSpec from './spec/intermediateOptimiser/accelerateRawPass';
 import astToIntermediateTranspilerSpec from './spec/astToIntermediate';

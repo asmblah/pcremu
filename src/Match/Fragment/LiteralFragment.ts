@@ -20,6 +20,13 @@ export default class LiteralFragment implements FragmentInterface {
     /**
      * @inheritDoc
      */
+    getFixedLength(): number | null {
+        return this.chars.length;
+    }
+
+    /**
+     * @inheritDoc
+     */
     match(
         subject: string,
         position: number,

@@ -14,6 +14,7 @@ import {
     I_CHARACTER_CLASS,
     I_CHARACTER_RANGE,
     I_COMPONENT,
+    I_LOOKAROUND,
     I_MAXIMISING_QUANTIFIER,
     I_MINIMISING_QUANTIFIER,
     I_NAMED_CAPTURING_GROUP,
@@ -44,8 +45,15 @@ export const concatenateRawRegexNodes = <T extends I_COMPONENT>(
     nodes: T[],
     glue: I_RAW_CHUNK | null = null,
     unpackItem = (node: T): I_COMPONENT | null => node,
-    repackItem = (node: I_RAW_REGEX): T => node as unknown as T
+    repackItem = (node: I_RAW_REGEX): T => node as unknown as T,
+    updateRunFixedLength = (
+        previousFixedLength: number,
+        nextFixedLength: number
+    ): number | null => {
+        return previousFixedLength + nextFixedLength;
+    }
 ) => {
+    let currentRunFixedLength: number | null = -1;
     let currentRunChunks: I_RAW_CHUNK[] = [];
     const resultNodes: T[] = [];
 
@@ -54,6 +62,8 @@ export const concatenateRawRegexNodes = <T extends I_COMPONENT>(
             repackItem({
                 'name': 'I_RAW_REGEX',
                 'chunks': currentRunChunks,
+                'fixedLength':
+                    currentRunFixedLength === -1 ? 0 : currentRunFixedLength,
             })
         );
     };
@@ -67,11 +77,27 @@ export const concatenateRawRegexNodes = <T extends I_COMPONENT>(
             }
 
             currentRunChunks.push(...(item as I_RAW_REGEX).chunks);
+
+            if (currentRunFixedLength === -1) {
+                currentRunFixedLength = (item as I_RAW_REGEX).fixedLength;
+            } else if (currentRunFixedLength !== null) {
+                const fixedLength = (item as I_RAW_REGEX).fixedLength;
+
+                if (fixedLength === null) {
+                    currentRunFixedLength = null;
+                } else {
+                    currentRunFixedLength = updateRunFixedLength(
+                        currentRunFixedLength,
+                        fixedLength
+                    );
+                }
+            }
         } else if (currentRunChunks.length > 0) {
             addRunItem();
 
             // Reset for the next run.
             currentRunChunks = [];
+            currentRunFixedLength = -1;
 
             // Make sure we add the non-run item that ended the run to the result too.
             resultNodes.push(node);
@@ -130,7 +156,10 @@ export const optimiseComponent = <T extends I_COMPONENT>(
 export const optimiseComponents = <T extends I_COMPONENT>(
     components: I_COMPONENT[],
     interpret: Interpret,
-    buildOptimised: (rawRegexNode: I_RAW_REGEX) => I_RAW_REGEX,
+    // Note that the optimiser function may return the original IR node T,
+    // in the scenario where the internals are optimised as much as possible,
+    // but the outer logic still needs to be emulated for some reason such as missing native support.
+    buildOptimised: (rawRegexNode: I_RAW_REGEX) => I_RAW_REGEX | T,
     buildUnoptimised: (concatenatedComponents: I_COMPONENT[]) => T
 ): T | I_RAW_REGEX => {
     // Apply optimisations to all components.
@@ -224,6 +253,22 @@ export default {
                         'chars': `${from}-${to}`,
                     },
                 ],
+                // Character classes always match exactly one character,
+                // but that is handled at the character class level.
+                'fixedLength': null,
+            };
+        },
+        'I_LOOKAROUND': (
+            node: I_LOOKAROUND,
+            interpret: Interpret
+        ): I_LOOKAROUND => {
+            return {
+                'name': 'I_LOOKAROUND',
+                'direction': node.direction,
+                'bivalence': node.bivalence,
+                'components': node.components.map((node: I_COMPONENT) =>
+                    interpret(node)
+                ),
             };
         },
         'I_MAXIMISING_QUANTIFIER': (

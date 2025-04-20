@@ -48,6 +48,7 @@ describe('AST-to-IR compiler literal integration', () => {
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -57,6 +58,7 @@ describe('AST-to-IR compiler literal integration', () => {
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 5,
                 },
             ],
         });

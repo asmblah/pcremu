@@ -37,6 +37,41 @@ describe('AlternationFragment', () => {
         ]);
     });
 
+    describe('getFixedLength()', () => {
+        it('should return the fixed length of alternatives when all have the same fixed length', () => {
+            const fragment = new AlternationFragment([
+                new AlternativeFragment(fragmentMatcher, [
+                    new LiteralFragment('my'),
+                ]),
+                new AlternativeFragment(fragmentMatcher, [
+                    new LiteralFragment('it'),
+                ]),
+            ]);
+
+            expect(fragment.getFixedLength(existingMatch)).to.equal(2);
+        });
+
+        it('should return null if the alternatives have different fixed lengths', () => {
+            const fragment = new AlternationFragment([
+                new AlternativeFragment(fragmentMatcher, [
+                    new LiteralFragment('my'),
+                ]),
+                new AlternativeFragment(fragmentMatcher, [
+                    new LiteralFragment('my'),
+                    new LiteralFragment('literal'),
+                ]),
+            ]);
+
+            expect(fragment.getFixedLength(existingMatch)).to.be.null;
+        });
+
+        it('should return 0 when there are no alternatives', () => {
+            const fragment = new AlternationFragment([]);
+
+            expect(fragment.getFixedLength(existingMatch)).to.equal(0);
+        });
+    });
+
     describe('match()', () => {
         describe('when un-anchored', () => {
             it('should match when the first alternative appears at the start position', () => {

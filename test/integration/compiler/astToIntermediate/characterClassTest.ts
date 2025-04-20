@@ -92,6 +92,7 @@ describe('AST-to-IR compiler character class integration', () => {
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_CHARACTER_CLASS',
@@ -105,6 +106,7 @@ describe('AST-to-IR compiler character class integration', () => {
                                     'chars': '\\]',
                                 },
                             ],
+                            'fixedLength': 1,
                         },
                         {
                             'name': 'I_CHARACTER_RANGE',
@@ -116,6 +118,7 @@ describe('AST-to-IR compiler character class integration', () => {
                                         'name': 'I_RAW_CHARS',
                                     },
                                 ],
+                                'fixedLength': 1,
                             },
                             'to': {
                                 'name': 'I_RAW_REGEX',
@@ -125,6 +128,7 @@ describe('AST-to-IR compiler character class integration', () => {
                                         'name': 'I_RAW_CHARS',
                                     },
                                 ],
+                                'fixedLength': 1,
                             },
                         },
                         {
@@ -135,6 +139,7 @@ describe('AST-to-IR compiler character class integration', () => {
                                     'chars': 'f',
                                 },
                             ],
+                            'fixedLength': 1,
                         },
                         {
                             'name': 'I_RAW_REGEX',
@@ -144,6 +149,7 @@ describe('AST-to-IR compiler character class integration', () => {
                                     'chars': '\\]',
                                 },
                             ],
+                            'fixedLength': 1,
                         },
                         {
                             'name': 'I_RAW_REGEX',
@@ -153,6 +159,7 @@ describe('AST-to-IR compiler character class integration', () => {
                                     'name': 'I_RAW_CHARS',
                                 },
                             ],
+                            'fixedLength': 1,
                         },
                         {
                             'name': 'I_RAW_REGEX',
@@ -162,6 +169,7 @@ describe('AST-to-IR compiler character class integration', () => {
                                     'name': 'I_RAW_CHARS',
                                 },
                             ],
+                            'fixedLength': 1,
                         },
                         {
                             'name': 'I_RAW_REGEX',
@@ -171,6 +179,7 @@ describe('AST-to-IR compiler character class integration', () => {
                                     'name': 'I_RAW_CHARS',
                                 },
                             ],
+                            'fixedLength': 1,
                         },
                         {
                             'name': 'I_RAW_REGEX',
@@ -180,6 +189,7 @@ describe('AST-to-IR compiler character class integration', () => {
                                     'name': 'I_RAW_CHARS',
                                 },
                             ],
+                            'fixedLength': 1,
                         },
                         {
                             'name': 'I_RAW_REGEX',
@@ -189,6 +199,7 @@ describe('AST-to-IR compiler character class integration', () => {
                                     'name': 'I_RAW_CHARS',
                                 },
                             ],
+                            'fixedLength': 1,
                         },
                     ],
                 },
@@ -200,6 +211,7 @@ describe('AST-to-IR compiler character class integration', () => {
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 5,
                 },
             ],
         });

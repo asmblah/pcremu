@@ -14,9 +14,23 @@ describe('NativeFragment', () => {
     let fragment: NativeFragment;
 
     beforeEach(() => {
-        fragment = new NativeFragment('(is )my(?<myGroup>.*)text', {
+        fragment = new NativeFragment('(is )my(?<myGroup>.*)text', null, {
             7: 1,
             12: 2,
+        });
+    });
+
+    describe('getFixedLength()', () => {
+        it('should return the fixed length when specified', () => {
+            const fragment = new NativeFragment('abc', 3);
+
+            expect(fragment.getFixedLength()).to.equal(3);
+        });
+
+        it('should return null for a variable-length pattern with quantifier', () => {
+            const fragment = new NativeFragment('a.*', null);
+
+            expect(fragment.getFixedLength()).to.be.null;
         });
     });
 
@@ -96,10 +110,14 @@ describe('NativeFragment', () => {
             });
 
             it('should backtrack a native minimising (lazy) match forwards', () => {
-                fragment = new NativeFragment('(is )my(?<myGroup>.*?)text', {
-                    7: 1,
-                    12: 2,
-                });
+                fragment = new NativeFragment(
+                    '(is )my(?<myGroup>.*?)text',
+                    null,
+                    {
+                        7: 1,
+                        12: 2,
+                    }
+                );
                 const match = fragment.match(
                     'here is my-literal-with-text-then-text',
                     3,
@@ -207,10 +225,14 @@ describe('NativeFragment', () => {
             });
 
             it('should backtrack a native minimising (lazy) match forwards', () => {
-                fragment = new NativeFragment('(is )my(?<myGroup>.*?)text', {
-                    7: 1,
-                    12: 2,
-                });
+                fragment = new NativeFragment(
+                    '(is )my(?<myGroup>.*?)text',
+                    null,
+                    {
+                        7: 1,
+                        12: 2,
+                    }
+                );
                 const match = fragment.match(
                     'here is my-literal-with-text-then-text',
                     5,
@@ -261,6 +283,7 @@ describe('NativeFragment', () => {
             it('should match case-insensitively in caseless mode', () => {
                 fragment = new NativeFragment(
                     '(is )my(?<myGroup>.*)text',
+                    null,
                     {
                         7: 1,
                         12: 2,
@@ -284,6 +307,7 @@ describe('NativeFragment', () => {
             it('should not match ^ and $ as start- and end-of-line assertions outside multiline mode', () => {
                 fragment = new NativeFragment(
                     '^my(.*)text$',
+                    null,
                     {
                         9: 1,
                     },
@@ -303,6 +327,7 @@ describe('NativeFragment', () => {
                 beforeEach(() => {
                     fragment = new NativeFragment(
                         '^my([\\s\\S]*)text$',
+                        null,
                         {
                             9: 1,
                         },
@@ -363,6 +388,7 @@ describe('NativeFragment', () => {
             it('should not match dot against newlines outside dot (all) mode', () => {
                 fragment = new NativeFragment(
                     '(is )my(?<myGroup>.*)text',
+                    null,
                     {
                         7: 1,
                         12: 2,
@@ -380,6 +406,7 @@ describe('NativeFragment', () => {
                 it('should match dot against newlines', () => {
                     fragment = new NativeFragment(
                         '(is )my(?<myGroup>.*)text',
+                        null,
                         {
                             7: 1,
                             12: 2,

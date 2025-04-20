@@ -57,10 +57,15 @@ describe('AST-to-IR compiler quantifier minimiser integration', () => {
                             'chars': 'a',
                         },
                     ],
+                    'fixedLength': 1,
                 },
                 {
                     'name': 'I_MINIMISING_QUANTIFIER',
-                    'quantifier': '+',
+                    'quantifier': {
+                        min: 1,
+                        max: Infinity,
+                        raw: '+',
+                    },
                     'component': {
                         'name': 'I_RAW_REGEX',
                         'chunks': [
@@ -69,11 +74,16 @@ describe('AST-to-IR compiler quantifier minimiser integration', () => {
                                 'chars': 'b',
                             },
                         ],
+                        'fixedLength': 1,
                     },
                 },
                 {
                     'name': 'I_MINIMISING_QUANTIFIER',
-                    'quantifier': '*',
+                    'quantifier': {
+                        min: 0,
+                        max: Infinity,
+                        raw: '*',
+                    },
                     'component': {
                         'name': 'I_RAW_REGEX',
                         'chunks': [
@@ -82,6 +92,7 @@ describe('AST-to-IR compiler quantifier minimiser integration', () => {
                                 'chars': 'c',
                             },
                         ],
+                        'fixedLength': 1,
                     },
                 },
             ],

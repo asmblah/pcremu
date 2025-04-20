@@ -7,6 +7,9 @@
  * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
  */
 
+import { LookaroundBivalence } from '../../Pattern/LookaroundBivalence';
+import { LookaroundDirection } from '../../Pattern/LookaroundDirection';
+
 /**
  * AST-related types.
  *
@@ -61,6 +64,12 @@ export type N_HEX_CODE_CHAR = N_CHARACTER_CLASS_COMPONENT & {
     code: string;
 };
 export type N_LITERAL = N_COMPONENT & { name: 'N_LITERAL'; text: string };
+export type N_LOOKAROUND = {
+    name: 'N_LOOKAROUND';
+    bivalence: LookaroundBivalence;
+    direction: LookaroundDirection;
+    components: N_COMPONENT[];
+};
 export type N_MAXIMISING_QUANTIFIER = N_COMPONENT & {
     name: 'N_MAXIMISING_QUANTIFIER';
     quantifier: string;
@@ -105,4 +114,8 @@ export type N_SIMPLE_ASSERTION = N_COMPONENT & {
 export type N_WHITESPACE = N_COMPONENT & {
     name: 'N_WHITESPACE';
     chars: string;
+};
+export type N_WORD_BOUNDARY_ASSERTION = N_COMPONENT & {
+    name: 'N_WORD_BOUNDARY_ASSERTION';
+    negated: boolean;
 };

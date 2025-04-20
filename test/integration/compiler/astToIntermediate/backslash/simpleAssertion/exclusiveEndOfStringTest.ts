@@ -48,15 +48,18 @@ describe('AST-to-IR compiler simple assertion exclusive-end-of-string integratio
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_RAW_REGEX',
                     'chunks': [
                         {
                             'name': 'I_RAW_CHARS',
+                            // Note that unlike the non-exclusive variant, any newline is ignored.
                             'chars': '(?![\\s\\S])',
                         },
                     ],
+                    'fixedLength': 0,
                 },
             ],
         });

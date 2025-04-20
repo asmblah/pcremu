@@ -41,6 +41,7 @@ describe('IR optimiser accelerateRawPass compiler raw regex integration', () => 
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -50,6 +51,7 @@ describe('IR optimiser accelerateRawPass compiler raw regex integration', () => 
                             'chars': '[^]c-dfg-]',
                         },
                     ],
+                    'fixedLength': 1,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -59,6 +61,7 @@ describe('IR optimiser accelerateRawPass compiler raw regex integration', () => 
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 5,
                 },
             ],
         });
@@ -87,6 +90,7 @@ describe('IR optimiser accelerateRawPass compiler raw regex integration', () => 
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 11,
                 },
             ],
         });

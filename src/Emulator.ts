@@ -9,13 +9,16 @@
 
 import AstToIntermediateCompiler from './AstToIntermediateCompiler';
 import Compiler from './Compiler';
+import { Context } from './spec/types/parser';
 import { Flags } from './declarations/types';
+import FragmentMatcher from './Match/FragmentMatcher';
+import IntermediateOptimiser from './IntermediateOptimiser';
 import IntermediateToPatternCompiler from './IntermediateToPatternCompiler';
 import Matcher from './Matcher';
 import Parser, { DEFAULT_FLAGS } from './Parser';
 import PatternFactory from './PatternFactory';
-import IntermediateOptimiser from './IntermediateOptimiser';
-import { Context } from './spec/types/parser';
+import QuantifierMatcher from './Match/QuantifierMatcher';
+import QuantifierParser from './Quantifier/QuantifierParser';
 
 /**
  * Outermost library abstraction for PCREmu.
@@ -51,7 +54,10 @@ export default class Emulator {
             this.astToIntermediateTranspilerSpec
         );
 
-        return new AstToIntermediateCompiler(transpiler);
+        return new AstToIntermediateCompiler(
+            transpiler,
+            new QuantifierParser()
+        );
     }
 
     /**
@@ -86,6 +92,8 @@ export default class Emulator {
 
         return new IntermediateToPatternCompiler(
             new PatternFactory(),
+            new FragmentMatcher(),
+            new QuantifierMatcher(),
             transpiler
         );
     }

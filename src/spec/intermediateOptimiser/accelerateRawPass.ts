@@ -13,6 +13,7 @@ import {
     I_CAPTURING_GROUP,
     I_CHARACTER_CLASS,
     I_COMPONENT,
+    I_LOOKAROUND,
     I_MAXIMISING_QUANTIFIER,
     I_MINIMISING_QUANTIFIER,
     I_NAMED_CAPTURING_GROUP,
@@ -28,6 +29,7 @@ import base, {
     optimiseComponents,
 } from '../base/intermediateOptimiser';
 import { N_NODE } from '../types/ast';
+import { LookaroundDirection } from '../../Pattern/LookaroundDirection';
 
 type Interpret = (node: N_NODE) => I_NODE;
 
@@ -68,6 +70,7 @@ export default {
                                         'name': 'I_RAW_NOOP',
                                     },
                                 ],
+                                'fixedLength': 0,
                             };
                         }
 
@@ -79,7 +82,12 @@ export default {
                     (node) => ({
                         'name': 'I_ALTERNATIVE',
                         'components': [node],
-                    })
+                    }),
+                    // All alternatives must have the same fixed length, otherwise return null.
+                    (previousFixedLength, nextFixedLength) =>
+                        nextFixedLength === previousFixedLength
+                            ? previousFixedLength
+                            : null
                 );
 
             if (
@@ -100,6 +108,7 @@ export default {
                             'node': rawRegexNode,
                         },
                     ],
+                    'fixedLength': rawRegexNode.fixedLength,
                 };
             }
 
@@ -152,6 +161,7 @@ export default {
                                 ],
                             },
                         ],
+                        'fixedLength': rawRegexNode.fixedLength,
                     };
                 },
                 (concatenatedComponents) => {
@@ -191,6 +201,7 @@ export default {
                                 'chars': ']',
                             },
                         ],
+                        'fixedLength': 1,
                     };
                 },
                 () => {
@@ -204,6 +215,59 @@ export default {
                      * Note that we could use a native alternation in future where applicable.
                      */
                     return node;
+                }
+            );
+        },
+        'I_LOOKAROUND': (
+            node: I_LOOKAROUND,
+            interpret: Interpret
+        ): I_LOOKAROUND | I_RAW_REGEX => {
+            return optimiseComponents<I_LOOKAROUND>(
+                node.components,
+                interpret,
+                (rawRegexNode) => {
+                    if (node.direction === LookaroundDirection.Behind) {
+                        // De-optimise lookbehind. JavaScript now supports lookbehinds natively,
+                        // but they are handled differently to PCRE, working right-to-left.
+                        // In particular, backreferences must be captured to the right of the backreference.
+                        // The contents of the lookbehind are still optimised as much as possible.
+                        return {
+                            'name': 'I_LOOKAROUND',
+                            'bivalence': node.bivalence,
+                            'direction': node.direction,
+                            'components': [rawRegexNode],
+                        };
+                    }
+
+                    // Fully optimised mode - entire contents inside lookaround have been compiled down
+                    // to a native regex fragment, so we can wrap it all in a native lookaround.
+                    return {
+                        'name': 'I_RAW_REGEX',
+                        'chunks': [
+                            {
+                                'name': 'I_RAW_LOOKAROUND',
+                                'bivalence': node.bivalence,
+                                'direction': node.direction,
+                                'chunks': [
+                                    {
+                                        'name': 'I_RAW_NESTED',
+                                        'node': rawRegexNode,
+                                    },
+                                ],
+                            },
+                        ],
+                        'fixedLength': 0,
+                    };
+                },
+                (concatenatedComponents) => {
+                    // Partially-optimised mode: components have been optimised as much as possible,
+                    // but we've been unable to produce a single raw regex fragment.
+                    return {
+                        'name': 'I_LOOKAROUND',
+                        'bivalence': node.bivalence,
+                        'direction': node.direction,
+                        'components': concatenatedComponents,
+                    };
                 }
             );
         },
@@ -226,9 +290,17 @@ export default {
                             },
                             {
                                 'name': 'I_RAW_CHARS',
-                                'chars': node.quantifier,
+                                'chars': node.quantifier.raw,
                             },
                         ],
+                        'fixedLength':
+                            node.quantifier.max !== Infinity &&
+                            node.quantifier.min === node.quantifier.max
+                                ? rawRegexNode.fixedLength !== null
+                                    ? rawRegexNode.fixedLength *
+                                      node.quantifier.max
+                                    : null
+                                : null,
                     };
                 },
                 (optimisedComponent) => {
@@ -261,9 +333,17 @@ export default {
                             },
                             {
                                 'name': 'I_RAW_CHARS',
-                                'chars': node.quantifier + '?',
+                                'chars': node.quantifier.raw + '?',
                             },
                         ],
+                        'fixedLength':
+                            node.quantifier.max !== Infinity &&
+                            node.quantifier.min === node.quantifier.max
+                                ? rawRegexNode.fixedLength !== null
+                                    ? rawRegexNode.fixedLength *
+                                      node.quantifier.max
+                                    : null
+                                : null,
                     };
                 },
                 (optimisedComponent) => {
@@ -302,6 +382,7 @@ export default {
                                 ],
                             },
                         ],
+                        'fixedLength': rawRegexNode.fixedLength,
                     };
                 },
                 (concatenatedComponents) => {
@@ -339,6 +420,7 @@ export default {
                                 ],
                             },
                         ],
+                        'fixedLength': rawRegexNode.fixedLength,
                     };
                 },
                 (concatenatedComponents) => {
@@ -401,7 +483,7 @@ export default {
                                     },
                                     {
                                         'name': 'I_RAW_CHARS',
-                                        'chars': node.quantifier,
+                                        'chars': node.quantifier.raw,
                                     },
                                 ],
                             },
@@ -415,6 +497,14 @@ export default {
                                 'id': 'atomic',
                             },
                         ],
+                        'fixedLength':
+                            node.quantifier.max !== Infinity &&
+                            node.quantifier.min === node.quantifier.max
+                                ? rawRegexNode.fixedLength !== null
+                                    ? rawRegexNode.fixedLength *
+                                      node.quantifier.max
+                                    : null
+                                : null,
                     };
                 },
                 (optimisedComponent) => {

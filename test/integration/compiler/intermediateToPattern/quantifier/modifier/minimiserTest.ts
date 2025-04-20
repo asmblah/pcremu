@@ -34,7 +34,11 @@ describe('IR-to-Pattern compiler (unoptimised) quantifier minimiser integration'
             'components': [
                 {
                     'name': 'I_MINIMISING_QUANTIFIER',
-                    'quantifier': '*',
+                    'quantifier': {
+                        'min': 0,
+                        'max': Infinity,
+                        'raw': '*',
+                    },
                     'component': {
                         'name': 'I_RAW_REGEX',
                         'chunks': [{ 'name': 'I_RAW_CHARS', chars: 'X' }],
@@ -52,7 +56,7 @@ describe('IR-to-Pattern compiler (unoptimised) quantifier minimiser integration'
                 {
                     type: 'minimising-quantifier',
                     minimumMatches: 0,
-                    maximumMatches: null,
+                    maximumMatches: Infinity,
                     component: {
                         type: 'native',
                         chars: 'X',

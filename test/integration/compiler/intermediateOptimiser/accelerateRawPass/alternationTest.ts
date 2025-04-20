@@ -24,7 +24,7 @@ describe('IR optimiser accelerateRawPass compiler alternation integration', () =
         ]);
     });
 
-    it('should be able to optimise an IR with one alternation', () => {
+    it('should be able to optimise an IR with one alternation where each alternative has a different fixed length', () => {
         const ir = sinon.createStubInstance(
             IntermediateRepresentation
         ) as SinonStubbedInstance<IntermediateRepresentation> &
@@ -41,6 +41,7 @@ describe('IR optimiser accelerateRawPass compiler alternation integration', () =
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_NON_CAPTURING_GROUP',
@@ -59,6 +60,7 @@ describe('IR optimiser accelerateRawPass compiler alternation integration', () =
                                                     'chars': 'to',
                                                 },
                                             ],
+                                            'fixedLength': 2,
                                         },
                                     ],
                                 },
@@ -73,6 +75,7 @@ describe('IR optimiser accelerateRawPass compiler alternation integration', () =
                                                     'chars': 'you',
                                                 },
                                             ],
+                                            'fixedLength': 3,
                                         },
                                     ],
                                 },
@@ -88,6 +91,7 @@ describe('IR optimiser accelerateRawPass compiler alternation integration', () =
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 5,
                 },
             ],
         });
@@ -133,9 +137,11 @@ describe('IR optimiser accelerateRawPass compiler alternation integration', () =
                                                             'chars': 'you',
                                                         },
                                                     ],
+                                                    'fixedLength': null, // Alternatives have different fixed lengths.
                                                 },
                                             },
                                         ],
+                                        'fixedLength': null, // Alternatives have different fixed lengths.
                                     },
                                 },
                             ],
@@ -145,6 +151,140 @@ describe('IR optimiser accelerateRawPass compiler alternation integration', () =
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': null, // Alternatives have different fixed lengths.
+                },
+            ],
+        });
+    });
+
+    it('should be able to optimise an IR with one alternation where each alternative has the same fixed length', () => {
+        const ir = sinon.createStubInstance(
+            IntermediateRepresentation
+        ) as SinonStubbedInstance<IntermediateRepresentation> &
+            IntermediateRepresentation;
+        ir.getTranspilerRepresentation.returns({
+            'name': 'I_PATTERN',
+            'capturingGroups': [0],
+            'components': [
+                {
+                    'name': 'I_RAW_REGEX',
+                    'chunks': [
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': 'hello',
+                        },
+                    ],
+                    'fixedLength': 5,
+                },
+                {
+                    'name': 'I_NON_CAPTURING_GROUP',
+                    'components': [
+                        {
+                            'name': 'I_ALTERNATION',
+                            'alternatives': [
+                                {
+                                    'name': 'I_ALTERNATIVE',
+                                    'components': [
+                                        {
+                                            'name': 'I_RAW_REGEX',
+                                            'chunks': [
+                                                {
+                                                    'name': 'I_RAW_CHARS',
+                                                    'chars': 'to',
+                                                },
+                                            ],
+                                            'fixedLength': 2,
+                                        },
+                                    ],
+                                },
+                                {
+                                    'name': 'I_ALTERNATIVE',
+                                    'components': [
+                                        {
+                                            'name': 'I_RAW_REGEX',
+                                            'chunks': [
+                                                {
+                                                    'name': 'I_RAW_CHARS',
+                                                    'chars': 'it',
+                                                },
+                                            ],
+                                            'fixedLength': 2,
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    'name': 'I_RAW_REGEX',
+                    'chunks': [
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': 'world',
+                        },
+                    ],
+                    'fixedLength': 5,
+                },
+            ],
+        });
+
+        const intermediateRepresentation = optimiser.optimise(ir);
+
+        expect(
+            intermediateRepresentation.getTranspilerRepresentation()
+        ).to.deep.equal({
+            'name': 'I_PATTERN',
+            'capturingGroups': [0],
+            'components': [
+                {
+                    'name': 'I_RAW_REGEX',
+                    'chunks': [
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': 'hello',
+                        },
+                        {
+                            'name': 'I_RAW_NON_CAPTURE',
+                            'chunks': [
+                                {
+                                    'name': 'I_RAW_NESTED',
+                                    'node': {
+                                        'name': 'I_RAW_REGEX',
+                                        'chunks': [
+                                            {
+                                                'name': 'I_RAW_NESTED',
+                                                'node': {
+                                                    'name': 'I_RAW_REGEX',
+                                                    'chunks': [
+                                                        {
+                                                            'name': 'I_RAW_CHARS',
+                                                            'chars': 'to',
+                                                        },
+                                                        {
+                                                            'name': 'I_RAW_CHARS',
+                                                            'chars': '|',
+                                                        },
+                                                        {
+                                                            'name': 'I_RAW_CHARS',
+                                                            'chars': 'it',
+                                                        },
+                                                    ],
+                                                    'fixedLength': 2, // Alternatives have the same fixed length.
+                                                },
+                                            },
+                                        ],
+                                        'fixedLength': 2,
+                                    },
+                                },
+                            ],
+                        },
+                        {
+                            'name': 'I_RAW_CHARS',
+                            'chars': 'world',
+                        },
+                    ],
+                    'fixedLength': 12,
                 },
             ],
         });

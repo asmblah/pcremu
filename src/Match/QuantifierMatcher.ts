@@ -7,7 +7,6 @@
  * https://github.com/asmblah/pcremu/raw/master/MIT-LICENSE.txt
  */
 
-import Exception from '../Exception/Exception';
 import FragmentInterface from './Fragment/FragmentInterface';
 import FragmentMatchInterface from './FragmentMatchInterface';
 import FragmentMatchTree from './FragmentMatchTree';
@@ -24,7 +23,7 @@ export default class QuantifierMatcher {
      * @param {boolean} isAnchored
      * @param {FragmentInterface} componentFragment
      * @param {number} minimumMatches
-     * @param {number|null} maximumMatches
+     * @param {number} maximumMatches
      * @param {FragmentMatchInterface} existingMatch
      * @param {Function} backtracker
      */
@@ -34,12 +33,13 @@ export default class QuantifierMatcher {
         isAnchored: boolean,
         componentFragment: FragmentInterface,
         minimumMatches: number,
-        maximumMatches: number | null,
+        maximumMatches: number,
         existingMatch: FragmentMatchInterface,
         backtracker: (
             matches: FragmentMatchInterface[]
         ) => FragmentMatchInterface | null
     ): FragmentMatchInterface | null {
+        const initialPosition = position;
         let match: FragmentMatchInterface | null;
         const matches: FragmentMatchInterface[] = [];
 
@@ -47,11 +47,11 @@ export default class QuantifierMatcher {
             (match = componentFragment.match(
                 subject,
                 position,
-                isAnchored,
+                matches.length === 0 ? isAnchored : true,
                 existingMatch.withSubsequentMatches(matches)
             ))
         ) {
-            if (maximumMatches !== null && matches.length >= maximumMatches) {
+            if (matches.length >= maximumMatches) {
                 /*
                  * Maximum reached, don't try to match any more.
                  * Note that it would actually be valid for there to be more matches,
@@ -72,7 +72,7 @@ export default class QuantifierMatcher {
             return null;
         }
 
-        return new FragmentMatchTree(position, matches, () =>
+        return new FragmentMatchTree(initialPosition, matches, () =>
             backtracker(matches)
         );
     }
@@ -85,7 +85,7 @@ export default class QuantifierMatcher {
      * @param {boolean} isAnchored
      * @param {FragmentInterface} componentFragment
      * @param {number} minimumMatches
-     * @param {number|null} maximumMatches
+     * @param {number} maximumMatches
      * @param {FragmentMatchInterface} existingMatch
      * @param {Function} backtracker
      */
@@ -95,7 +95,7 @@ export default class QuantifierMatcher {
         isAnchored: boolean,
         componentFragment: FragmentInterface,
         minimumMatches: number,
-        maximumMatches: number | null,
+        maximumMatches: number,
         existingMatch: FragmentMatchInterface,
         backtracker: (
             matches: FragmentMatchInterface[]
@@ -104,11 +104,18 @@ export default class QuantifierMatcher {
         const initialPosition = position;
         const matches: FragmentMatchInterface[] = [];
 
+        if (minimumMatches === 0) {
+            // Fast case: if minimum matches is 0, return an empty match immediately.
+            return new FragmentMatchTree(initialPosition, [], () =>
+                backtracker([])
+            );
+        }
+
         for (let matchIndex = 0; matchIndex < minimumMatches; matchIndex++) {
             const match = componentFragment.match(
                 subject,
                 position,
-                isAnchored,
+                matchIndex === 0 ? isAnchored : true,
                 existingMatch.withSubsequentMatches(matches)
             );
 
@@ -126,49 +133,5 @@ export default class QuantifierMatcher {
         return new FragmentMatchTree(initialPosition, matches, () =>
             backtracker(matches)
         );
-    }
-
-    /**
-     * Parses the given quantifier string to a (max, min) matches tuple.
-     *
-     * @param {string} quantifier
-     */
-    parseQuantifier(quantifier: string): {
-        minimumMatches: number;
-        maximumMatches: number | null;
-    } {
-        let minimumMatches: number;
-        let maximumMatches: number | null;
-
-        switch (quantifier) {
-            case '?':
-                minimumMatches = 0;
-                maximumMatches = 1;
-                break;
-            case '*':
-                minimumMatches = 0;
-                maximumMatches = null;
-                break;
-            case '+':
-                minimumMatches = 1;
-                maximumMatches = null;
-                break;
-            default:
-                const match = quantifier.match(/\{(\d+)?,?(\d+)?}/);
-
-                if (match === null) {
-                    throw new Exception(
-                        `Unsupported quantifier "${quantifier}"`
-                    );
-                }
-
-                // Note that the default minimum is zero and not null.
-                minimumMatches =
-                    typeof match[1] !== 'undefined' ? Number(match[1]) : 0;
-                maximumMatches =
-                    typeof match[2] !== 'undefined' ? Number(match[2]) : null;
-        }
-
-        return { minimumMatches, maximumMatches };
     }
 }

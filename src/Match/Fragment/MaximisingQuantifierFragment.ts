@@ -20,8 +20,27 @@ export default class MaximisingQuantifierFragment implements FragmentInterface {
         private quantifierMatcher: QuantifierMatcher,
         private componentFragment: FragmentInterface,
         private minimumMatches: number,
-        private maximumMatches: number | null
+        private maximumMatches: number
     ) {}
+
+    /**
+     * @inheritDoc
+     */
+    getFixedLength(existingMatch: FragmentMatchInterface): number | null {
+        const componentLength =
+            this.componentFragment.getFixedLength(existingMatch);
+
+        if (componentLength === null) {
+            return null;
+        }
+
+        if (this.minimumMatches === this.maximumMatches) {
+            // Fixed-length repetition, so we can determine a fixed length for the quantifier.
+            return componentLength * this.minimumMatches;
+        }
+
+        return null;
+    }
 
     /**
      * @inheritDoc
@@ -97,7 +116,9 @@ export default class MaximisingQuantifierFragment implements FragmentInterface {
     toString(): string {
         return (
             this.componentFragment.toString() +
-            `{${this.minimumMatches},${this.maximumMatches ?? ''}}`
+            `{${this.minimumMatches},${
+                this.maximumMatches === Infinity ? '' : this.maximumMatches
+            }}`
         );
     }
 

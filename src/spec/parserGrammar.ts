@@ -12,8 +12,11 @@ import {
     N_CHARACTER,
     N_CHARACTER_CLASS,
     N_COMPONENT,
+    N_LOOKAROUND,
 } from './types/ast';
 import { Context } from './types/parser';
+import { LookaroundBivalence } from '../Pattern/LookaroundBivalence';
+import { LookaroundDirection } from '../Pattern/LookaroundDirection';
 
 /**
  * Parsing library grammar for parsing PCRE regular expressions to an AST.
@@ -159,6 +162,7 @@ export default {
                     'N_NAMED_CAPTURING_GROUP',
                     'N_NON_CAPTURING_GROUP',
                     'N_CAPTURING_GROUP',
+                    'N_LOOKAROUND',
                     'N_CHARACTER_CLASS',
                     'N_BACKSLASH',
                     'N_LITERAL',
@@ -174,6 +178,32 @@ export default {
                     'N_MAXIMISING_QUANTIFIER',
                     'N_COMPONENT_LEVEL_0',
                 ],
+            },
+        },
+        'N_LOOKAROUND': {
+            components: [
+                /\(\?/,
+                { name: 'direction', optionally: /</ },
+                { name: 'type', what: /[=!]/ },
+                { name: 'components', zeroOrMoreOf: 'N_COMPONENT' },
+                /\)/,
+            ],
+            processor(node: {
+                components: N_COMPONENT[];
+                direction: '<' | undefined;
+                type: '=' | '!';
+            }): N_LOOKAROUND {
+                return {
+                    'name': `N_LOOKAROUND`,
+                    'bivalence':
+                        node.type === '='
+                            ? LookaroundBivalence.Positive
+                            : LookaroundBivalence.Negative,
+                    'direction': node.direction
+                        ? LookaroundDirection.Behind
+                        : LookaroundDirection.Ahead,
+                    'components': node.components,
+                };
             },
         },
         'N_QUANTIFIER': {
@@ -197,7 +227,7 @@ export default {
         'N_POSSESSIVE_QUANTIFIER': {
             components: [
                 { name: 'component', rule: 'N_COMPONENT_LEVEL_0' },
-                { name: 'quantifier', what: /[*+?]/ },
+                { name: 'quantifier', rule: 'N_QUANTIFIER' },
                 // Keep as a separate component to allow for whitespace/comments in between
                 // (in extended mode).
                 { what: /\+/ },
@@ -246,7 +276,7 @@ export default {
 
                 if (node.leadingEmptyAlternative) {
                     // Alternation has an empty alternative at the start,
-                    // eg. "my (|pattern)"
+                    // e.g. "my (|pattern)"
                     alternatives.unshift({
                         'name': 'N_ALTERNATIVE',
                         'components': [],

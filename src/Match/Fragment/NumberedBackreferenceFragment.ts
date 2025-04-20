@@ -22,6 +22,15 @@ export default class NumberedBackreferenceFragment
     /**
      * @inheritDoc
      */
+    getFixedLength(existingMatch: FragmentMatchInterface): number | null {
+        const capture = existingMatch.getNumberedCapture(this.groupIndex);
+
+        return capture !== null ? capture.length : null;
+    }
+
+    /**
+     * @inheritDoc
+     */
     match(
         subject: string,
         position: number,

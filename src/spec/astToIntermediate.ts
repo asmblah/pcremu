@@ -13,6 +13,7 @@ import {
     I_CAPTURING_GROUP,
     I_CHARACTER_CLASS,
     I_CHARACTER_RANGE,
+    I_LOOKAROUND,
     I_MAXIMISING_QUANTIFIER,
     I_MINIMISING_QUANTIFIER,
     I_NAMED_CAPTURING_GROUP,
@@ -38,6 +39,7 @@ import {
     N_GENERIC_CHAR,
     N_HEX_CODE_CHAR,
     N_LITERAL,
+    N_LOOKAROUND,
     N_MAXIMISING_QUANTIFIER,
     N_MINIMISING_QUANTIFIER,
     N_NAMED_CAPTURING_GROUP,
@@ -51,6 +53,7 @@ import {
     N_WHITESPACE,
 } from './types/ast';
 import escapeStringRegexp = require('escape-string-regexp');
+import QuantifierParser from '../Quantifier/QuantifierParser';
 
 export interface TrackingContext {
     /**
@@ -78,6 +81,7 @@ export interface TrackingContext {
 }
 export interface Context extends TrackingContext {
     flags: Flags;
+    quantifierParser: QuantifierParser;
 }
 type Interpret = (node: N_NODE, context?: object) => I_NODE;
 
@@ -132,6 +136,7 @@ export default {
                         'chars': escapeStringRegexp(node.char),
                     },
                 ],
+                'fixedLength': 1,
             };
         },
         'N_CHARACTER_CLASS': (
@@ -165,6 +170,7 @@ export default {
                         'chars': '\\' + node.type,
                     },
                 ],
+                'fixedLength': 1,
             };
         },
         'N_DOT': (): I_RAW_REGEX => {
@@ -176,6 +182,7 @@ export default {
                         'chars': '.',
                     },
                 ],
+                'fixedLength': 1,
             };
         },
         'N_END_OF_STRING_ASSERTION': (): I_RAW_REGEX => {
@@ -188,6 +195,7 @@ export default {
                         'chars': '(?=\\n?(?![\\s\\S]))',
                     },
                 ],
+                'fixedLength': 0,
             };
         },
         'N_ESCAPED_CHAR': (node: N_ESCAPED_CHAR): I_RAW_REGEX => {
@@ -199,6 +207,7 @@ export default {
                         'chars': '\\' + node.char,
                     },
                 ],
+                'fixedLength': 1,
             };
         },
         'N_EXCLUSIVE_END_OF_STRING_ASSERTION': (): I_RAW_REGEX => {
@@ -211,6 +220,7 @@ export default {
                         'chars': '(?![\\s\\S])',
                     },
                 ],
+                'fixedLength': 0,
             };
         },
         'N_GENERIC_CHAR': (node: N_GENERIC_CHAR): I_RAW_REGEX => {
@@ -222,6 +232,7 @@ export default {
                         'chars': '\\' + node.type,
                     },
                 ],
+                'fixedLength': 1,
             };
         },
         'N_HEX_CODE_CHAR': (node: N_HEX_CODE_CHAR): I_RAW_REGEX => {
@@ -233,6 +244,7 @@ export default {
                         'chars': '\\x' + node.code,
                     },
                 ],
+                'fixedLength': 1,
             };
         },
         'N_LITERAL': (node: N_LITERAL): I_RAW_REGEX => {
@@ -246,25 +258,36 @@ export default {
                         'chars': escapeStringRegexp(node.text),
                     },
                 ],
+                'fixedLength': node.text.length,
             };
         },
         'N_MAXIMISING_QUANTIFIER': (
             node: N_MAXIMISING_QUANTIFIER,
-            interpret: Interpret
+            interpret: Interpret,
+            context: Context
         ): I_MAXIMISING_QUANTIFIER => {
+            const quantifier = context.quantifierParser.parseQuantifier(
+                node.quantifier
+            );
+
             return {
                 'name': 'I_MAXIMISING_QUANTIFIER',
-                'quantifier': node.quantifier,
+                'quantifier': quantifier,
                 'component': interpret(node.component),
             };
         },
         'N_MINIMISING_QUANTIFIER': (
             node: N_MINIMISING_QUANTIFIER,
-            interpret: Interpret
+            interpret: Interpret,
+            context: Context
         ): I_MINIMISING_QUANTIFIER => {
+            const quantifier = context.quantifierParser.parseQuantifier(
+                node.quantifier
+            );
+
             return {
                 'name': 'I_MINIMISING_QUANTIFIER',
-                'quantifier': node.quantifier,
+                'quantifier': quantifier,
                 'component': interpret(node.component),
             };
         },
@@ -304,6 +327,7 @@ export default {
                         'chars': '\\B',
                     },
                 ],
+                'fixedLength': 0,
             };
         },
         'N_NUMBERED_BACKREFERENCE': (
@@ -339,6 +363,7 @@ export default {
                               'chars': String.fromCharCode(octalAsNumber),
                           },
                       ],
+                      'fixedLength': 1,
                   };
         },
         'N_PATTERN': (node: N_PATTERN, interpret: Interpret): I_PATTERN => {
@@ -387,13 +412,31 @@ export default {
                 ),
             };
         },
+        'N_LOOKAROUND': (
+            node: N_LOOKAROUND,
+            interpret: Interpret
+        ): I_LOOKAROUND => {
+            return {
+                'name': 'I_LOOKAROUND',
+                'bivalence': node.bivalence,
+                'direction': node.direction,
+                'components': node.components.map((node: N_NODE) =>
+                    interpret(node)
+                ),
+            };
+        },
         'N_POSSESSIVE_QUANTIFIER': (
             node: N_POSSESSIVE_QUANTIFIER,
-            interpret: Interpret
+            interpret: Interpret,
+            context: Context
         ): I_POSSESSIVE_QUANTIFIER => {
+            const quantifier = context.quantifierParser.parseQuantifier(
+                node.quantifier
+            );
+
             return {
                 'name': 'I_POSSESSIVE_QUANTIFIER',
-                'quantifier': node.quantifier,
+                'quantifier': quantifier,
                 'component': interpret(node.component),
             };
         },
@@ -424,6 +467,7 @@ export default {
                         'chars': assertion,
                     },
                 ],
+                'fixedLength': 0,
             };
         },
         'N_WHITESPACE': (
@@ -444,6 +488,7 @@ export default {
                         'chars': node.chars,
                     },
                 ],
+                'fixedLength': node.chars.length,
             };
         },
         'N_WORD_BOUNDARY_ASSERTION': (): I_RAW_REGEX => {
@@ -455,6 +500,7 @@ export default {
                         'chars': '\\b',
                     },
                 ],
+                'fixedLength': 0,
             };
         },
     },

@@ -22,6 +22,27 @@ export default class AlternationFragment implements FragmentInterface {
     /**
      * @inheritDoc
      */
+    getFixedLength(existingMatch: FragmentMatchInterface): number | null {
+        let alternativeLength: number | null = -1;
+
+        for (const alternativeFragment of this.alternativeFragments) {
+            const length = alternativeFragment.getFixedLength(existingMatch);
+
+            if (alternativeLength !== -1 && length !== alternativeLength) {
+                // The alternative fragments have different fixed lengths,
+                // so we cannot determine a fixed length for the alternation.
+                return null;
+            }
+
+            alternativeLength = length;
+        }
+
+        return alternativeLength === -1 ? 0 : alternativeLength;
+    }
+
+    /**
+     * @inheritDoc
+     */
     match(
         subject: string,
         position: number,

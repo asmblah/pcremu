@@ -83,6 +83,7 @@ describe('IR optimiser compileRawPass compiler all nodes integration', () => {
                             'id': 'mySecondRef',
                         },
                     ],
+                    'fixedLength': 126,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -110,6 +111,7 @@ describe('IR optimiser compileRawPass compiler all nodes integration', () => {
                             'id': 'myThirdRef',
                         },
                     ],
+                    'fixedLength': 39,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -139,6 +141,7 @@ describe('IR optimiser compileRawPass compiler all nodes integration', () => {
                             'id': 'myThirdRef',
                         },
                     ],
+                    'fixedLength': 39,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -164,6 +167,7 @@ describe('IR optimiser compileRawPass compiler all nodes integration', () => {
                             'chars': 'after-nested',
                         },
                     ],
+                    'fixedLength': 34,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -186,6 +190,7 @@ describe('IR optimiser compileRawPass compiler all nodes integration', () => {
                             'chars': 'after-non-capture',
                         },
                     ],
+                    'fixedLength': 49,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -202,6 +207,7 @@ describe('IR optimiser compileRawPass compiler all nodes integration', () => {
                             'chars': 'after-noop',
                         },
                     ],
+                    'fixedLength': 21,
                 },
             ],
         });
@@ -227,6 +233,7 @@ describe('IR optimiser compileRawPass compiler all nodes integration', () => {
                             },
                         },
                     ],
+                    'fixedLength': 126,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -237,6 +244,7 @@ describe('IR optimiser compileRawPass compiler all nodes integration', () => {
                             'patternToEmulatedNumberedGroupIndex': {},
                         },
                     ],
+                    'fixedLength': 39,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -250,6 +258,7 @@ describe('IR optimiser compileRawPass compiler all nodes integration', () => {
                             },
                         },
                     ],
+                    'fixedLength': 39,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -260,6 +269,7 @@ describe('IR optimiser compileRawPass compiler all nodes integration', () => {
                             'patternToEmulatedNumberedGroupIndex': {},
                         },
                     ],
+                    'fixedLength': 34,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -271,6 +281,7 @@ describe('IR optimiser compileRawPass compiler all nodes integration', () => {
                             'patternToEmulatedNumberedGroupIndex': {},
                         },
                     ],
+                    'fixedLength': 49,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -281,6 +292,7 @@ describe('IR optimiser compileRawPass compiler all nodes integration', () => {
                             'patternToEmulatedNumberedGroupIndex': {},
                         },
                     ],
+                    'fixedLength': 21,
                 },
             ],
         });

@@ -49,6 +49,7 @@ describe('AST-to-IR compiler control character escape integration', () => {
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -58,6 +59,7 @@ describe('AST-to-IR compiler control character escape integration', () => {
                             'chars': '\\n',
                         },
                     ],
+                    'fixedLength': 1,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -67,6 +69,7 @@ describe('AST-to-IR compiler control character escape integration', () => {
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 5,
                 },
             ],
         });

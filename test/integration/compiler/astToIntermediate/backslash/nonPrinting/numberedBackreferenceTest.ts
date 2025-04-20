@@ -49,6 +49,7 @@ describe('AST-to-IR compiler numbered backreference integration', () => {
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_NUMBERED_BACKREFERENCE',
@@ -62,6 +63,7 @@ describe('AST-to-IR compiler numbered backreference integration', () => {
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 5,
                 },
             ],
         });
@@ -98,6 +100,7 @@ describe('AST-to-IR compiler numbered backreference integration', () => {
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -107,6 +110,7 @@ describe('AST-to-IR compiler numbered backreference integration', () => {
                             'chars': String.fromCharCode(0o10), // Octal character escape.
                         },
                     ],
+                    'fixedLength': 1,
                 },
                 {
                     'name': 'I_RAW_REGEX',
@@ -116,6 +120,7 @@ describe('AST-to-IR compiler numbered backreference integration', () => {
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 5,
                 },
             ],
         });

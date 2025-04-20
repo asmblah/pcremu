@@ -17,6 +17,20 @@ describe('LiteralFragment', () => {
         fragment = new LiteralFragment('my-literal');
     });
 
+    describe('getFixedLength()', () => {
+        it('should return the length of the literal', () => {
+            const fragment = new LiteralFragment('abc');
+
+            expect(fragment.getFixedLength()).to.equal(3);
+        });
+
+        it('should return 0 for an empty literal', () => {
+            const fragment = new LiteralFragment('');
+
+            expect(fragment.getFixedLength()).to.equal(0);
+        });
+    });
+
     describe('match()', () => {
         describe('when un-anchored', () => {
             it('should match when the literal appears at the start position', () => {

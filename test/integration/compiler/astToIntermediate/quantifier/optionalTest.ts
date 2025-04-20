@@ -57,10 +57,15 @@ describe('AST-to-IR compiler optional quantifier integration', () => {
                             'chars': 'a',
                         },
                     ],
+                    'fixedLength': 1,
                 },
                 {
                     'name': 'I_MAXIMISING_QUANTIFIER',
-                    'quantifier': '?',
+                    'quantifier': {
+                        min: 0,
+                        max: 1,
+                        raw: '?',
+                    },
                     'component': {
                         'name': 'I_RAW_REGEX',
                         'chunks': [
@@ -69,11 +74,16 @@ describe('AST-to-IR compiler optional quantifier integration', () => {
                                 'chars': 'b',
                             },
                         ],
+                        'fixedLength': 1,
                     },
                 },
                 {
                     'name': 'I_MAXIMISING_QUANTIFIER',
-                    'quantifier': '?',
+                    'quantifier': {
+                        min: 0,
+                        max: 1,
+                        raw: '?',
+                    },
                     'component': {
                         'name': 'I_RAW_REGEX',
                         'chunks': [
@@ -82,6 +92,7 @@ describe('AST-to-IR compiler optional quantifier integration', () => {
                                 'chars': 'c',
                             },
                         ],
+                        'fixedLength': 1,
                     },
                 },
             ],

@@ -53,6 +53,7 @@ describe('AST-to-IR compiler non-capturing group integration', () => {
                             'chars': 'hello',
                         },
                     ],
+                    'fixedLength': 5,
                 },
                 {
                     'name': 'I_NON_CAPTURING_GROUP',
@@ -65,6 +66,7 @@ describe('AST-to-IR compiler non-capturing group integration', () => {
                                     'chars': 'inner',
                                 },
                             ],
+                            'fixedLength': 5,
                         },
                     ],
                 },
@@ -76,6 +78,7 @@ describe('AST-to-IR compiler non-capturing group integration', () => {
                             'chars': 'world',
                         },
                     ],
+                    'fixedLength': 5,
                 },
             ],
         });
